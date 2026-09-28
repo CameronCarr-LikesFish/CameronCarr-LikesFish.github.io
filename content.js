@@ -21,11 +21,18 @@ const SETTINGS = {
 // Eras: the zoom levels, from outermost (zoomed out, the future) to innermost
 // (zoomed in, beneath the wall). The site opens on START_ERA.
 // ---------------------------------------------------------------------------
+// sky: a NASA photograph shown faintly behind the stars in that era (public
+// domain; credit shown on the page). Ordered far to near: the future gets the
+// deepest view, the past the closest nebula.
 const ERAS = [
-  { id: "future",  label: "Future",           subtitle: "Mostly unwritten" },
-  { id: "now",     label: "Now",              subtitle: "After graduation, 2026" },
-  { id: "college", label: "Vanderbilt",       subtitle: "Law, History, and Society" },
-  { id: "beneath", label: "Beneath the wall", subtitle: "Personal backstories" },
+  { id: "future",  label: "Future",           subtitle: "Mostly unwritten",
+    sky: { image: "sky/future-deep-field.jpg", title: "Webb's First Deep Field", credit: "NASA, ESA, CSA, STScI" } },
+  { id: "now",     label: "Now",              subtitle: "After graduation, 2026",
+    sky: { image: "sky/now-cosmic-cliffs.jpg", title: "The Cosmic Cliffs, Carina Nebula", credit: "NASA, ESA, CSA, STScI" } },
+  { id: "college", label: "Vanderbilt",       subtitle: "Law, History, and Society",
+    sky: { image: "sky/vanderbilt-pillars.jpg", title: "Pillars of Creation, in infrared", credit: "NASA, ESA, Hubble Heritage Team" } },
+  { id: "beneath", label: "Beneath the wall", subtitle: "Personal backstories",
+    sky: { image: "sky/beneath-orion.jpg", title: "Orion Nebula, the nearest large star nursery", credit: "NASA, Hubble Heritage Team" } },
 ];
 
 const START_ERA = "college";
@@ -46,6 +53,7 @@ const UI_TEXT = {
   clearFilter: "Clear",
   noMatches: "Nothing tagged {tag} yet.",
   backFromDetail: "Back to {era}",  // button at the top of a sub-zoom
+  skyLabel: "Sky",                  // "Sky: <photo title> · <credit>"
 };
 
 // ---------------------------------------------------------------------------

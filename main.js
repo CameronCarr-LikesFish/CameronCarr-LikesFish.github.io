@@ -55,6 +55,7 @@
     navList: document.querySelector(".era-nav__list"),
     posEra: document.querySelector(".position__era"),
     posSub: document.querySelector(".position__sub"),
+    posSky: document.querySelector(".position__sky"),
     zoomIn: document.querySelector('[data-zoom="in"]'),
     zoomOut: document.querySelector('[data-zoom="out"]'),
     panel: document.querySelector(".panel"),
@@ -225,6 +226,14 @@
       el.dataset.era = era.id;
       el.setAttribute("aria-labelledby", "era-title-" + era.id);
 
+      // The era's NASA photograph, faint behind the generative stars.
+      if (era.sky && era.sky.image) {
+        const sky = make("div", "era__sky");
+        sky.style.backgroundImage = `url("${era.sky.image}")`;
+        sky.setAttribute("aria-hidden", "true");
+        el.append(sky);
+      }
+
       const head = make("header", "era__head");
       const title = make("h2", "era__title", era.label);
       title.id = "era-title-" + era.id;
@@ -353,6 +362,9 @@
 
     els.posEra.textContent = era.label;
     els.posSub.textContent = inDetail ? SUBZOOMS[detailId].title : era.subtitle;
+    els.posSky.textContent = era.sky
+      ? `${UI_TEXT.skyLabel || "Sky"}: ${era.sky.title} · ${era.sky.credit}`
+      : "";
 
     els.zoomIn.setAttribute("aria-disabled", String(inDetail || level >= MAX_DEPTH));
     els.zoomOut.setAttribute("aria-disabled", String(!inDetail && level <= 0));

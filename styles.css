@@ -171,6 +171,24 @@ button { font: inherit; color: inherit; }
 
 .era__back { margin-top: 0.9rem; font-size: 0.85rem; }
 
+/* The era's NASA photograph: faint, behind the generative stars' glow and
+   all text. --sky-opacity is tuned per era (bright images get less). */
+.era__sky {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: var(--sky-opacity, 0.4);
+  pointer-events: none;
+}
+
+.era[data-era="future"]  { --sky-opacity: 0.55; }
+.era[data-era="now"]     { --sky-opacity: 0.34; }
+.era[data-era="college"] { --sky-opacity: 0.3; }
+.era[data-era="beneath"] { --sky-opacity: 0.32; }
+
 /* The window in the middle of each era where the next-earlier era shows.
    Clicking it zooms in. */
 .era__portal {
@@ -328,6 +346,13 @@ body:not(.wall-crossed) .era[data-era="beneath"] :is(.item, .era__back) { visibi
 .position__sub { display: block; color: var(--ink-dim); }
 
 .hint { margin: 0.4rem 0 0; font-size: 0.75rem; color: var(--ink-dim); }
+
+.position__sky {
+  margin: 0.3rem 0 0;
+  font-size: 0.68rem;
+  color: var(--ink-dim);
+  opacity: 0.8;
+}
 
 /* ----- Era navigation: a timeline along the bottom, past on the left ----- */
 

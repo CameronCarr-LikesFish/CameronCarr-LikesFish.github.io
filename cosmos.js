@@ -43,7 +43,15 @@ const Cosmos = (function () {
     { range: [0.78, 1.25], n: 600, alpha: 0.2 },    // Oort cloud
   ];
 
-  let projected = null;                 // map rings, projected once to km
+  // Colours: a calm ocean blue, and land darker than the ocean.
+  const OCEAN_LIGHT = [30, 78, 128];
+  const OCEAN = [16, 52, 96];
+  const OCEAN_EDGE = [10, 34, 68];
+  const LAND = [11, 19, 34];
+  const TURN_SPEED = 3;                 // degrees per second: a slow, gentle turn
+  const rgba = (c, a) => `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${Math.max(0, Math.min(1, a)).toFixed(3)})`;
+
+  let projected = null;                 // map rings, projected to km
   let dust = [];
   let zoomFactor = 3.5;
   let maxDepth = 3;
@@ -53,9 +61,9 @@ const Cosmos = (function () {
   const rad = (d) => (d * Math.PI) / 180;
   const sinP0 = Math.sin(rad(LAT0)), cosP0 = Math.cos(rad(LAT0));
 
-  // Returns [x, y, visible] in km, y pointing north.
-  function project(lon, lat) {
-    const p = rad(lat), l = rad(lon - LON0);
+  // Returns [x, y, visible] in km, y pointing north. dLon turns the globe.
+  function project(lon, lat, dLon = 0) {
+    const p = rad(lat), l = rad(lon - LON0 - dLon);
     const cosC = sinP0 * Math.sin(p) + cosP0 * Math.cos(p) * Math.cos(l);
     return [
       R_EARTH * Math.cos(p) * Math.sin(l),
@@ -64,25 +72,43 @@ const Cosmos = (function () {
     ];
   }
 
-  function projectRing(flat) {
+  function projectRing(flat, ring, dLon = 0) {
     const n = flat.length / 2;
-    const xy = new Float32Array(n * 2);
-    const vis = new Uint8Array(n);
+    const xy = ring ? ring.xy : new Float32Array(n * 2);
+    const vis = ring ? ring.vis : new Uint8Array(n);
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     for (let i = 0; i < n; i++) {
-      const [x, y, v] = project(flat[i * 2], flat[i * 2 + 1]);
+      const [x, y, v] = project(flat[i * 2], flat[i * 2 + 1], dLon);
       xy[i * 2] = x; xy[i * 2 + 1] = y; vis[i] = v ? 1 : 0;
       if (x < minX) minX = x; if (x > maxX) maxX = x;
       if (y < minY) minY = y; if (y > maxY) maxY = y;
     }
-    return { xy, vis, box: [minX, minY, maxX, maxY] };
+    const box = [minX, minY, maxX, maxY];
+    if (ring) { ring.box = box; return ring; }
+    // The North American coast is coarse at this detail; up close it gives
+    // way to the finer state outlines.
+    let northAmerica = false;
+    for (let i = 0; i < n && !northAmerica; i++) {
+      const lon = flat[i * 2], lat = flat[i * 2 + 1];
+      northAmerica = lon > -125 && lon < -60 && lat > 25 && lat < 50;
+    }
+    return { flat, xy, vis, box, northAmerica };
+  }
+
+  // Turn the globe: re-project every ring for a new rotation.
+  let lastDLon = 0;
+  function rotate(dLon) {
+    if (Math.abs(dLon - lastDLon) < 0.01) return;
+    lastDLon = dLon;
+    projected.land.forEach((r) => projectRing(r.flat, r, dLon));
+    projected.states.forEach((st) => st.rings.forEach((r) => projectRing(r.flat, r, dLon)));
   }
 
   function prepare() {
     if (projected || typeof GEO === "undefined") return;
     projected = {
-      states: GEO.states.map((s) => ({ name: s.name, rings: s.rings.map(projectRing) })),
-      land: GEO.land.map(projectRing),
+      states: GEO.states.map((s) => ({ name: s.name, rings: s.rings.map((r) => projectRing(r)) })),
+      land: GEO.land.map((r) => projectRing(r)),
     };
     // Seeded dust for the belts.
     let seed = 99;
@@ -155,6 +181,25 @@ const Cosmos = (function () {
     }
   }
 
+  // Trace a ring for filling. Points on the far side of the globe are pulled
+  // onto its edge, so land that wraps around still fills cleanly.
+  function traceRing(ctx, ring, cam, w, h) {
+    const { xy, vis, box } = ring;
+    const cx = w / 2, cy = h / 2, s = cam.s;
+    if ((box[2] - cam.x) * s + cx < 0 || (box[0] - cam.x) * s + cx > w ||
+        cy - (box[3] - cam.y) * s > h || cy - (box[1] - cam.y) * s < 0) return;
+    for (let i = 0; i < vis.length; i++) {
+      let x = xy[i * 2], y = xy[i * 2 + 1];
+      if (!vis[i]) {
+        const d = Math.hypot(x, y) || 1;
+        x = (x / d) * R_EARTH; y = (y / d) * R_EARTH;
+      }
+      const X = cx + (x - cam.x) * s, Y = cy - (y - cam.y) * s;
+      if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y);
+    }
+    ctx.closePath();
+  }
+
   function toScreen(x, y, cam, w, h) {
     return [w / 2 + (x - cam.x) * cam.s, h / 2 - (y - cam.y) * cam.s];
   }
@@ -167,16 +212,23 @@ const Cosmos = (function () {
     ctx.fillText(text, x, y);
   }
 
-  function draw(ctx, w, h, z) {
+  // time: ms, for the globe's slow turn (0 = hold still, e.g. reduced motion).
+  function draw(ctx, w, h, z, time = 0) {
     prepare();
     if (!projected) return;
     const unit = Math.min(w, h);
     const cam = camera(z, unit);
+
+    // The globe turns slowly at the Now level, and eases back to face the
+    // southeastern US as you zoom in toward Tennessee.
+    const turnW = smooth(0.15, 0.7, z) * (1 - smooth(1.1, 1.7, z));
+    const turn = ((((time / 1000) * TURN_SPEED + 180) % 360) + 360) % 360 - 180;
+    rotate(-turn * turnW);
     ctx.lineWidth = 1;
     ctx.lineJoin = "round";
 
     // How much of each layer shows at this depth.
-    const globeA = smooth(0.25, 1.0, z) * (1 - smooth(1.5, 2.2, z));
+    const globeA = smooth(0.25, 1.0, z);
     const landA = smooth(0.35, 1.0, z) * (1 - smooth(1.35, 1.9, z));
     const statesA = smooth(1.2, 1.9, z);
     const solarA = 1 - smooth(0.35, 0.95, z);
@@ -187,15 +239,35 @@ const Cosmos = (function () {
     const [gx, gy] = toScreen(0, 0, cam, w, h);
     const gr = R_EARTH * cam.s;
     if (globeA > 0.01 && gr > 3) {
-      const fill = ctx.createRadialGradient(gx - gr * 0.3, gy - gr * 0.3, gr * 0.1, gx, gy, gr);
-      fill.addColorStop(0, `rgba(60, 100, 160, ${(0.32 * globeA).toFixed(3)})`);
-      fill.addColorStop(1, `rgba(15, 30, 65, ${(0.3 * globeA).toFixed(3)})`);
-      ctx.fillStyle = fill;
+      // Ocean. Close in, the globe is bigger than the screen, so the ocean
+      // surrounds Florida and Tennessee.
+      const lit = Math.min(gr, unit * 1.2);
+      const ocean = ctx.createRadialGradient(gx - lit * 0.3, gy - lit * 0.35, lit * 0.05, gx, gy, gr);
+      ocean.addColorStop(0, rgba(OCEAN_LIGHT, globeA));
+      ocean.addColorStop(Math.min(1, (lit * 1.1) / gr), rgba(OCEAN, globeA));
+      ocean.addColorStop(1, rgba(OCEAN_EDGE, globeA));
+      ctx.fillStyle = ocean;
       ctx.beginPath();
       ctx.arc(gx, gy, gr, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = `rgba(150, 190, 240, ${(0.45 * globeA).toFixed(3)})`;
+      ctx.strokeStyle = rgba([150, 195, 245], 0.4 * globeA);
       ctx.stroke();
+
+      // Land, darker than the ocean.
+      const coarseA = 1 - smooth(1.9, 2.4, z);
+      ctx.fillStyle = rgba(LAND, globeA);
+      ctx.beginPath();
+      projected.land.forEach((r) => {
+        if (!r.northAmerica || coarseA > 0.5) traceRing(ctx, r, cam, w, h);
+      });
+      ctx.fill();
+      const fineA = smooth(1.5, 2.1, z) * globeA;
+      if (fineA > 0.01) {
+        ctx.fillStyle = rgba(LAND, fineA);
+        ctx.beginPath();
+        projected.states.forEach((st) => st.rings.forEach((r) => traceRing(ctx, r, cam, w, h)));
+        ctx.fill();
+      }
     }
 
     // Coastlines on the globe.

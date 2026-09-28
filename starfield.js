@@ -177,7 +177,7 @@ const Starfield = (function () {
     }
 
     // The places you zoom through (cosmos.js), over the stars.
-    if (typeof Cosmos !== "undefined") Cosmos.draw(ctx, w, h, depth);
+    if (typeof Cosmos !== "undefined") Cosmos.draw(ctx, w, h, depth, still ? 0 : now);
   }
 
   // Redraws right away while the zoom is moving; otherwise a slow twinkle at

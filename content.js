@@ -24,11 +24,10 @@ const SETTINGS = {
 // sky (optional): a NASA photograph shown faintly behind the stars while that
 // era is in view (public domain; credit shown on the page).
 const ERAS = [
-  { id: "future",   label: "Future",     subtitle: "Mostly unwritten" },
+  { id: "future",   label: "Future",     subtitle: "I hope to learn more than I'll ever know" },
   { id: "now",      label: "Now",        subtitle: "After graduation, 2026" },
   { id: "college",  label: "Vanderbilt", subtitle: "Law, History, and Society" },
-  { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons",
-    sky: { image: "sky/personal-orion.jpg", title: "Orion Nebula", credit: "NASA, Hubble Heritage Team" } },
+  { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons" },
 ];
 
 const START_ERA = "college";

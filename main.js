@@ -306,7 +306,7 @@
       const scale = Math.pow(ZOOM_FACTOR, t);
       const opacity = t >= 0
         ? clamp(1 - t * 1.9, 0, 1)       // outer eras fade quickly as they grow past us
-        : clamp(1 + t * 0.6, 0, 1);      // the next era in is a faint preview; beyond that, gone
+        : clamp(1 + t * 1.3, 0, 1);      // inner eras stay hidden until you zoom toward them
       el.style.transform = `scale(${scale})`;
       // An era's photo shows only while that era fills the view.
       el.style.setProperty("--sky-fade", t >= 0 ? "1" : clamp(1 + t * 1.6, 0, 1).toFixed(3));

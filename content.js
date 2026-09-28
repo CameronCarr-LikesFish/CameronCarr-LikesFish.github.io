@@ -21,10 +21,12 @@ const SETTINGS = {
 // Eras: the zoom levels, from outermost (zoomed out, the future) to innermost
 // (zoomed in, the personal side). The site opens on START_ERA.
 // ---------------------------------------------------------------------------
+// short (optional): a shorter name for the timeline along the bottom.
 // sky (optional): a NASA photograph shown faintly behind the stars while that
 // era is in view (public domain; credit shown on the page).
 const ERAS = [
-  { id: "future",   label: "Future",     subtitle: "I hope to learn more than I'll ever know" },
+  { id: "future",   label: "Goals, hopes, and dreams", short: "Hopes & dreams",
+    subtitle: "I hope to learn more than I'll ever know" },
   { id: "now",      label: "Now",        subtitle: "After graduation, 2026" },
   { id: "college",  label: "Vanderbilt", subtitle: "Law, History, and Society" },
   { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons" },

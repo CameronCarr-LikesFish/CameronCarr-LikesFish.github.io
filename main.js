@@ -277,7 +277,8 @@
   function renderNav() {
     els.nav.style.setProperty("--nav-count", ERAS.length);
     ERAS.forEach((era, d) => {
-      const b = make("button", "era-nav__btn", era.label);
+      const b = make("button", "era-nav__btn", era.short || era.label);
+      if (era.short) b.setAttribute("aria-label", era.label);
       b.type = "button";
       b.addEventListener("click", () => go(era.id));
       const li = document.createElement("li");

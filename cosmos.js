@@ -21,6 +21,12 @@ const Cosmos = (function () {
     now: [LON0, LAT0],                  // the globe's centre
   };
   const NASHVILLE = [-86.78, 36.16];
+  // Where home was, shown on the Florida view: Gainesville, then Fort Myers
+  // for high school.
+  const HOMETOWNS = [
+    { name: "Gainesville", lon: -82.32, lat: 29.65 },
+    { name: "Fort Myers", lon: -81.87, lat: 26.64 },
+  ];
 
   // The Future level: Earth's edge becomes the horizon.
   const HORIZON_Y = 0.8;                // where the horizon sits, as a fraction of screen height
@@ -179,10 +185,10 @@ const Cosmos = (function () {
     return [w / 2 + (x - cam.x) * cam.s, h / 2 - (y - cam.y) * cam.s];
   }
 
-  function label(ctx, text, x, y, alpha, size) {
+  function label(ctx, text, x, y, alpha, size, align = "center") {
     if (alpha < 0.02) return;
     ctx.font = `500 ${size}px "Site Body", system-ui, sans-serif`;
-    ctx.textAlign = "center";
+    ctx.textAlign = align;
     ctx.fillStyle = rgba([236, 239, 247], alpha);
     ctx.fillText(text, x, y);
   }
@@ -293,6 +299,19 @@ const Cosmos = (function () {
         ctx.arc(nx, ny, 2.5, 0, Math.PI * 2);
         ctx.fill();
         label(ctx, "Nashville", nx, ny - 8, 0.55 * nA, 11);
+      }
+
+      // Hometowns, on the Florida view.
+      const townA = smooth(2.3, 2.85, z);
+      if (townA > 0.02) {
+        HOMETOWNS.forEach((t) => {
+          const [x, y] = toScreen(...project(t.lon, t.lat).slice(0, 2), cam, w, h);
+          ctx.fillStyle = rgba([227, 169, 179], 0.9 * townA);
+          ctx.beginPath();
+          ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          label(ctx, t.name, x + 7, y + 4, 0.6 * townA, 11, "left");
+        });
       }
     }
 

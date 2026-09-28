@@ -1,0 +1,808 @@
+/* styles.css
+   All colors and fonts live in the variables below so the look can be swapped
+   later. The starfield's own colors live at the top of starfield.js. */
+
+/* Fonts are self-hosted from /fonts (no third-party requests). Both are
+   variable fonts, Latin subset, SIL Open Font License (see fonts/OFL-*.txt).
+   display.woff2 = Cormorant Garamond, body.woff2 = Inter.
+   To swap a font, replace the file and keep the name. */
+@font-face {
+  font-family: "Site Display";
+  src: url("fonts/display.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Site Body";
+  src: url("fonts/body.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  /* Palette: deep navy, soft starlight, one rose accent */
+  --bg: #050814;
+  --ink: #eceff7;
+  --ink-dim: #a3abc2;
+  --accent: #e3a9b3;
+  --accent-ink: #26131b;                     /* text on an accent background */
+  --accent-glow: rgba(227, 169, 179, 0.7);
+  --constellation: rgba(227, 169, 179, 0.55);
+  --line: rgba(232, 236, 245, 0.18);
+  --panel: rgba(10, 15, 34, 0.72);
+  --panel-solid: rgba(9, 13, 30, 0.95);
+  --backdrop: rgba(4, 6, 15, 0.6);
+  --star-glow: rgba(232, 236, 245, 0.5);
+  --text-halo: 0 0 14px rgba(5, 8, 20, 0.95), 0 0 4px rgba(5, 8, 20, 0.9);
+  --figure-fill: #080b18;
+  --figure-rim: rgba(236, 239, 247, 0.6);
+
+  /* Era tints: nearly clear in the open future, closer and warmer toward the
+     past. Each is a soft radial wash over the starfield. */
+  --era-future: radial-gradient(ellipse at 50% 55%, rgba(20, 30, 70, 0.10), rgba(8, 12, 30, 0.05));
+  --era-now: radial-gradient(ellipse at 50% 55%, rgba(30, 44, 90, 0.34), rgba(14, 22, 50, 0.22));
+  --era-college: radial-gradient(ellipse at 50% 55%, rgba(48, 50, 104, 0.48), rgba(22, 26, 62, 0.36));
+  --era-beneath: radial-gradient(ellipse at 50% 60%, rgba(96, 58, 84, 0.62), rgba(44, 26, 50, 0.5));
+  --era-edge: rgba(236, 239, 247, 0.10);
+
+  /* Type */
+  --font-body: "Site Body", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Site Display", Georgia, "Times New Roman", serif;
+
+  /* Geometry. --zoom-factor and --nav-count are set from main.js. */
+  --zoom-factor: 3.5;
+  --era-radius: 28px;
+  --nav-count: 4;
+  --nav-col: 7.5rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+button { font: inherit; color: inherit; }
+
+[hidden] { display: none !important; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.placeholder { font-style: italic; opacity: 0.7; }
+
+.btn {
+  border: 1px solid var(--line);
+  background: transparent;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.btn:hover { border-color: var(--accent); }
+
+.btn--primary { border-color: var(--accent); color: var(--accent); }
+
+/* ----- Layers ----- */
+
+/* Stack, back to front: sky, constellation lines, eras, fixed UI, panel. */
+
+#sky,
+#lines {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#lines { z-index: 1; }
+
+#stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.site-header,
+.position,
+.era-nav,
+.zoom-controls,
+.tag-bar { z-index: 3; }
+
+/* ----- Eras -----
+   Every era is a full-viewport box scaled around the center. Each earlier era
+   sits in the middle of the one around it at 1 / --zoom-factor of its size. */
+
+.era {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  border-radius: var(--era-radius);
+  box-shadow: inset 0 0 0 1px var(--era-edge), inset 0 0 60px rgba(227, 169, 179, 0.04);
+  pointer-events: none;
+}
+
+.era.is-active { pointer-events: auto; }
+
+.era[data-era="future"]  { background: var(--era-future); }
+.era[data-era="now"]     { background: var(--era-now); }
+.era[data-era="college"] { background: var(--era-college); }
+.era[data-era="beneath"] { background: var(--era-beneath); }
+
+.era__head {
+  position: absolute;
+  top: 13%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(30rem, 40%);
+  text-align: center;
+}
+
+.era__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 4.8vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  text-shadow: var(--text-halo);
+}
+
+.era__title:focus { outline: none; }
+
+.era__subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--ink-dim);
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+}
+
+.era__back { margin-top: 0.9rem; font-size: 0.85rem; }
+
+/* The window in the middle of each era where the next-earlier era shows.
+   Clicking it zooms in. */
+.era__portal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(100% / var(--zoom-factor));
+  height: calc(100% / var(--zoom-factor));
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: calc(var(--era-radius) / var(--zoom-factor));
+  cursor: zoom-in;
+  transition: border-color 0.2s;
+}
+
+.era__portal:hover { border-color: var(--accent); }
+
+/* Personal items stay hidden until the visitor crosses the wall. */
+body:not(.wall-crossed) .era[data-era="beneath"] :is(.item, .era__back) { visibility: hidden; }
+
+/* ----- Items ----- */
+
+.item {
+  position: absolute;
+  width: min(15rem, 28vw);
+  transform: translate(-50%, -50%);
+  padding: 0.5rem 0.6rem;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  text-align: center;
+  text-shadow: var(--text-halo);
+  cursor: pointer;
+}
+
+.item:hover .item__title,
+.item.is-selected .item__title { color: var(--accent); }
+
+.item.is-selected { border-color: var(--line); }
+
+.item__star {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 0 auto 0.5rem;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 8px 2px var(--star-glow);
+}
+
+.item__parent {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent);
+}
+
+.item__title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  transition: color 0.2s;
+}
+
+.item__summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--ink-dim);
+}
+
+/* ----- Header: identity + contact ----- */
+
+.site-header {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.5rem;
+  max-width: min(22rem, 30vw);
+}
+
+.site-header,
+.position { text-shadow: var(--text-halo); }
+
+.identity {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.identity__pronouns {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin-left: 0.35rem;
+}
+
+.identity__full {
+  margin: 0.1rem 0 0.35rem;
+  font-size: 0.9rem;
+  color: var(--ink-dim);
+}
+
+.contact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.9rem;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
+.contact a { color: var(--ink); text-decoration-color: var(--line); }
+.contact a:hover { text-decoration-color: var(--accent); }
+
+/* ----- Position indicator + hint ----- */
+
+.position {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.5rem;
+  max-width: min(18rem, 30vw);
+  text-align: right;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.position__label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+
+.position__era {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+.position__sub { display: block; color: var(--ink-dim); }
+
+.hint { margin: 0.4rem 0 0; font-size: 0.75rem; color: var(--ink-dim); }
+
+/* ----- Era navigation: a timeline along the bottom, past on the left ----- */
+
+.era-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 1.1rem;
+  transform: translateX(-50%);
+  --pos: 0;
+}
+
+.era-nav__track {
+  position: relative;
+  display: block;
+  height: 2px;
+  margin: 0 calc(var(--nav-col) / 2) 0.35rem;
+  background: var(--line);
+}
+
+.era-nav__marker {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateX(calc(var(--pos) * var(--nav-col)));
+}
+
+.era-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--nav-count), var(--nav-col));
+}
+
+.era-nav__btn {
+  display: block;
+  width: 100%;
+  padding: 0.25rem;
+  background: none;
+  border: 0;
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.era-nav__btn:hover,
+.era-nav__btn[aria-current] { color: var(--ink); }
+
+/* ----- Zoom buttons ----- */
+
+.zoom-controls {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.zoom-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.zoom-btn:hover { border-color: var(--accent); }
+
+.zoom-btn[aria-disabled="true"] { opacity: 0.35; cursor: default; }
+
+/* ----- Item panel ----- */
+
+.panel {
+  position: fixed;
+  top: 7rem;
+  right: 1.5rem;
+  max-height: calc(100vh - 13rem);
+  width: min(26rem, calc(100vw - 3rem));
+  z-index: 4;
+  overflow-y: auto;
+  padding: 1.5rem 1.5rem 2rem;
+  background: var(--panel-solid);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  opacity: 0;
+  transform: translateX(1rem);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.panel.is-open { opacity: 1; transform: none; }
+
+.panel__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.panel__close:hover { color: var(--ink); }
+
+.panel__era {
+  margin: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+
+.panel__parent {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent);
+}
+
+.panel__parent:empty { display: none; }
+
+.panel__title {
+  margin: 0.3rem 2rem 0.5rem 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.panel__title:focus { outline: none; }
+
+.panel__summary { margin: 0 0 1rem; color: var(--ink-dim); }
+
+.panel__body p { margin: 0 0 1rem; }
+
+.panel__tags {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.panel__tags li {
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
+.panel__children h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+
+.panel__children .btn { margin: 0 0.4rem 0.4rem 0; }
+
+.panel__back { margin-top: 1.5rem; }
+
+/* ----- The wall prompt ----- */
+
+.wall {
+  max-width: min(28rem, calc(100vw - 2rem));
+  padding: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel-solid);
+  color: var(--ink);
+  text-align: center;
+}
+
+.wall::backdrop { background: var(--backdrop); }
+
+.wall__text {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.35;
+}
+
+.wall__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* ----- The figure: someone looking up at the sky -----
+   --figure-h is set from main.js. It shrinks toward the future. */
+
+.figure {
+  --figure-h: 50px;
+  position: fixed;
+  left: 2rem;
+  bottom: 1.4rem;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.figure__svg {
+  display: block;
+  height: var(--figure-h);
+  width: auto;
+  overflow: visible;
+  fill: var(--figure-fill);
+  stroke: var(--figure-rim);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 6px rgba(227, 169, 179, 0.25));
+}
+
+.figure__svg * { vector-effect: non-scaling-stroke; }
+
+/* A faint strip of ground light under their feet. */
+.figure__ground {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: calc(var(--figure-h) * 1.6 + 24px);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(236, 239, 247, 0.35), transparent);
+}
+
+/* ----- Tag filter: lit and dimmed items ----- */
+
+.item { transition: opacity 0.3s; }
+
+body.is-filtering .item { opacity: 0.25; }
+body.is-filtering .item.is-lit { opacity: 1; }
+
+.item__star { transition: transform 0.3s, background 0.3s, box-shadow 0.3s; }
+
+.item.is-lit .item__star {
+  background: #fff;
+  box-shadow: 0 0 10px 3px var(--accent-glow);
+  transform: scale(1.5);
+}
+
+/* ----- Tag bar (above the timeline) ----- */
+
+.tag-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 4.6rem;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 9rem);
+  text-align: center;
+}
+
+.tag-bar__top {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.tag-bar__status {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  color: var(--accent);
+}
+
+.tag-bar__status:empty { margin: 0; }
+
+.tag-bar__clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  cursor: pointer;
+}
+
+.tag-bar__clear:hover { color: var(--ink); }
+
+.tag-bar__groups {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 1.1rem;
+}
+
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tag-group__label {
+  margin-right: 0.2rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+}
+
+.tag {
+  padding: 0.12rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.tag:hover { color: var(--ink); border-color: var(--accent); }
+
+.tag[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.noscript {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 4;
+}
+
+/* ----- Accessibility helpers ----- */
+
+/* Visible to screen readers only. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus rings: one clear style everywhere, drawn outside the control. */
+.item:focus-visible,
+.era__portal:focus-visible,
+.tag:focus-visible,
+.era-nav__btn:focus-visible,
+.zoom-btn:focus-visible,
+.btn:focus-visible,
+.panel__close:focus-visible,
+.tag-bar__clear:focus-visible,
+.contact a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.item:focus-visible .item__title { color: var(--accent); }
+.era__portal:focus-visible { border-color: var(--accent); }
+
+/* The map owns touch gestures (pinch and swipe move through time). */
+#stage { touch-action: none; }
+html, body { overscroll-behavior: none; }
+
+/* ----- Reduced motion: fades instead of zooms ----- */
+
+#stage,
+#lines { transition: opacity 0.16s ease; }
+
+body.is-fading #stage,
+body.is-fading #lines { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { transform: none; }
+  .item__star { transition: none; }
+  .item.is-lit .item__star { transform: none; }
+}
+
+/* ----- Short screens: drop item summaries so items don't collide ----- */
+
+@media (max-height: 640px) {
+  .item__summary { display: none; }
+  .item__star { margin-bottom: 0.3rem; }
+  .era__head { top: 11%; }
+}
+
+/* ----- Phones and narrow windows ----- */
+
+@media (max-width: 700px) {
+  :root { --nav-col: 5.2rem; }
+
+  .site-header { top: 0.75rem; left: 1rem; max-width: 58vw; }
+  .identity { font-size: 1.3rem; }
+  .identity__pronouns { font-size: 0.75rem; }
+  .identity__full { font-size: 0.8rem; margin-bottom: 0.2rem; }
+  .contact { font-size: 0.72rem; gap: 0 0.6rem; }
+
+  .position { top: 0.75rem; right: 1rem; max-width: 38vw; font-size: 0.8rem; }
+  .position__label { font-size: 0.65rem; }
+  .position__era { font-size: 1rem; }
+  .hint { font-size: 0.68rem; }
+
+  .era__head { top: 17%; width: 70%; }
+  .era__title { font-size: 1.9rem; }
+  .era__subtitle { font-size: 0.9rem; }
+  .era__back { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
+
+  .item { width: 31vw; padding: 0.3rem; }
+  .item__title { font-size: 0.98rem; }
+  .item__summary { display: none; }
+  .item__parent { font-size: 0.58rem; }
+  .item__star { margin-bottom: 0.3rem; }
+
+  /* Tags: one row that scrolls sideways. */
+  .tag-bar {
+    bottom: 3.9rem;
+    left: 0;
+    right: 0;
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+  .tag-bar__groups {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0.3rem 1rem;
+    scrollbar-width: none;
+    /* Fade the right edge to hint that the row scrolls. */
+    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+  }
+  .tag-bar__groups::-webkit-scrollbar { display: none; }
+  .tag-group { flex-wrap: nowrap; }
+  .tag { white-space: nowrap; }
+
+  .era-nav { bottom: 0.6rem; }
+  .era-nav__btn { font-size: 0.72rem; line-height: 1.2; }
+
+  .zoom-controls { right: 1rem; bottom: 7.4rem; }
+  .zoom-btn { width: 2.25rem; height: 2.25rem; font-size: 1.1rem; }
+
+  .figure { left: 1.1rem; bottom: 7.6rem; }
+  .figure__svg { height: calc(var(--figure-h) * 0.7); }
+
+  /* The panel becomes a sheet along the bottom. */
+  .panel {
+    top: auto;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: auto;
+    max-height: 72vh;
+    padding: 1.25rem 1.25rem 1.5rem;
+    transform: translateY(1rem);
+  }
+  .panel.is-open { transform: none; }
+}

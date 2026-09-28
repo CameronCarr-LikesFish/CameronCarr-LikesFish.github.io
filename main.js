@@ -159,16 +159,20 @@
   const SLOT_POS = {
     L1: [18, 36], L2: [18, 52], L3: [18, 68], L4: [18, 82],
     R1: [82, 36], R2: [82, 52], R3: [82, 68], R4: [82, 82],
-    B: [50, 78],
+    B: [50, 76],
   };
-  const SLOT_ORDER = ["L2", "R2", "L1", "R1", "L3", "R3"];
+  // Which slots to use for n items: spread out vertically so taller items
+  // (e.g. personal ones with a "Behind:" line) don't collide.
+  const SLOT_SETS = {
+    1: ["L2"], 2: ["L2", "R2"], 3: ["L2", "R2", "B"],
+    4: ["L1", "L3", "R1", "R3"], 5: ["L1", "L3", "R1", "R3", "B"],
+    6: ["L1", "L2", "L3", "R1", "R2", "R3"], 7: ["L1", "L2", "L3", "R1", "R2", "R3", "B"],
+  };
 
   // Pick balanced slots for n items, returned in reading order
   // (left column top to bottom, then bottom center, then right column).
   function slotsFor(n) {
-    let names;
-    if (n <= 6) names = n % 2 ? SLOT_ORDER.slice(0, n - 1).concat("B") : SLOT_ORDER.slice(0, n);
-    else names = SLOT_ORDER.concat("B", "L4", "R4").slice(0, n);
+    let names = SLOT_SETS[n] ? SLOT_SETS[n].slice() : SLOT_SETS[7].concat("L4", "R4").slice(0, n);
     if (n > 9) console.warn(`An era has ${n} items; only 9 fit. Add slots in main.js.`);
     const rank = (s) => { const col = { L: 0, B: 1, R: 2 }[s[0]]; return col * 100 + SLOT_POS[s][1]; };
     return names.sort((a, b) => rank(a) - rank(b)).map((s) => SLOT_POS[s]);
@@ -192,7 +196,7 @@
 
     const parent = itemById.get(it.parent);
     if (it.layer === "personal" && parent) {
-      b.append(make("span", "item__parent", `${UI_TEXT.beneathLabel}: ${parent.title}`));
+      b.append(make("span", "item__parent", `${UI_TEXT.beneathLabel}: ${parent.short || parent.title}`));
     }
     b.append(make("span", "item__title", it.title));
     const summary = make("span", "item__summary", it.summary);
@@ -203,7 +207,7 @@
     // Screen readers hear the title (and what it sits beneath) as the name,
     // and the summary as the description. applyFilter() adds "matches <tag>".
     b.dataset.label = it.layer === "personal" && parent
-      ? `${it.title}, ${UI_TEXT.beneathLabel.toLowerCase()} ${parent.title}`
+      ? `${it.title}, ${UI_TEXT.beneathLabel.toLowerCase()} ${parent.short || parent.title}`
       : it.title;
     b.setAttribute("aria-label", b.dataset.label);
     b.setAttribute("aria-describedby", summary.id);
@@ -733,7 +737,7 @@
 
     p.querySelector(".panel__era").textContent = ERAS[depthOfItem(it)].label;
     p.querySelector(".panel__parent").textContent =
-      it.layer === "personal" && parent ? `${UI_TEXT.beneathLabel}: ${parent.title}` : "";
+      it.layer === "personal" && parent ? `${UI_TEXT.beneathLabel}: ${parent.short || parent.title}` : "";
     p.querySelector(".panel__title").textContent = it.title;
 
     const summary = p.querySelector(".panel__summary");

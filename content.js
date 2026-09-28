@@ -83,6 +83,7 @@ const TAGS = [
 //   era:    future | now | college
 //   layer:  professional | personal (personal items live in the Personal era)
 //   parent: for personal items, the id of the professional item it hangs under
+//   short:  optional shorter name, used where personal items say "Behind: …"
 //   links:  optional list of { label, url }, shown as buttons in the item's panel
 // Tags are a first pass; adjust freely.
 // ---------------------------------------------------------------------------
@@ -93,6 +94,7 @@ const ITEMS = [
   {
     id: "major",
     title: "B.A., Honors in History",
+    short: "The major",            // used in "Behind: …" labels
     era: "college",
     layer: "professional",
     parent: null,
@@ -115,6 +117,7 @@ const ITEMS = [
   {
     id: "thesis",
     title: "The Soul of Transhumanism",
+    short: "The thesis",            // used in "Behind: …" labels
     era: "college",
     layer: "professional",
     parent: null,
@@ -151,6 +154,7 @@ const ITEMS = [
   {
     id: "meditation-club",
     title: "Founder, Meditation & Mindfulness Club",
+    short: "The meditation club",            // used in "Behind: …" labels
     era: "college",
     layer: "professional",
     parent: null,
@@ -162,11 +166,12 @@ const ITEMS = [
   {
     id: "gaming-coach",
     title: "President, Coach & Captain of Vanderbilt Gaming",
+    short: "Vanderbilt Gaming",            // used in "Behind: …" labels
     era: "college",
     layer: "professional",
     parent: null,
     summary: "Leads a 300+ member club. Its League of Legends team reached the NECC quarterfinals or better every year, a club first.",
-    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Team Captain from sophomore through junior year, Vice President sophomore year, and President junior and senior years. As coach, develops player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year. No other Vanderbilt Gaming league team in the club's history has reached the quarterfinals.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as President. Also served as Event Chair.",
+    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team Captain from sophomore through junior year, Vice President sophomore year, and President junior and senior years. As coach, develops player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year. No other Vanderbilt Gaming league team in the club's history has reached the quarterfinals.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as President. Handed the club to its first woman president, to my knowledge, with a board close to evenly split by gender, a first for the club. Also served as Event Chair.",
     tags: ["gaming", "teaching", "leadership"],
     image: null,
   },
@@ -238,8 +243,8 @@ const ITEMS = [
     era: "college",
     layer: "personal",
     parent: "thesis",
-    summary: "[PLACEHOLDER]",
-    body: "[PLACEHOLDER]",
+    summary: "Why transhumanism is personal for me.",
+    body: "I always felt out of place, and I always felt there was something tragic in the human experience.\n\nWhen my brother developed a rare and untreatable mental illness that causes a great deal of suffering, it occurred to me that humanity isn't stagnant. Medicine and society have already changed what it means to be human, and once you realize that, you realize how far it can go. That thought is more complicated than it sounds, and it isn't about looking down on anyone.\n\nFullmetal Alchemist got to me young for the same reason: the idea of transcending yourself and your mistakes, and of growth.",
     tags: ["transhumanism"],
     image: null,
   },
@@ -249,8 +254,8 @@ const ITEMS = [
     era: "college",
     layer: "personal",
     parent: "meditation-club",
-    summary: "[PLACEHOLDER]",
-    body: "[PLACEHOLDER]",
+    summary: "My dad's words on hard nights.",
+    body: "Some nights, when things were hard, my dad would say a classic Christian prayer with me, and then something like \"may you be well, may you be loved.\" Basic mindfulness stuff. It would help. Not a ton, but it would help.",
     tags: ["meditation"],
     image: null,
   },
@@ -260,9 +265,20 @@ const ITEMS = [
     era: "college",
     layer: "personal",
     parent: "gaming-coach",
-    summary: "[PLACEHOLDER]",
-    body: "[PLACEHOLDER]",
-    tags: ["gaming"],
+    summary: "Games were where I found my friends.",
+    body: "One of my first memories is playing Pokémon Pearl on my DS in the back of my mom's van. I was a lonely kid without many friends, and the Pokémon were my friends, in a series all about kindness. Then Super Mario Galaxy made me fall in love with space: the idea that anything could be out there, that the universe could hold whimsy, joy, and a beauty we can't fathom.\n\nIn middle school I had debilitating social anxiety and depression. I couldn't hold a conversation; my brain felt like it was moving through molasses. But I could type 120 words a minute. I talked in Minecraft chat rooms and on servers, and met many of my lifelong friends there. Through them I found League of Legends, and at Vanderbilt I joined the League club and later expanded it into Vanderbilt Gaming.\n\nA teammate called me \"the best worst player.\" I was never our most skilled player, and as a coach many of my players know the game better than I do. What I'm good at is the environment: centering people when things get stressful, taking weight off their shoulders. I don't think it's a coincidence we set records every year.",
+    tags: ["gaming", "teaching"],
+    image: null,
+  },
+  {
+    id: "common-ground",
+    title: "Common ground",
+    era: "college",
+    layer: "personal",
+    parent: "gaming-coach",
+    summary: "What a team taught me about bridging divides.",
+    body: "When I joined the team, people dropped slurs in Discord calls and at events. As a transgender person, it took over a year and a half before people used my correct pronouns. I asked Vanderbilt for help; they offered a conversation, and told me there would be no consequences if it kept happening. So I held my ground, because somebody had to bridge that divide, and in that moment that somebody was me.\n\nMy senior-year team, on paper, shouldn't have gotten along: deep political differences, a lot of toxic masculinity, and an international student who struggled to connect across a language gap. But playing together toward a common goal, for that time, we became friends. We were united.\n\nIf a semester of playing a game together can build mutual respect across differences like those, then the divides we live with can be mended too. That's part of why authenticity matters so much to me.\n\nWhen I left, I handed the club to its first woman president, to my knowledge, with a board close to evenly split by gender, which had never happened before.",
+    tags: ["gaming", "leadership"],
     image: null,
   },
 ];

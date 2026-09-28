@@ -99,7 +99,7 @@
   // -------------------------------------------------------------------------
 
   function renderSettings() {
-    document.title = `${SETTINGS.displayName} (${SETTINGS.fullName})`;
+    document.title = SETTINGS.displayName;
     document.querySelector(".identity__name").textContent = SETTINGS.displayName;
     document.querySelector(".identity__pronouns").textContent = SETTINGS.pronouns;
     document.querySelector(".identity__full").textContent = SETTINGS.fullName;

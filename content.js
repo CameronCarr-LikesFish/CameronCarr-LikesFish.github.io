@@ -7,7 +7,7 @@
 // reads from here.
 // ---------------------------------------------------------------------------
 const SETTINGS = {
-  displayName: "Camcar",
+  displayName: "Cam Carr",
   fullName: "Cameron Carr",
   pronouns: "she/they",        // shown in the header; change here only
   email: "CameronCarr55@gmail.com",

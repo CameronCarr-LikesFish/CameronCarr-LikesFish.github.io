@@ -38,7 +38,7 @@ const START_ERA = "college";
 // ---------------------------------------------------------------------------
 const UI_TEXT = {
   // Shown once per visit, over the map, when the site first opens.
-  openingLine: "When you are authentic with yourself, you see the beauty of the world around you.",
+  openingLine: "Through our own authenticity we may see the world's beauty.",
   // The window before the personal side.
   wallTitle: "A note on authenticity",
   wallNote: [

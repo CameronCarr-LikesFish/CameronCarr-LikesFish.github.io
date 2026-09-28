@@ -181,40 +181,36 @@ const Starfield = (function () {
   }
 
   // -------------------------------------------------------------------------
-  // The cosmos: a minimal model centred on Earth, drawn under the eras.
-  // Each era reveals the next ring of structure, and whatever sits in the
-  // middle of the screen always contains the level before it:
-  //   Personal: Earth close up
-  //   Vanderbilt: Earth and the Moon's orbit
-  //   Now: the inner solar system, the Sun off to the left
-  //   Future: every planet's orbit, the Kuiper belt, the Oort cloud's haze
-  // Units are the screen's shorter side at the innermost era. Distances are
-  // compressed (orbit radius ~ sqrt of the real one) so every level fits.
+  // The cosmos: a minimal model of the solar system, centred on the Sun,
+  // drawn under the eras. The world isn't centred on any one of us: Earth is
+  // one small dot on its orbit. Each zoom level shows a different reach:
+  //   Personal: the Sun up close, with the orbits of Mercury, Venus, Earth
+  //   Vanderbilt: the inner solar system and the asteroid belt
+  //   Now: out to the giant planets
+  //   Future: Neptune, the Kuiper belt, the haze of the Oort cloud
+  // Units: the screen's shorter side at the Vanderbilt level. Orbit radii
+  // are compressed (~ real distance ^ 0.68) so each level fills the screen.
   // -------------------------------------------------------------------------
 
   let zoomFactor = 3.5;         // set by main.js to match the eras
-  const EARTH_R = 0.075;
-  const MOON_ORBIT = 0.36;
-  const MOON_R = 0.02;
-  const SUN_DIST = 3.8;         // Earth to Sun
-  // Direction from Earth to the Sun (radians; 0 = right, positive = down).
-  // Lower left keeps the Sun clear of the item columns and titles.
-  const SUN_ANGLE = (125 * Math.PI) / 180;
-  const MOON_ANGLE = (62 * Math.PI) / 180;   // lower right, clear of the items
-  const SUN_R = 0.32;
-  // Planets: orbit radius in Earth-orbits, dot size in px, colour, angle.
+  const REF_DEPTH = MAX_DEPTH - 1;   // the level where 1 model unit = 1 screen
+  const SUN_R = 0.018;
+  // Planets: orbit radius, dot size in px, colour, position angle in degrees
+  // (0 = right, 90 = down). Angles keep the dots clear of the item columns.
   const PLANETS = [
-    { a: 0.62, size: 1.3, color: [200, 190, 180], angle: 2.3 },   // Mercury
-    { a: 0.85, size: 1.8, color: [235, 215, 180], angle: 4.1 },   // Venus
-    { a: 1.23, size: 1.6, color: [225, 150, 120], angle: 0.9 },   // Mars
-    { a: 2.28, size: 2.6, color: [225, 200, 170], angle: 5.2 },   // Jupiter
-    { a: 3.09, size: 2.3, color: [230, 210, 160], angle: 1.7 },   // Saturn
-    { a: 4.38, size: 2.0, color: [170, 215, 225], angle: 3.4 },   // Uranus
-    { a: 5.49, size: 2.0, color: [130, 160, 235], angle: 0.2 },   // Neptune
+    { name: "Mercury", r: 0.16, size: 1.4, color: [200, 190, 180], angle: 60 },
+    { name: "Venus",   r: 0.24, size: 1.9, color: [235, 215, 180], angle: 300 },
+    { name: "Earth",   r: 0.30, size: 2.0, color: [140, 190, 245], angle: 125 },
+    { name: "Mars",    r: 0.40, size: 1.7, color: [225, 150, 120], angle: 235 },
+    { name: "Jupiter", r: 0.92, size: 2.8, color: [225, 200, 170], angle: 20 },
+    { name: "Saturn",  r: 1.40, size: 2.5, color: [230, 210, 160], angle: 160 },
+    { name: "Uranus",  r: 2.24, size: 2.1, color: [170, 215, 225], angle: 280 },
+    { name: "Neptune", r: 3.04, size: 2.1, color: [130, 160, 235], angle: 100 },
   ];
-  const KUIPER = [6.2, 7.2];    // in Earth-orbits
-  const OORT = [9, 14];
-  let belt = [];                // seeded dust for the Kuiper belt and Oort cloud
+  const ASTEROIDS = [0.55, 0.72];
+  const KUIPER = [3.4, 4.0];
+  const OORT = [6, 11];
+  let belt = [];                // seeded dust: asteroid belt, Kuiper belt, Oort cloud
 
   function buildCosmos() {
     const rand = seeded(SEED + 7);
@@ -225,6 +221,7 @@ const Starfield = (function () {
         belt.push({ r, angle: rand() * Math.PI * 2, alpha: alpha * lerp(0.4, 1, rand()) });
       }
     };
+    add(ASTEROIDS, 220, 0.3);
     add(KUIPER, 260, 0.35);
     add(OORT, 520, 0.22);
   }
@@ -240,24 +237,15 @@ const Starfield = (function () {
 
   function drawCosmos(cx, cy) {
     const unit = Math.min(w, h);
-    const k = unit * Math.pow(zoomFactor, depth - MAX_DEPTH);   // px per model unit
-    const sunX = cx + Math.cos(SUN_ANGLE) * SUN_DIST * k;
-    const sunY = cy + Math.sin(SUN_ANGLE) * SUN_DIST * k;
-    const orbit = (x, y, r, alpha) => {
-      if (alpha <= 0.003) return;
-      ctx.strokeStyle = `rgba(236, 239, 247, ${alpha.toFixed(3)})`;
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.stroke();
-    };
+    const k = unit * Math.pow(zoomFactor, depth - REF_DEPTH);   // px per model unit
     ctx.lineWidth = 1;
 
-    // Oort cloud and Kuiper belt: faint dust around the Sun.
+    // Dust: the asteroid belt, the Kuiper belt, the Oort cloud.
     for (let i = 0; i < belt.length; i++) {
       const b = belt[i];
-      const r = b.r * SUN_DIST * k;
-      const x = sunX + Math.cos(b.angle) * r;
-      const y = sunY + Math.sin(b.angle) * r;
+      const r = b.r * k;
+      const x = cx + Math.cos(b.angle) * r;
+      const y = cy + Math.sin(b.angle) * r;
       if (x < 0 || y < 0 || x > w || y > h) continue;
       const a = b.alpha * sizeFade(r, unit * 0.5);
       if (a < 0.01) continue;
@@ -265,77 +253,37 @@ const Starfield = (function () {
       ctx.fillRect(x, y, 1, 1);
     }
 
-    // Planet orbits and planets.
+    // Orbits, then planets. Earth never fades out entirely: far away it is
+    // still a pale blue dot.
     PLANETS.forEach((p) => {
-      const r = p.a * SUN_DIST * k;
+      const r = p.r * k;
       const fade = sizeFade(r, unit);
-      orbit(sunX, sunY, r, 0.13 * fade);
-      if (fade > 0.05) {
-        ctx.fillStyle = rgb(p.color, 0.85 * fade);
+      if (fade > 0.003) {
+        ctx.strokeStyle = `rgba(236, 239, 247, ${(0.14 * fade).toFixed(3)})`;
         ctx.beginPath();
-        ctx.arc(sunX + Math.cos(p.angle) * r, sunY + Math.sin(p.angle) * r, p.size, 0, Math.PI * 2);
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      const shown = p.name === "Earth" ? Math.max(fade, 0.9) : fade;
+      if (shown > 0.05) {
+        const t = (p.angle * Math.PI) / 180;
+        ctx.fillStyle = rgb(p.color, 0.9 * shown);
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(t) * r, cy + Math.sin(t) * r, p.size, 0, Math.PI * 2);
         ctx.fill();
       }
     });
 
-    // Earth's own orbit passes through the centre of the screen.
-    orbit(sunX, sunY, SUN_DIST * k, 0.16 * sizeFade(SUN_DIST * k, unit));
-
-    // The Sun.
-    const sr = Math.max(2, SUN_R * k);
-    if (sunX + sr * 4 > 0 && sunY - sr * 4 < h) {
-      const glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sr * 4);
-      glow.addColorStop(0, "rgba(255, 244, 220, 0.95)");
-      glow.addColorStop(0.22, "rgba(255, 214, 150, 0.55)");
-      glow.addColorStop(1, "rgba(255, 190, 120, 0)");
-      ctx.fillStyle = glow;
-      ctx.fillRect(sunX - sr * 4, sunY - sr * 4, sr * 8, sr * 8);
-    }
-
-    // The Moon's orbit and the Moon.
-    const mo = MOON_ORBIT * k;
-    const moonFade = sizeFade(mo, unit);
-    orbit(cx, cy, mo, 0.2 * moonFade);
-    if (moonFade > 0.05) {
-      const mx = cx + Math.cos(MOON_ANGLE) * mo;
-      const my = cy + Math.sin(MOON_ANGLE) * mo;
-      const mr = Math.max(1.2, MOON_R * k);
-      const lx = Math.cos(SUN_ANGLE), ly = Math.sin(SUN_ANGLE);   // lit from the Sun's side
-      const mg = ctx.createRadialGradient(mx + lx * mr * 0.45, my + ly * mr * 0.45, mr * 0.1, mx, my, mr);
-      mg.addColorStop(0, rgb([225, 222, 215], moonFade));
-      mg.addColorStop(1, rgb([95, 95, 105], moonFade));
-      ctx.fillStyle = mg;
-      ctx.beginPath();
-      ctx.arc(mx, my, mr, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Earth, lit from the Sun's side. Far out it becomes a pale blue dot.
-    const er = EARTH_R * k;
-    if (er < 2.2) {
-      ctx.fillStyle = "rgba(150, 195, 240, 0.95)";
-      ctx.beginPath();
-      ctx.arc(cx, cy, 1.4, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      const atmo = ctx.createRadialGradient(cx, cy, er * 0.9, cx, cy, er * 1.35);
-      atmo.addColorStop(0, "rgba(120, 175, 235, 0.35)");
-      atmo.addColorStop(1, "rgba(120, 175, 235, 0)");
-      ctx.fillStyle = atmo;
-      ctx.beginPath();
-      ctx.arc(cx, cy, er * 1.35, 0, Math.PI * 2);
-      ctx.fill();
-      const lx = Math.cos(SUN_ANGLE), ly = Math.sin(SUN_ANGLE);   // lit from the Sun's side
-      const body = ctx.createRadialGradient(cx + lx * er * 0.45, cy + ly * er * 0.45, er * 0.05, cx, cy, er);
-      body.addColorStop(0, "#a8d4f0");
-      body.addColorStop(0.45, "#3b7fb8");
-      body.addColorStop(0.85, "#16304f");
-      body.addColorStop(1, "#0b1830");
-      ctx.fillStyle = body;
-      ctx.beginPath();
-      ctx.arc(cx, cy, er, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    // The Sun at the centre.
+    const sr = Math.max(1.6, SUN_R * k);
+    const gr = Math.max(10, sr * 4.5);
+    const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, gr);
+    glow.addColorStop(0, "rgba(255, 244, 222, 0.95)");
+    glow.addColorStop(Math.min(0.5, sr / gr), "rgba(255, 226, 170, 0.8)");
+    glow.addColorStop(Math.min(0.7, (sr / gr) * 2), "rgba(255, 200, 130, 0.22)");
+    glow.addColorStop(1, "rgba(255, 190, 120, 0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(cx - gr, cy - gr, gr * 2, gr * 2);
   }
 
   // Redraws right away while the zoom is moving; otherwise a slow twinkle at

@@ -331,7 +331,28 @@
     els.nav.style.setProperty("--pos", (MAX_DEPTH - z).toFixed(4));
     els.figure.style.setProperty("--figure-h", (FIGURE_BASE * Math.pow(FIGURE_GROWTH, z)).toFixed(2) + "px");
     Starfield.setDepth(z + k * 0.6);
+    placeFigure(z + k * 0.6);
     drawLines();
+  }
+
+  // At the Future level, the small figure stands on Earth's horizon, looking
+  // up at the sky. Elsewhere it rests in its usual corner.
+  let figureRest = null;                // its resting distance from the bottom, in px
+
+  function placeFigure(depth) {
+    if (typeof Cosmos === "undefined" || !Cosmos.groundAt) return;
+    if (figureRest == null) {
+      els.figure.style.bottom = "";
+      figureRest = parseFloat(getComputedStyle(els.figure).bottom) || 0;
+    }
+    const r = els.figure.getBoundingClientRect();
+    const g = Cosmos.groundAt(r.left + r.width / 2, innerWidth, innerHeight, depth);
+    if (g.y == null || g.weight <= 0) {
+      els.figure.style.bottom = "";
+      return;
+    }
+    const onGround = innerHeight - g.y;
+    els.figure.style.bottom = (figureRest + (onGround - figureRest) * g.weight).toFixed(1) + "px";
   }
 
   function anchorOffset() {
@@ -1051,6 +1072,7 @@
     document.addEventListener("keydown", onKey);
     window.addEventListener("hashchange", () => route(false));
     window.addEventListener("resize", () => {
+      figureRest = null;
       resizeLines();
       applyCamera();
       drawClusterLines();

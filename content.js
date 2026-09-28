@@ -19,20 +19,16 @@ const SETTINGS = {
 
 // ---------------------------------------------------------------------------
 // Eras: the zoom levels, from outermost (zoomed out, the future) to innermost
-// (zoomed in, beneath the wall). The site opens on START_ERA.
+// (zoomed in, the personal side). The site opens on START_ERA.
 // ---------------------------------------------------------------------------
-// sky: a NASA photograph shown faintly behind the stars in that era (public
-// domain; credit shown on the page). Ordered far to near: the future gets the
-// deepest view, the past the closest nebula.
+// sky (optional): a NASA photograph shown faintly behind the stars while that
+// era is in view (public domain; credit shown on the page).
 const ERAS = [
-  { id: "future",  label: "Future",           subtitle: "Mostly unwritten",
-    sky: { image: "sky/future-deep-field.jpg", title: "Webb's First Deep Field", credit: "NASA, ESA, CSA, STScI" } },
-  { id: "now",     label: "Now",              subtitle: "After graduation, 2026",
-    sky: { image: "sky/now-cosmic-cliffs.jpg", title: "The Cosmic Cliffs, Carina Nebula", credit: "NASA, ESA, CSA, STScI" } },
-  { id: "college", label: "Vanderbilt",       subtitle: "Law, History, and Society",
-    sky: { image: "sky/vanderbilt-pillars.jpg", title: "Pillars of Creation, in infrared", credit: "NASA, ESA, Hubble Heritage Team" } },
-  { id: "beneath", label: "Beneath the wall", subtitle: "Personal backstories",
-    sky: { image: "sky/beneath-orion.jpg", title: "Orion Nebula, the nearest large star nursery", credit: "NASA, Hubble Heritage Team" } },
+  { id: "future",   label: "Future",     subtitle: "Mostly unwritten" },
+  { id: "now",      label: "Now",        subtitle: "After graduation, 2026" },
+  { id: "college",  label: "Vanderbilt", subtitle: "Law, History, and Society" },
+  { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons",
+    sky: { image: "sky/personal-orion.jpg", title: "Orion Nebula", credit: "NASA, Hubble Heritage Team" } },
 ];
 
 const START_ERA = "college";
@@ -41,12 +37,21 @@ const START_ERA = "college";
 // Interface text: the wall prompt and a few labels.
 // ---------------------------------------------------------------------------
 const UI_TEXT = {
-  wallPrompt: "That's the professional side. Want to see what's underneath?",
+  // Shown once per visit, over the map, when the site first opens.
+  openingLine: "When you are authentic with yourself, you see the beauty of the world around you.",
+  // The window before the personal side.
+  wallTitle: "A note on authenticity",
+  wallNote: [
+    "We're living through a crisis of authenticity. Part of it is AI and social media. Part of it is a globalized, hypercompetitive world that pushes people to present a manicured, exceptional self instead of a real one.",
+    "This site is my small answer to that. It's custom-made, and it has a personal side: my thoughts, some of my life history, and the reasons behind my interests and choices.",
+    "People with deep authenticity have inspired me. I hope to be that kind of model, here and in every interaction I have.",
+  ],
+  wallPrompt: "Want to see the personal side?",
   wallYes: "Yes, show me",
   wallNo: "No, take me back",
   backToProfessional: "Back to the professional side",
-  beneathLabel: "Beneath",        // shown as "Beneath: Senior thesis"
-  beneathThis: "Beneath this",    // heading in a professional item's panel
+  beneathLabel: "Behind",         // shown as "Behind: The Soul of Transhumanism"
+  beneathThis: "The story behind this", // heading in a professional item's panel
   tagBarLabel: "Filter by tag",
   themesLabel: "Themes",
   skillsLabel: "Skills",
@@ -75,7 +80,7 @@ const TAGS = [
 // ---------------------------------------------------------------------------
 // Items.
 //   era:    future | now | college
-//   layer:  professional | personal (personal items sit beneath the wall)
+//   layer:  professional | personal (personal items live in the Personal era)
 //   parent: for personal items, the id of the professional item it hangs under
 //   links:  optional list of { label, url }, shown as buttons in the item's panel
 // Tags are a first pass; adjust freely.
@@ -214,7 +219,7 @@ const ITEMS = [
     image: null,
   },
 
-  // ----- Beneath the wall (personal; owner writes all text) -----
+  // ----- Personal (owner writes all text) -----
   {
     id: "youth-in-government",
     title: "Youth in Government",

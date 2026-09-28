@@ -22,8 +22,8 @@
   const itemById = new Map(ITEMS.map((it) => [it.id, it]));
   const tagById = new Map(TAGS.map((t) => [t.id, t]));
   const START_DEPTH = eraDepth.get(START_ERA) ?? 0;
-  // The innermost era sits beneath the wall; personal items live there.
-  const WALL_DEPTH = eraDepth.get("beneath") ?? MAX_DEPTH;
+  // The innermost era is the personal side, behind the wall prompt.
+  const WALL_DEPTH = eraDepth.get("personal") ?? MAX_DEPTH;
   const depthOfItem = (it) => (it.layer === "personal" ? WALL_DEPTH : eraDepth.get(it.era));
 
   // Sub-zooms from content.js (DETAILS is optional there).
@@ -60,6 +60,7 @@
     zoomOut: document.querySelector('[data-zoom="out"]'),
     panel: document.querySelector(".panel"),
     wall: document.querySelector(".wall"),
+    opening: document.querySelector(".opening"),
     lines: document.getElementById("lines"),
     figure: document.querySelector(".figure"),
     tagBar: document.querySelector(".tag-bar"),
@@ -305,8 +306,10 @@
       const scale = Math.pow(ZOOM_FACTOR, t);
       const opacity = t >= 0
         ? clamp(1 - t * 1.9, 0, 1)       // outer eras fade quickly as they grow past us
-        : Math.max(0.3, 1 + t * 0.3);    // inner eras stay visible but quieter
+        : clamp(1 + t * 0.6, 0, 1);      // the next era in is a faint preview; beyond that, gone
       el.style.transform = `scale(${scale})`;
+      // An era's photo shows only while that era fills the view.
+      el.style.setProperty("--sky-fade", t >= 0 ? "1" : clamp(1 + t * 1.6, 0, 1).toFixed(3));
       el.style.opacity = opacity.toFixed(3);
       el.style.visibility = opacity < 0.01 ? "hidden" : "visible";
     });
@@ -813,6 +816,9 @@
   }
 
   function renderWall() {
+    els.wall.querySelector(".wall__title").textContent = UI_TEXT.wallTitle || "";
+    els.wall.querySelector(".wall__note").replaceChildren(
+      ...(UI_TEXT.wallNote || []).map((t) => make("p", null, t)));
     els.wall.querySelector(".wall__text").textContent = UI_TEXT.wallPrompt;
     const yes = els.wall.querySelector('[data-wall="yes"]');
     const no = els.wall.querySelector('[data-wall="no"]');
@@ -822,6 +828,38 @@
     no.addEventListener("click", declineWall);
     // Escape counts as "No".
     els.wall.addEventListener("cancel", (e) => { e.preventDefault(); declineWall(); });
+  }
+
+  // -------------------------------------------------------------------------
+  // The opening line: once per visit, over the map. It fades on its own after
+  // a few seconds, or as soon as the visitor clicks, scrolls, or presses a key.
+  // -------------------------------------------------------------------------
+
+  const OPENING_KEY = "camcar.openingSeen";
+  const OPENING_MS = 4200;
+  const DISMISS_EVENTS = ["pointerdown", "keydown", "wheel", "touchstart"];
+
+  function showOpening() {
+    if (!UI_TEXT.openingLine || els.wall.open) return;
+    try {
+      if (sessionStorage.getItem(OPENING_KEY)) return;
+      sessionStorage.setItem(OPENING_KEY, "1");
+    } catch (e) { /* private mode: show it anyway */ }
+
+    const el = els.opening;
+    el.querySelector(".opening__line").textContent = UI_TEXT.openingLine;
+    el.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("is-shown")));
+
+    let timer = 0;
+    function close() {
+      clearTimeout(timer);
+      DISMISS_EVENTS.forEach((t) => window.removeEventListener(t, close, true));
+      el.classList.remove("is-shown");
+      setTimeout(() => { el.hidden = true; }, 900);
+    }
+    timer = setTimeout(close, OPENING_MS);
+    DISMISS_EVENTS.forEach((t) => window.addEventListener(t, close, { capture: true, passive: true }));
   }
 
   // -------------------------------------------------------------------------
@@ -890,6 +928,11 @@
   }
 
   function onWheel(e) {
+    // The first scroll just dismisses the opening line.
+    if (!els.opening.hidden) {
+      e.preventDefault();
+      return;
+    }
     const scroller = e.target.closest && e.target.closest("[data-scrollable]");
     const endGestureSoon = () => {
       clearTimeout(wheel.timer);
@@ -1031,8 +1074,9 @@
   renderWall();
   bindInputs();
   resizeLines();
-  Starfield.init(els.sky);
+  Starfield.init(els.sky, { zoomFactor: ZOOM_FACTOR });
   setActive(state.level, null);
   applyCamera();
   route(true);
+  showOpening();
 })();

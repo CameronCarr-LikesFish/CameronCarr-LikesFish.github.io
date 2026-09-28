@@ -111,13 +111,20 @@
     <button type="button" class="btn panel__back"></button>
   </aside>
 
-  <dialog class="wall" aria-labelledby="wall-text">
-    <p class="wall__text" id="wall-text"></p>
+  <dialog class="wall" aria-labelledby="wall-title" aria-describedby="wall-note">
+    <h2 class="wall__title" id="wall-title"></h2>
+    <div class="wall__note" id="wall-note"></div>
+    <p class="wall__text"></p>
     <div class="wall__actions">
       <button type="button" class="btn btn--primary" data-wall="yes"></button>
       <button type="button" class="btn" data-wall="no"></button>
     </div>
   </dialog>
+
+  <!-- The one-line opening, shown once per visit (UI_TEXT.openingLine). -->
+  <div class="opening" role="status" aria-live="polite" hidden>
+    <p class="opening__line"></p>
+  </div>
 
   <noscript><p class="noscript">This site needs JavaScript to run.</p></noscript>
 </body>

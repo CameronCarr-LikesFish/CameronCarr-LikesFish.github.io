@@ -26,6 +26,9 @@
   const WALL_DEPTH = eraDepth.get("beneath") ?? MAX_DEPTH;
   const depthOfItem = (it) => (it.layer === "personal" ? WALL_DEPTH : eraDepth.get(it.era));
 
+  // Sub-zooms from content.js (DETAILS is optional there).
+  const SUBZOOMS = typeof DETAILS !== "undefined" ? DETAILS : {};
+
   const WALL_KEY = "camcar.wallCrossed";
 
   const state = {
@@ -35,12 +38,18 @@
     crossed: loadCrossed(),
     openItem: null,
     pendingWall: null,  // where to go if the visitor says yes at the wall
+    k: 0,               // sub-zoom amount (see applyCamera)
+    detail: null,       // id of the item whose sub-zoom is open, or null
+    anchor: null,       // item the sub-zoom zooms toward (kept while closing)
     tag: null,          // the active tag filter, or null
     edges: [],          // constellation lines for the active tag: [itemA, itemB]
   };
 
   const els = {
     stage: document.getElementById("stage"),
+    world: document.getElementById("world"),
+    detail: document.getElementById("detail"),
+    detailScroll: document.querySelector(".detail__scroll"),
     sky: document.getElementById("sky"),
     nav: document.querySelector(".era-nav"),
     navList: document.querySelector(".era-nav__list"),
@@ -196,7 +205,13 @@
       : it.title;
     b.setAttribute("aria-label", b.dataset.label);
     b.setAttribute("aria-describedby", summary.id);
-    b.setAttribute("aria-controls", "panel");
+    if (SUBZOOMS[it.id]) {
+      // Opens its own sub-zoom rather than the text panel.
+      b.classList.add("item--zoomable");
+      b.setAttribute("aria-controls", "detail");
+    } else {
+      b.setAttribute("aria-controls", "panel");
+    }
     b.setAttribute("aria-expanded", "false");
     b.addEventListener("click", () => go(it.id));
     els.itemButtons.set(it.id, b);
@@ -242,7 +257,7 @@
         el.append(portal);
       }
 
-      els.stage.append(el);
+      els.world.append(el);
       els.eras.push(el);
       els.eraTitles.push(title);
     });
@@ -266,10 +281,16 @@
   // Camera
   // -------------------------------------------------------------------------
 
-  // Draw every era for a camera at depth z. An era at depth d is scaled by
-  // ZOOM_FACTOR^(z - d): 1 when we're at it, larger when we've zoomed past it
-  // into the past, smaller when it's still ahead of us.
-  function applyCamera(z) {
+  // The camera has two numbers, both animated:
+  //   state.z  depth through the eras (0 = Future, MAX_DEPTH = innermost)
+  //   state.k  how far we've zoomed into one item's own sky (0 = not, 1 = in)
+  //
+  // An era at depth d is scaled by ZOOM_FACTOR^(z - d): 1 when we're at it,
+  // larger when we've zoomed past it into the past, smaller when it's still
+  // ahead of us. For a sub-zoom, the whole world also grows toward the item
+  // (state.anchor) while the item's sky opens out of it.
+  function applyCamera() {
+    const { z, k } = state;
     els.eras.forEach((el, d) => {
       const t = z - d;
       const scale = Math.pow(ZOOM_FACTOR, t);
@@ -280,24 +301,50 @@
       el.style.opacity = opacity.toFixed(3);
       el.style.visibility = opacity < 0.01 ? "hidden" : "visible";
     });
+
+    // Sub-zoom. [px, py] is the anchor item's offset from the screen center.
+    const [px, py] = anchorOffset();
+    const m = Math.pow(ZOOM_FACTOR, k);
+    const worldFade = clamp(1 - k * 1.6, 0, 1);
+    els.world.style.transform = k ? `translate(${-px * m * k}px, ${-py * m * k}px) scale(${m})` : "";
+    els.world.style.opacity = k ? worldFade.toFixed(3) : "";
+    els.lines.style.opacity = k ? worldFade.toFixed(3) : "";
+    const detailFade = clamp((k - 0.15) / 0.6, 0, 1);
+    const ds = Math.pow(ZOOM_FACTOR, k - 1);
+    els.detail.style.transform =
+      `translate(${px * m * (1 - k)}px, ${py * m * (1 - k)}px) scale(${ds})`;
+    els.detail.style.opacity = detailFade.toFixed(3);
+    els.detail.style.visibility = detailFade < 0.01 ? "hidden" : "visible";
+
     els.nav.style.setProperty("--pos", (MAX_DEPTH - z).toFixed(4));
     els.figure.style.setProperty("--figure-h", (FIGURE_BASE * Math.pow(FIGURE_GROWTH, z)).toFixed(2) + "px");
-    Starfield.setDepth(z);
+    Starfield.setDepth(z + k * 0.6);
     drawLines();
   }
 
-  // Update everything that depends on which era is current.
-  function setActive(level) {
+  function anchorOffset() {
+    const slot = state.anchor && els.itemSlots.get(state.anchor);
+    if (!slot) return [0, 0];
+    return [(slot[0] - 50) / 100 * innerWidth, (slot[1] - 50) / 100 * innerHeight];
+  }
+
+  // Update everything that depends on where the camera is headed: which era
+  // is current, and whether we're inside an item's sub-zoom.
+  function setActive(level, detailId) {
     const era = ERAS[level];
-    const focusWasInEra = els.eras.some((el) => el.contains(document.activeElement));
+    const inDetail = !!detailId;
+    const focusWasInMap = els.stage.contains(document.activeElement) ||
+      els.detail.contains(document.activeElement);
 
     els.eras.forEach((el, d) => {
-      const active = d === level;
+      const active = d === level && !inDetail;
       el.classList.toggle("is-active", active);
       el.inert = !active;
       if (active) el.removeAttribute("aria-hidden");
       else el.setAttribute("aria-hidden", "true");
     });
+    els.detail.inert = !inDetail;
+    document.body.classList.toggle("in-detail", inDetail);
 
     els.navButtons.forEach((b, d) => {
       if (d === level) b.setAttribute("aria-current", "location");
@@ -305,62 +352,154 @@
     });
 
     els.posEra.textContent = era.label;
-    els.posSub.textContent = era.subtitle;
+    els.posSub.textContent = inDetail ? SUBZOOMS[detailId].title : era.subtitle;
 
-    els.zoomIn.setAttribute("aria-disabled", String(level >= MAX_DEPTH));
-    els.zoomOut.setAttribute("aria-disabled", String(level <= 0));
+    els.zoomIn.setAttribute("aria-disabled", String(inDetail || level >= MAX_DEPTH));
+    els.zoomOut.setAttribute("aria-disabled", String(!inDetail && level <= 0));
 
-    // If focus was inside an era that just went inert, move it to the new one.
-    if (focusWasInEra) els.eraTitles[level].focus({ preventScroll: true });
+    // If focus was on something that just went inert, move it somewhere sensible.
+    if (focusWasInMap) {
+      (inDetail ? els.detail.querySelector(".detail__title") : els.eraTitles[level])
+        .focus({ preventScroll: true });
+    }
   }
 
   // For visitors who ask their system for reduced motion: a short fade out,
-  // a jump to the new era, and a fade back in, instead of the zoom.
+  // a jump to the new view, and a fade back in, instead of the zoom.
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const FADE_MS = 160;
   let fadeTimer = 0;
 
-  function fadeTo(target) {
+  function fadeCamera(z, k) {
     cancelAnimationFrame(state.raf);
-    state.level = target;
-    setActive(target);
     clearTimeout(fadeTimer);
     document.body.classList.add("is-fading");
     fadeTimer = setTimeout(() => {
-      state.z = target;
-      applyCamera(target);
+      state.z = z;
+      state.k = k;
+      applyCamera();
       document.body.classList.remove("is-fading");
     }, FADE_MS);
   }
 
-  function moveTo(target, instant) {
-    target = clamp(target, 0, MAX_DEPTH);
+  // Move the camera to era `level`, zoomed into item `detailId` (or null).
+  function moveTo(level, detailId, instant) {
+    level = clamp(level, 0, MAX_DEPTH);
+    detailId = detailId || null;
+    const toK = detailId ? 1 : 0;
+    const changed = level !== state.level || detailId !== state.detail;
+
+    if (detailId) {
+      state.anchor = detailId;
+      renderDetail(detailId);
+    }
+    state.level = level;
+    state.detail = detailId;
+    if (changed || instant) setActive(level, detailId);
 
     if (instant) {
       cancelAnimationFrame(state.raf);
-      state.level = state.z = target;
-      setActive(target);
-      applyCamera(target);
+      state.z = level;
+      state.k = toK;
+      applyCamera();
       return;
     }
-    if (target === state.level) return;
-    if (reducedMotion.matches) return fadeTo(target);
+    if (!changed) return;
+    if (reducedMotion.matches) return fadeCamera(level, toK);
 
-    state.level = target;
-    setActive(target);
-
-    const from = state.z;
-    const duration = STEP_MS * (0.6 + 0.4 * Math.abs(target - from));
+    const from = { z: state.z, k: state.k };
+    const distance = Math.abs(level - from.z) + Math.abs(toK - from.k);
+    const duration = STEP_MS * (0.6 + 0.4 * distance);
     const start = performance.now();
 
     cancelAnimationFrame(state.raf);
     function frame(now) {
-      const p = Math.min(1, (now - start) / duration);
-      state.z = from + (target - from) * easeInOut(p);
-      applyCamera(state.z);
-      if (p < 1) state.raf = requestAnimationFrame(frame);
+      const e = easeInOut(Math.min(1, (now - start) / duration));
+      state.z = from.z + (level - from.z) * e;
+      state.k = from.k + (toK - from.k) * e;
+      applyCamera();
+      if (e < 1) state.raf = requestAnimationFrame(frame);
     }
     state.raf = requestAnimationFrame(frame);
+  }
+
+  // -------------------------------------------------------------------------
+  // Sub-zooms (DETAILS in content.js)
+  // -------------------------------------------------------------------------
+
+  let renderedDetail = null;
+
+  function renderDetail(id) {
+    if (renderedDetail === id) return;
+    renderedDetail = id;
+    els.detailScroll.scrollTop = 0;
+    const data = SUBZOOMS[id];
+    const item = itemById.get(id);
+    const eraLabel = ERAS[depthOfItem(item)].label;
+    const root = els.detail;
+
+    const back = root.querySelector(".detail__back");
+    back.textContent = "← " + UI_TEXT.backFromDetail.replace("{era}", eraLabel);
+    back.onclick = () => go(ERAS[depthOfItem(item)].id);
+    root.querySelector(".detail__title").textContent = data.title;
+    root.querySelector(".detail__subtitle").textContent = data.subtitle || "";
+    root.querySelector(".detail__stats").replaceChildren(
+      ...(data.stats || []).map((s) => make("li", null, s)));
+
+    const groups = root.querySelector(".detail__groups");
+    groups.replaceChildren(...data.groups.map((g, gi) => {
+      const section = make("section", "cluster");
+      const headingId = `cluster-${id}-${gi}`;
+      const h = make("h3", "cluster__label", g.label);
+      h.id = headingId;
+      const list = make("ol", "cluster__list");
+      list.setAttribute("aria-labelledby", headingId);
+      g.entries.forEach((c, ci) => {
+        const li = make("li", "course");
+        li.style.setProperty("--dx", CLUSTER_OFFSETS[ci % CLUSTER_OFFSETS.length] + "px");
+        const star = make("span", "course__star");
+        star.setAttribute("aria-hidden", "true");
+        const top = make("span", "course__top");
+        top.append(make("span", "course__name", c.name));
+        if (c.grade) {
+          const grade = make("span", "course__grade", c.grade.replace(/-/g, "−"));
+          grade.setAttribute("aria-label", "Grade " + c.grade.replace(/-/g, " minus").replace(/\+/g, " plus"));
+          top.append(grade);
+        }
+        const meta = make("span", "course__meta", [c.code, c.term].filter(Boolean).join(" · "));
+        li.append(star, top, meta);
+        list.append(li);
+      });
+      section.append(h, list);
+      return section;
+    }));
+    requestAnimationFrame(drawClusterLines);
+  }
+
+  // Each list's stars sit at slightly different offsets, joined by a thin
+  // line, so every group reads as a small constellation.
+  const CLUSTER_OFFSETS = [6, 17, 3, 13, 8, 19];
+
+  function drawClusterLines() {
+    els.detail.querySelectorAll(".cluster__list").forEach((list) => {
+      list.querySelector(".cluster__lines")?.remove();
+      // Measure on screen, then undo the layer's current zoom scale.
+      const lr = list.getBoundingClientRect();
+      const sc = lr.width / list.offsetWidth || 1;
+      const pts = [...list.querySelectorAll(".course__star")].map((s) => {
+        const r = s.getBoundingClientRect();
+        return `${((r.left + r.width / 2 - lr.left) / sc).toFixed(1)},` +
+               `${((r.top + r.height / 2 - lr.top) / sc).toFixed(1)}`;
+      });
+      if (pts.length < 2) return;
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "cluster__lines");
+      svg.setAttribute("aria-hidden", "true");
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      line.setAttribute("points", pts.join(" "));
+      svg.append(line);
+      list.prepend(svg);
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -571,6 +710,19 @@
       return el;
     }));
 
+    const links = p.querySelector(".panel__links");
+    const validLinks = (it.links || []).filter((l) => l && l.url && !isPlaceholder(l.url));
+    links.replaceChildren(...validLinks.map((l) => {
+      const li = document.createElement("li");
+      const a = make("a", "btn btn--primary", `${l.label || "Open link"} ↗`);
+      a.href = l.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      li.append(a);
+      return li;
+    }));
+    links.hidden = validLinks.length === 0;
+
     const tags = p.querySelector(".panel__tags");
     tags.replaceChildren(...it.tags.map((id) => make("li", null, tagById.get(id)?.label ?? id)));
     tags.hidden = it.tags.length === 0;
@@ -673,7 +825,8 @@
     if (!id) return { era: START_DEPTH, item: null };
     if (eraDepth.has(id)) return { era: eraDepth.get(id), item: null };
     const it = itemById.get(id);
-    return it ? { era: depthOfItem(it), item: it } : null;
+    if (!it) return null;
+    return { era: depthOfItem(it), item: it, detail: SUBZOOMS[it.id] ? it.id : null };
   }
 
   function go(id) {
@@ -696,13 +849,18 @@
       state.pendingWall = null;
       els.wall.close();
     }
-    moveTo(r.era, instant);
-    if (r.item) openPanel(r.item);
+    if (r.item && !r.detail) openPanel(r.item);
     else closePanel();
+    moveTo(r.era, r.detail, instant);
   }
 
   // +1 = zoom in (back in time), -1 = zoom out (forward in time).
   function step(dir) {
+    // Inside a sub-zoom, zooming out returns to the era; zooming in does nothing.
+    if (state.detail) {
+      if (dir < 0) go(ERAS[state.level].id);
+      return;
+    }
     const target = clamp(state.level + dir, 0, MAX_DEPTH);
     if (target !== state.level) go(ERAS[target].id);
   }
@@ -715,17 +873,33 @@
   // keeps trackpad momentum from skipping through several eras at once.
   const wheel = { acc: 0, used: false, timer: 0 };
 
+  function canScroll(el, dy) {
+    return dy > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 1 : el.scrollTop > 0;
+  }
+
   function onWheel(e) {
-    // Scrollable areas (the item panel) keep their normal scrolling.
-    if (e.target.closest && e.target.closest("[data-scrollable]")) return;
+    const scroller = e.target.closest && e.target.closest("[data-scrollable]");
+    const endGestureSoon = () => {
+      clearTimeout(wheel.timer);
+      wheel.timer = setTimeout(() => {
+        wheel.acc = 0;
+        wheel.used = false;
+      }, 180);
+    };
+    // The item panel always keeps its own scrolling. A sub-zoom scrolls while
+    // it can; a fresh gesture at its top or bottom zooms instead. A gesture
+    // that started as a scroll never turns into a zoom.
+    if (scroller && (scroller !== els.detailScroll || canScroll(scroller, e.deltaY))) {
+      if (scroller === els.detailScroll) {
+        wheel.used = true;
+        endGestureSoon();
+      }
+      return;
+    }
     e.preventDefault();
     if (els.wall.open) return;
 
-    clearTimeout(wheel.timer);
-    wheel.timer = setTimeout(() => {
-      wheel.acc = 0;
-      wheel.used = false;
-    }, 180);
+    endGestureSoon();
     if (wheel.used) return;
 
     const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
@@ -742,7 +916,7 @@
 
   function onKey(e) {
     if (els.wall.open) return; // the dialog handles its own keys
-    if (e.key === "Escape" && state.openItem) {
+    if (e.key === "Escape" && (state.openItem || state.detail)) {
       e.preventDefault();
       go(ERAS[state.level].id);
       return;
@@ -821,7 +995,12 @@
     window.addEventListener("wheel", onWheel, { passive: false });
     document.addEventListener("keydown", onKey);
     window.addEventListener("hashchange", () => route(false));
-    window.addEventListener("resize", resizeLines);
+    window.addEventListener("resize", () => {
+      resizeLines();
+      applyCamera();
+      drawClusterLines();
+    });
+    document.fonts?.ready.then(drawClusterLines);
     els.zoomIn.addEventListener("click", () => step(1));
     els.zoomOut.addEventListener("click", () => step(-1));
     els.panel.querySelector(".panel__close").addEventListener("click", () => go(ERAS[state.level].id));
@@ -841,7 +1020,7 @@
   bindInputs();
   resizeLines();
   Starfield.init(els.sky);
-  setActive(state.level);
-  applyCamera(state.z);
+  setActive(state.level, null);
+  applyCamera();
   route(true);
 })();

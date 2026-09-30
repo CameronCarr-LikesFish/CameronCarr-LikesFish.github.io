@@ -289,14 +289,9 @@ const Cosmos = (function () {
       label(ctx, "Florida", hx + 34, hy + 4, 0.6 * homeA, 11);
     }
 
-    // US states, faint; Florida and Tennessee brighter, with a soft fill.
+    // Only the two states that matter get borders (Florida and Tennessee,
+    // with a soft fill). Other state lines are left out to keep the map quiet.
     if (statesA > 0.01) {
-      ctx.strokeStyle = rgba([236, 239, 247], 0.11 * statesA);
-      ctx.beginPath();
-      projected.states.forEach((st) => {
-        if (st.name !== "Florida" && st.name !== "Tennessee") st.rings.forEach((r) => strokeRing(ctx, r, cam, w, h));
-      });
-      ctx.stroke();
       [["Florida", floridaA], ["Tennessee", tennesseeA]].forEach(([name, a]) => {
         if (a < 0.01) return;
         const st = projected.states.find((s) => s.name === name);

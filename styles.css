@@ -1104,3 +1104,33 @@ body.is-fading #lines { opacity: 0; }
   }
   .panel.is-open { transform: none; }
 }
+
+/* ----- Decluttering (owner, 2026-09-30) ----- */
+
+/* Titles only on the map; the summary is in the item's panel (and still
+   read to screen readers as the item's description). */
+.item__summary { display: none !important; }
+
+/* The "You are in" box repeated the big era title and the timeline. It stays
+   for screen readers only. */
+.position {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* A slimmer header: name and pronouns everywhere. The tagline and contact
+   links belong to Now, the present-day self, and fade out elsewhere. */
+.identity__full { display: none; }
+
+.identity__tagline,
+.contact { transition: opacity 0.35s ease, visibility 0.35s; }
+
+body:not([data-era="now"]) .identity__tagline,
+body:not([data-era="now"]) .contact {
+  opacity: 0;
+  visibility: hidden;
+}

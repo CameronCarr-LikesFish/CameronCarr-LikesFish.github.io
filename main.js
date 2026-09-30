@@ -392,6 +392,8 @@
     });
 
     els.posEra.textContent = era.label;
+    // The header shows the tagline and contact links only in Now (styles.css).
+    document.body.dataset.era = era.id;
     els.posSub.textContent = inDetail ? SUBZOOMS[detailId].title : era.subtitle;
     els.posSky.textContent = era.sky
       ? `${UI_TEXT.skyLabel || "Sky"}: ${era.sky.title} · ${era.sky.credit}`
@@ -806,7 +808,9 @@
     p.style.top = "";
     p.style.maxHeight = "";
     if (!p.classList.contains("panel--left") || window.matchMedia("(max-width: 700px)").matches) return;
-    const bottom = document.querySelector(".site-header").getBoundingClientRect().bottom;
+    // Outside Now the header shows only the name, so clear just that.
+    const header = document.body.dataset.era === "now" ? ".site-header" : ".identity";
+    const bottom = document.querySelector(header).getBoundingClientRect().bottom;
     if (!(bottom > 0)) return;
     const top = Math.round(bottom + 12);
     p.style.top = `${top}px`;

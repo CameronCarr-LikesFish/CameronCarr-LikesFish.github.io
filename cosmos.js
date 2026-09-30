@@ -278,13 +278,18 @@ const Cosmos = (function () {
       ctx.stroke();
     }
 
-    // Florida, home again, lit on the globe at Now.
+    // Florida, home again, marked on the globe at Now: the same quiet outline
+    // and faint tint it has up close, not a bright fill.
     if (homeA > 0.01) {
       const fl = projected.states.find((s) => s.name === "Florida");
       ctx.beginPath();
       fl.rings.forEach((r) => traceRing(ctx, r, cam, w, h));
-      ctx.fillStyle = rgba([227, 169, 179], 0.55 * homeA);
+      ctx.fillStyle = rgba([227, 169, 179], 0.08 * homeA);
       ctx.fill();
+      ctx.beginPath();
+      fl.rings.forEach((r) => strokeRing(ctx, r, cam, w, h));
+      ctx.strokeStyle = rgba([236, 239, 247], 0.6 * homeA);
+      ctx.stroke();
       const [hx, hy] = toScreen(...project(-81.6, 28.3, lastDLon).slice(0, 2), cam, w, h);
       label(ctx, "Florida", hx + 34, hy + 4, 0.6 * homeA, 11);
     }

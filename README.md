@@ -27,6 +27,8 @@ The site was built with **Claude Code** from a written brief, in short working s
 - **The words are Cam's.** The personal stories come from interview-style conversations. Claude drafted text from her answers and trimmed it without polishing it up, and Cam approved each piece before it went live.
 - **An outside critique.** A separate Claude agent reviewed the design and quality as a critical outside reader. Its findings led to fixes: a rendering bug on the globe, a startup edge case, panel placement, contrast, and a clearer introduction line.
 
+Every change, and the reason for it, is recorded in [CHANGELOG.md](CHANGELOG.md).
+
 ## How it works
 
 Plain HTML, CSS, and JavaScript, with no framework and no build step.

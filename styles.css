@@ -230,6 +230,9 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 
 .item.is-selected { border-color: var(--line); }
 
+/* Items are text only at rest: a dot on the map would read as a place.
+   The star keeps its space (the constellation lines connect to it) and only
+   appears when a tag lights the item up. */
 .item__star {
   display: block;
   width: 8px;
@@ -238,6 +241,7 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
   border-radius: 50%;
   background: var(--ink);
   box-shadow: 0 0 8px 2px var(--star-glow);
+  opacity: 0;
 }
 
 .item__parent {
@@ -652,9 +656,10 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 body.is-filtering .item { opacity: 0.25; }
 body.is-filtering .item.is-lit { opacity: 1; }
 
-.item__star { transition: transform 0.3s, background 0.3s, box-shadow 0.3s; }
+.item__star { transition: opacity 0.3s, transform 0.3s, background 0.3s, box-shadow 0.3s; }
 
 .item.is-lit .item__star {
+  opacity: 1;
   background: #fff;
   box-shadow: 0 0 10px 3px var(--accent-glow);
   transform: scale(1.5);

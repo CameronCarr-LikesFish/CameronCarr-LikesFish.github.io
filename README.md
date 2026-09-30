@@ -7,8 +7,8 @@ A personal site for Cam Carr (Cameron Carr, she/they), a 2026 Vanderbilt graduat
 | Era | The map shows |
 |---|---|
 | **Goals, hopes, and dreams** | Earth's curved horizon at night, with a small figure standing on it under a wide sky |
-| **Now** | The whole Earth, gently rocking, with Florida lit (home again) |
-| **Vanderbilt** | Tennessee, with Nashville marked. This is where the site opens, on the professional core. |
+| **Now** | The whole Earth, gently rocking, with Florida marked (home again). This is where the site opens, with her name, tagline, and contact links. |
+| **Vanderbilt** | Tennessee, with Nashville marked: the professional core of her college years |
 | **Personal** | Florida, where she grew up. It sits behind a short note on authenticity, and holds the stories behind the professional items. |
 
 Items open into panels. A tag bar lights up related items across eras as constellations. "Selected coursework" opens into its own small sky of course constellations.

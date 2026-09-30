@@ -235,8 +235,10 @@ const Cosmos = (function () {
     const nightA = 1 - smooth(0.2, 0.75, z);               // the Future: Earth's night side
     const landA = smooth(0.35, 1.0, z) * (1 - smooth(1.35, 1.9, z));
     const statesA = smooth(1.2, 1.9, z);
-    const floridaA = smooth(1.2, 2.0, z) * (0.35 + 0.25 * smooth(2.2, 2.9, z));
-    const tennesseeA = smooth(1.2, 1.9, z) * (0.6 - 0.28 * smooth(2.2, 2.9, z));
+    // Florida and Tennessee share one quiet outline: a little brighter at their
+    // own level, softer elsewhere.
+    const floridaA = smooth(1.2, 2.0, z) * (0.35 + 0.15 * smooth(2.2, 2.9, z));
+    const tennesseeA = smooth(1.2, 1.9, z) * (0.5 - 0.15 * smooth(2.2, 2.9, z));
     const homeA = smooth(0.55, 0.95, z) * (1 - smooth(1.25, 1.7, z));   // Florida lit on the globe
 
     const [gx, gy] = toScreen(0, 0, cam, w, h);
@@ -311,10 +313,7 @@ const Cosmos = (function () {
       });
 
       // Place names.
-      const [fx, fy] = toScreen(...project(-81.6, 27.6).slice(0, 2), cam, w, h);
-      label(ctx, "FLORIDA", fx, fy, 0.5 * smooth(1.7, 2.4, z), 12);
-      const [tx, ty] = toScreen(...project(-86.3, 34.55).slice(0, 2), cam, w, h);   // just below the state
-      label(ctx, "TENNESSEE", tx, ty, 0.5 * smooth(1.4, 1.9, z) * (1 - smooth(2.4, 2.9, z)), 12);
+      // No state-name labels: the outlines and the places speak for themselves.
       const [nx, ny] = toScreen(...project(...NASHVILLE).slice(0, 2), cam, w, h);
       const nA = smooth(1.4, 1.9, z) * (1 - smooth(2.5, 3, z));
       if (nA > 0.02) {

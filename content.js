@@ -38,7 +38,7 @@ const ERAS = [
     place: "Florida, with Gainesville and Fort Myers marked" },
 ];
 
-const START_ERA = "college";
+const START_ERA = "now";   // the site opens on the present day
 
 // ---------------------------------------------------------------------------
 // Interface text: the wall prompt and a few labels.

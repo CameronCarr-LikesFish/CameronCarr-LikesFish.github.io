@@ -103,6 +103,7 @@
     document.querySelector(".identity__name").textContent = SETTINGS.displayName;
     document.querySelector(".identity__pronouns").textContent = SETTINGS.pronouns;
     document.querySelector(".identity__full").textContent = SETTINGS.fullName;
+    document.querySelector(".identity__tagline").textContent = SETTINGS.tagline || "";
     renderContact();
     const touchFirst = window.matchMedia("(pointer: coarse)").matches;
     document.querySelector(".hint").textContent = touchFirst
@@ -244,6 +245,7 @@
       title.id = "era-title-" + era.id;
       title.tabIndex = -1;
       head.append(title, make("p", "era__subtitle", era.subtitle));
+      if (era.place) head.append(make("p", "sr-only", `Map: ${era.place}`));
       if (d === WALL_DEPTH && d > 0) {
         const back = make("button", "btn era__back", UI_TEXT.backToProfessional);
         back.type = "button";
@@ -787,10 +789,28 @@
     back.textContent = UI_TEXT.backToProfessional;
     back.onclick = () => go(parent ? parent.id : ERAS[WALL_DEPTH - 1].id);
 
+    const slot = els.itemSlots.get(it.id);
+    p.classList.toggle("panel--left", !!slot && slot[0] > 50);
+    positionPanel();
     p.hidden = false;
     p.scrollTop = 0;
     requestAnimationFrame(() => p.classList.add("is-open"));
     p.querySelector(".panel__title").focus({ preventScroll: true });
+  }
+
+  // A left-side panel must clear the header (name, tagline, contact). The
+  // CSS gives a safe default; this fits it exactly when the header can be
+  // measured. Re-run on resize.
+  function positionPanel() {
+    const p = els.panel;
+    p.style.top = "";
+    p.style.maxHeight = "";
+    if (!p.classList.contains("panel--left") || window.matchMedia("(max-width: 700px)").matches) return;
+    const bottom = document.querySelector(".site-header").getBoundingClientRect().bottom;
+    if (!(bottom > 0)) return;
+    const top = Math.round(bottom + 12);
+    p.style.top = `${top}px`;
+    p.style.maxHeight = `calc(100vh - ${top}px - 6rem)`;
   }
 
   function closePanel() {
@@ -862,7 +882,7 @@
   // -------------------------------------------------------------------------
 
   const OPENING_KEY = "camcar.openingSeen";
-  const OPENING_MS = 4200;
+  const OPENING_MS = 2500;
   const DISMISS_EVENTS = ["pointerdown", "keydown", "wheel", "touchstart"];
 
   function showOpening() {
@@ -954,11 +974,6 @@
   }
 
   function onWheel(e) {
-    // The first scroll just dismisses the opening line.
-    if (!els.opening.hidden) {
-      e.preventDefault();
-      return;
-    }
     const scroller = e.target.closest && e.target.closest("[data-scrollable]");
     const endGestureSoon = () => {
       clearTimeout(wheel.timer);
@@ -1078,6 +1093,7 @@
     window.addEventListener("hashchange", () => route(false));
     window.addEventListener("resize", () => {
       figureRest = null;
+      positionPanel();
       resizeLines();
       applyCamera();
       drawClusterLines();
@@ -1101,7 +1117,11 @@
   renderWall();
   bindInputs();
   resizeLines();
-  Starfield.init(els.sky, { zoomFactor: ZOOM_FACTOR });
+  try {
+    Starfield.init(els.sky, { zoomFactor: ZOOM_FACTOR });
+  } catch (err) {
+    console.error("Starfield failed to start:", err);  // the site still works without it
+  }
   setActive(state.level, null);
   applyCamera();
   route(true);

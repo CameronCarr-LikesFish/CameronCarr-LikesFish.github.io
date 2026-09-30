@@ -38,8 +38,8 @@ const Cosmos = (function () {
 
   // Colours: a calm ocean blue, land darker than the ocean, and the night
   // side of Earth for the Future horizon.
-  const OCEAN_LIGHT = [30, 78, 128];
-  const OCEAN = [16, 52, 96];
+  const OCEAN_LIGHT = [24, 64, 108];
+  const OCEAN = [14, 44, 84];
   const OCEAN_EDGE = [10, 34, 68];
   const LAND = [11, 19, 34];
   const NIGHT = [6, 10, 20];
@@ -163,20 +163,43 @@ const Cosmos = (function () {
     }
   }
 
-  // Trace a ring for filling. Points on the far side of the globe are pulled
-  // onto its edge, so land that wraps around still fills cleanly.
+  // Trace a ring for filling. Where land runs behind the globe, the outline
+  // follows the globe's edge (the shorter way round) from where it leaves to
+  // where it comes back, instead of cutting straight across the face.
   function traceRing(ctx, ring, cam, w, h) {
     const { xy, vis, box } = ring;
     if (offscreen(box, cam, w, h)) return;
+    const n = vis.length;
+    let start = -1;
+    for (let i = 0; i < n; i++) if (vis[i]) { start = i; break; }
+    if (start < 0) return;                       // entirely out of sight
     const cx = w / 2, cy = h / 2, s = cam.s;
-    for (let i = 0; i < vis.length; i++) {
-      let x = xy[i * 2], y = xy[i * 2 + 1];
-      if (!vis[i]) {
-        const d = Math.hypot(x, y) || 1;
-        x = (x / d) * R_EARTH; y = (y / d) * R_EARTH;
+    const gx = cx - cam.x * s, gy = cy + cam.y * s, gr = R_EARTH * s;
+    const px = (i) => cx + (xy[i * 2] - cam.x) * s;
+    const py = (i) => cy - (xy[i * 2 + 1] - cam.y) * s;
+    const edgeAngle = (i) => Math.atan2(py(i) - gy, px(i) - gx);
+
+    ctx.moveTo(px(start), py(start));
+    let k = 1;
+    while (k < n) {
+      const i = (start + k) % n;
+      if (vis[i]) {
+        ctx.lineTo(px(i), py(i));
+        k++;
+        continue;
       }
-      const X = cx + (x - cam.x) * s, Y = cy - (y - cam.y) * s;
-      if (i) ctx.lineTo(X, Y); else ctx.moveTo(X, Y);
+      // A hidden run: find where the ring comes back into view.
+      const exit = (start + k - 1) % n;
+      let run = k;
+      while (run < n && !vis[(start + run) % n]) run++;
+      const entry = (start + run) % n;
+      const a0 = edgeAngle(exit), a1 = edgeAngle(entry);
+      let delta = a1 - a0;
+      while (delta > Math.PI) delta -= 2 * Math.PI;
+      while (delta < -Math.PI) delta += 2 * Math.PI;
+      ctx.arc(gx, gy, gr, a0, a0 + delta, delta < 0);
+      if (run < n) ctx.lineTo(px(entry), py(entry));
+      k = run + 1;
     }
     ctx.closePath();
   }
@@ -195,6 +218,7 @@ const Cosmos = (function () {
 
   // time: ms, for the globe's gentle rocking (0 = hold still, e.g. reduced motion).
   function draw(ctx, w, h, z, time = 0) {
+    if (!w || !h) return;                   // e.g. a tab opened in the background
     prepare();
     if (!projected) return;
     const unit = Math.min(w, h);
@@ -289,7 +313,7 @@ const Cosmos = (function () {
       // Place names.
       const [fx, fy] = toScreen(...project(-81.6, 27.6).slice(0, 2), cam, w, h);
       label(ctx, "FLORIDA", fx, fy, 0.5 * smooth(1.7, 2.4, z), 12);
-      const [tx, ty] = toScreen(...project(-86.0, 35.55).slice(0, 2), cam, w, h);
+      const [tx, ty] = toScreen(...project(-86.3, 34.55).slice(0, 2), cam, w, h);   // just below the state
       label(ctx, "TENNESSEE", tx, ty, 0.5 * smooth(1.4, 1.9, z) * (1 - smooth(2.4, 2.9, z)), 12);
       const [nx, ny] = toScreen(...project(...NASHVILLE).slice(0, 2), cam, w, h);
       const nA = smooth(1.4, 1.9, z) * (1 - smooth(2.5, 3, z));
@@ -339,6 +363,7 @@ const Cosmos = (function () {
   // strongly the Future horizon is in play (0 to 1). main.js uses it to stand
   // the small figure on the horizon.
   function groundAt(x, w, h, z) {
+    if (!w || !h) return { y: null, weight: 0 };
     const unit = Math.min(w, h);
     const cam = camera(z, unit, h);
     const [gx, gy] = toScreen(0, 0, cam, w, h);

@@ -9,6 +9,7 @@
 const SETTINGS = {
   displayName: "Cam Carr",
   fullName: "Cameron Carr",
+  tagline: "Vanderbilt \u201926 history honors grad, pursuing questions of human flourishing in a world increasingly shaped by AI.",
   pronouns: "she/they",        // shown in the header; change here only
   email: "CameronCarr55@gmail.com",
   phone: "",                   // left blank on purpose: this file is public
@@ -22,14 +23,19 @@ const SETTINGS = {
 // (zoomed in, the personal side). The site opens on START_ERA.
 // ---------------------------------------------------------------------------
 // short (optional): a shorter name for the timeline along the bottom.
+// place (optional): what that era's map shows, read out to screen readers.
 // sky (optional): a NASA photograph shown faintly behind the stars while that
 // era is in view (public domain; credit shown on the page).
 const ERAS = [
   { id: "future",   label: "Goals, hopes, and dreams", short: "Hopes & dreams",
-    subtitle: "I hope to learn more than I'll ever know" },
-  { id: "now",      label: "Now",        subtitle: "After graduation, 2026" },
-  { id: "college",  label: "Vanderbilt", subtitle: "Law, History, and Society" },
-  { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons" },
+    subtitle: "I hope to learn more than I'll ever know",
+    place: "Earth's horizon at night, a small figure standing on it under a wide sky" },
+  { id: "now",      label: "Now",        subtitle: "After graduation, 2026",
+    place: "the whole Earth, with Florida lit" },
+  { id: "college",  label: "Vanderbilt", subtitle: "Law, History, and Society",
+    place: "Tennessee, with Nashville marked" },
+  { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons",
+    place: "Florida, with Gainesville and Fort Myers marked" },
 ];
 
 const START_ERA = "college";
@@ -170,8 +176,8 @@ const ITEMS = [
     era: "college",
     layer: "professional",
     parent: null,
-    summary: "Leads a 300+ member club. Its League of Legends team reached the NECC quarterfinals or better every year, a club first.",
-    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team Captain from sophomore through junior year, Vice President sophomore year, and President junior and senior years. As coach, develops player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year. No other Vanderbilt Gaming league team in the club's history has reached the quarterfinals.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as President. Handed the club to its first woman president, to my knowledge, with a board close to evenly split by gender, a first for the club. Also served as Event Chair.",
+    summary: "Led a 300+ member club. Its League of Legends team reached the NECC quarterfinals or better every year, a club first.",
+    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team Captain from sophomore through junior year, Vice President sophomore year, and President junior and senior years. As coach, developed player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year. No other Vanderbilt Gaming league team in the club's history has reached the quarterfinals.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as President. Handed the club to its first woman president, to my knowledge, with a board close to evenly split by gender, a first for the club. Also served as Event Chair.",
     tags: ["gaming", "teaching", "leadership"],
     image: null,
   },
@@ -233,7 +239,7 @@ const ITEMS = [
     layer: "personal",
     parent: "major",               // owner's choice to place it here; easy to move
     summary: "YMCA Youth in Government, Lee County, Florida, 2018–2022.",
-    body: "Four years in YMCA Youth in Government in Lee County, Florida, working with disadvantaged youth and elected officials. A multi-year CONA delegate, and Florida's first non-binary YMCA camp counselor.\n\n[PLACEHOLDER: the story of how this led to law and history.]",
+    body: "Four years in YMCA Youth in Government in Lee County, Florida, working with disadvantaged youth and elected officials. A multi-year CONA delegate, and Florida's first non-binary YMCA camp counselor.",
     tags: ["leadership"],
     image: null,
   },

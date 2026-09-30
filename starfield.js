@@ -108,6 +108,7 @@ const Starfield = (function () {
   }
 
   function draw(now) {
+    if (!w || !h) return;                   // nothing to draw into yet
     const t = Math.min(1, Math.max(0, depth / MAX_DEPTH)); // 0 future, 1 past
     const cx = w / 2;
     const cy = h / 2;

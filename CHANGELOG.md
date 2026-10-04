@@ -25,7 +25,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-04
 
-### A plain resume, one click away
+### A plain resume, one click away (`21057e3`)
 
 **Added**
 - **A Resume button** in the top right, visible in every era.

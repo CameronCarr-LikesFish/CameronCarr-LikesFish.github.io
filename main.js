@@ -104,6 +104,7 @@
     document.querySelector(".identity__pronouns").textContent = SETTINGS.pronouns;
     document.querySelector(".identity__full").textContent = SETTINGS.fullName;
     document.querySelector(".identity__tagline").textContent = SETTINGS.tagline || "";
+    document.querySelector(".resume-link").textContent = UI_TEXT.resumeLink || "Resume";
     renderContact();
     const touchFirst = window.matchMedia("(pointer: coarse)").matches;
     document.querySelector(".hint").textContent = touchFirst

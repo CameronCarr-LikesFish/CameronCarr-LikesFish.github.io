@@ -11,6 +11,8 @@ A personal site for Cam Carr (Cameron Carr, she/they), a 2026 Vanderbilt graduat
 | **Vanderbilt** | Tennessee, with Nashville marked: the professional core of her college years |
 | **Personal** | Florida, where she grew up. It sits behind a short note on authenticity, and holds the stories behind the professional items. |
 
+For visitors who'd rather not zoom, a **Resume** button (top right, in every era) opens a plain, one-page resume that prints cleanly or saves as a PDF.
+
 Items open into panels. A tag bar lights up related items across eras as constellations. "Selected coursework" opens into its own small sky of course constellations.
 
 ## How it was made
@@ -36,12 +38,13 @@ Plain HTML, CSS, and JavaScript, with no framework and no build step.
 | File | What it does |
 |---|---|
 | `index.html` | Page structure and link-preview tags |
-| `content.js` | **All text and settings**: eras, items, tags, the coursework sub-zoom, interface text. Editing words never means touching layout code. |
+| `content.js` | **All text and settings**: eras, items, tags, the coursework sub-zoom, the resume, interface text. Editing words never means touching layout code. |
 | `main.js` | Zoom, navigation, URLs (every era and item has its own `#link`), panels, the tag filter and constellation lines, the wall prompt, keyboard, touch, and reduced-motion handling |
 | `cosmos.js` | The map under the content, drawn on a canvas: an orthographic Earth, state outlines, the horizon. Each level has its own focus, so the view drifts as it zooms. |
 | `starfield.js` | Generative stars from a fixed seed, so the sky is the same on every visit |
 | `geo.js` | Simplified map outlines (generated) |
 | `styles.css` | All colours and fonts as CSS variables |
+| `resume.html`, `resume.js`, `resume.css` | The plain resume page, filled from `RESUME` in `content.js`, with print styles for one letter-size page |
 
 It's designed to be accessible:
 - Keyboard navigation with visible focus.

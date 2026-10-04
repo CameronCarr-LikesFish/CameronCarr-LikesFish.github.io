@@ -23,6 +23,21 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ---
 
+## 2026-10-04
+
+### A plain resume, one click away
+
+**Added**
+- **A Resume button** in the top right, visible in every era.
+- **A resume page** (`resume.html`): a traditional one-column resume on a light page. It covers education, experience, leadership, training, and selected coursework, with contact links. "Print or save as PDF" gives a clean, one-page letter-size copy. The text lives in `content.js` (`RESUME`), like everything else. It uses the same facts as the map, in resume wording, and leaves out the personal side.
+
+**Fixed**
+- **Vanderbilt Gaming, corrected by Cam.** The board she led was male-dominated, and mostly chosen before her time. It was not "close to evenly split by gender", as the site said. She raised up younger, more diverse members to take over, and the board is now far more balanced by gender and race. The Vanderbilt Gaming item and "Common ground" now say this. Her roles are also corrected: Vice President sophomore year, co-president junior year, and President senior year.
+
+**Why:** not every visitor wants to explore a zoomable map. A hiring reader who wants the usual one-page view can now get it in one click, from anywhere on the site. Writing the resume also surfaced the wrong board claim, which Cam corrected.
+
+---
+
 ## 2026-09-30
 
 ### Declutter, and open on Now (`2a5b299`, `ccbdfca`, `9ba9fc3`, `3ac1bd6`, `41197eb`)

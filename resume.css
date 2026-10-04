@@ -1,0 +1,200 @@
+/* resume.css: the plain resume page (resume.html).
+   A light sheet of paper on the site's night sky. It prints as a clean
+   black-on-white page. Fonts match the main site. */
+
+@font-face {
+  font-family: "Site Display";
+  src: url("fonts/display.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Site Body";
+  src: url("fonts/body.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  --bg: #050814;           /* the night around the sheet */
+  --bar-ink: #eceff7;
+  --line-dark: rgba(232, 236, 245, 0.18);
+  --accent: #e3a9b3;
+
+  --paper: #fbfaf7;
+  --ink: #1b1d26;
+  --ink-dim: #5a5e6c;
+  --rule: #d9d6cf;
+  --link: #8a3d4c;         /* the rose accent, deep enough to read on paper */
+
+  --font-body: "Site Body", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Site Display", Georgia, "Times New Roman", serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 0 1rem 3rem;
+}
+
+a { color: var(--link); text-decoration-color: var(--rule); text-underline-offset: 0.15em; }
+a:hover { text-decoration-color: var(--link); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ----- Top bar: back to the map, print ----- */
+
+.bar {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.bar__btn {
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--bar-ink);
+  background: transparent;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  padding: 0.5rem 1.05rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bar__btn:hover { border-color: var(--accent); }
+.bar__btn--primary { border-color: var(--accent); color: var(--accent); }
+
+/* ----- The sheet ----- */
+
+.sheet {
+  max-width: 50rem;
+  margin: 0 auto;
+  background: var(--paper);
+  border-radius: 6px;
+  padding: 3rem 3.25rem 3.25rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.head { border-bottom: 1px solid var(--rule); padding-bottom: 1.1rem; margin-bottom: 0.4rem; }
+
+.head__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 2.6rem;
+  line-height: 1.05;
+}
+
+.head__aka { margin: 0.25rem 0 0; color: var(--ink-dim); }
+
+.head__tagline { margin: 0.6rem 0 0.7rem; max-width: 38rem; }
+
+.head__contact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.25rem;
+  font-size: 0.82rem;
+}
+
+.section { margin-top: 1.4rem; }
+
+.section__heading {
+  margin: 0 0 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--link);
+}
+
+.section__list { margin: 0; }
+
+.entry + .entry { margin-top: 0.95rem; }
+
+.entry__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+}
+
+.entry__what { margin: 0; }
+
+.entry__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.entry__org { display: block; color: var(--ink-dim); }
+
+.entry__dates {
+  margin: 0;
+  flex: none;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.entry__bullets { margin: 0.3rem 0 0; padding-left: 1.1rem; }
+.entry__bullets li + li { margin-top: 0.15rem; }
+.entry__bullets li::marker { color: var(--ink-dim); }
+
+.entry__link { margin: 0.35rem 0 0; font-size: 0.82rem; }
+
+.noscript { color: var(--bar-ink); text-align: center; padding: 2rem; }
+
+/* ----- Phones ----- */
+
+@media (max-width: 600px) {
+  .sheet { padding: 1.75rem 1.25rem 2rem; border-radius: 4px; }
+  .head__name { font-size: 2.1rem; }
+  .entry__top { flex-direction: column; }
+}
+
+/* ----- Print: one plain page ----- */
+
+@media print {
+  @page { size: letter; margin: 0.45in 0.55in; }
+
+  html, body { background: #fff; }
+  body { padding: 0; font-size: 9pt; line-height: 1.32; color: #000; }
+  .bar, .noscript { display: none; }
+  .sheet { max-width: none; padding: 0; box-shadow: none; border-radius: 0; background: #fff; }
+  .head { padding-bottom: 0.55rem; }
+  .head__name { font-size: 22pt; }
+  .head__aka { margin-top: 0.1rem; }
+  .head__tagline { margin: 0.3rem 0 0.3rem; max-width: none; }
+  .head__contact { font-size: 8.5pt; }
+  .section { margin-top: 0.7rem; }
+  .section__heading { margin-bottom: 0.25rem; }
+  .entry + .entry { margin-top: 0.45rem; }
+  .entry__title { font-size: 11pt; }
+  /* Title and organization share a line on paper. */
+  .entry__org { display: inline; }
+  .entry__org::before { content: ", "; }
+  .entry__dates { font-size: 8.5pt; }
+  .entry__bullets { margin-top: 0.15rem; }
+  .entry__bullets li + li { margin-top: 0.05rem; }
+  .entry, .section__heading { break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
+  .entry__link { display: none; }   /* a link on paper goes nowhere */
+}

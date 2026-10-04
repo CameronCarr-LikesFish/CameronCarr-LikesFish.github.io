@@ -66,6 +66,7 @@ const UI_TEXT = {
   noMatches: "Nothing tagged {tag} yet.",
   backFromDetail: "Back to {era}",  // button at the top of a sub-zoom
   skyLabel: "Sky",                  // "Sky: <photo title> · <credit>"
+  resumeLink: "Resume",             // top right, every era: opens resume.html
 };
 
 // ---------------------------------------------------------------------------
@@ -177,7 +178,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "Led a 300+ member club. Its League of Legends team reached the NECC quarterfinals or better every year, a club first.",
-    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team Captain from sophomore through junior year, Vice President sophomore year, and President junior and senior years. As coach, developed player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year. No other Vanderbilt Gaming league team in the club's history has reached the quarterfinals.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as President. Handed the club to its first woman president, to my knowledge, with a board close to evenly split by gender, a first for the club. Also served as Event Chair.",
+    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team captain sophomore through junior year. On the board from sophomore year: Vice President sophomore year, co-president junior year, and President senior year. As coach, developed player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year. No other Vanderbilt Gaming league team in the club's history has reached the quarterfinals.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as co-president and President. The board I led was male-dominated, and mostly chosen by the board before it, so I raised up younger, more diverse members to take things over. Handed the club to its first woman president, to my knowledge, and its board is now far more balanced by gender and race. Also served as Event Chair.",
     tags: ["gaming", "teaching", "leadership"],
     image: null,
   },
@@ -283,7 +284,7 @@ const ITEMS = [
     layer: "personal",
     parent: "gaming-coach",
     summary: "What a team taught me about bridging divides.",
-    body: "When I joined the team, people dropped slurs in Discord calls and at events. As a transgender person, it took over a year and a half before people used my correct pronouns. I asked Vanderbilt for help; they offered a conversation, and told me there would be no consequences if it kept happening. So I held my ground, because somebody had to bridge that divide, and in that moment that somebody was me.\n\nMy senior-year team, on paper, shouldn't have gotten along: deep political differences, a lot of toxic masculinity, and an international student who struggled to connect across a language gap. But playing together toward a common goal, for that time, we became friends. We were united.\n\nIf a semester of playing a game together can build mutual respect across differences like those, then the divides we live with can be mended too. That's part of why authenticity matters so much to me.\n\nWhen I left, I handed the club to its first woman president, to my knowledge, with a board close to evenly split by gender, which had never happened before.",
+    body: "When I joined the team, people dropped slurs in Discord calls and at events. As a transgender person, it took over a year and a half before people used my correct pronouns. I asked Vanderbilt for help; they offered a conversation, and told me there would be no consequences if it kept happening. So I held my ground, because somebody had to bridge that divide, and in that moment that somebody was me.\n\nMy senior-year team, on paper, shouldn't have gotten along: deep political differences, a lot of toxic masculinity, and an international student who struggled to connect across a language gap. But playing together toward a common goal, for that time, we became friends. We were united.\n\nIf a semester of playing a game together can build mutual respect across differences like those, then the divides we live with can be mended too. That's part of why authenticity matters so much to me.\n\nThe board I led was male-dominated, and most of it was chosen before my time. So I pushed, and I raised up younger, more diverse students to hand things off to. When I left, I handed the club to its first woman president, to my knowledge, and today its board is far more balanced by gender and race. I'm very proud of that.",
     tags: ["gaming", "leadership"],
     image: null,
   },
@@ -351,4 +352,121 @@ const DETAILS = {
       },
     ],
   },
+};
+
+// ---------------------------------------------------------------------------
+// Resume: a plain, printable version of the professional side, for visitors
+// who'd rather not zoom (resume.html). Same facts as the items above, in
+// resume wording. Personal items stay off it.
+//   sections: { heading, entries }
+//   entry:    { title, org, dates, bullets, link: { label, url } (optional) }
+//   A section can have `list` (one comma-separated line) instead of entries.
+// ---------------------------------------------------------------------------
+const RESUME = {
+  site: "cameroncarr-likesfish.github.io",
+  backLabel: "Back to the map",
+  printLabel: "Print or save as PDF",
+  sections: [
+    {
+      heading: "Education",
+      entries: [
+        {
+          title: "B.A., Law, History, and Society, with Honors in History",
+          org: "Vanderbilt University",
+          dates: "2022 – May 2026",
+          bullets: [
+            "GPA 3.7. Dean's List all four years.",
+            "Chancellor's Scholarship: a full-ride scholarship, awarded 2022.",
+            "Senior honors thesis: \u201CThe Soul of Transhumanism: Rationalism and Dissent in the Early History of Transhumanism\u201D (100 pages; adviser Dr. Ole Molvig). Traces rationalism, elitism, and gendered ideology in transhumanist thought, from early 20th-century British scientific socialists to today's Silicon Valley AI culture.",
+          ],
+          link: { label: "Read the thesis (PDF)", url: "files/carr-soul-of-transhumanism.pdf" },
+        },
+      ],
+    },
+    {
+      heading: "Experience",
+      entries: [
+        {
+          title: "Operations Intern",
+          org: "Positive AI Labs",
+          dates: "2026 – present",
+          bullets: [
+            "Core quality assurance for FlourishBench, PAL's flagship AI benchmark: review and refine complex human scenarios for realism, nuance, and internal consistency before they enter the dataset.",
+            "Design and deploy AI-driven triggers and automation pipelines for routine and multi-step operational workflows.",
+            "Organize and maintain datasets and internal information systems.",
+            "The only intern to receive a contract extension.",
+          ],
+        },
+        {
+          title: "Research Assistant",
+          org: "Sociology AI Lab, Vanderbilt University",
+          dates: "Aug 2025 – May 2026",
+          bullets: [
+            "Co-designed a human subjects survey instrument with Prof. Davis and graduate researchers on student perceptions of AI-driven academic deskilling.",
+            "Coordinated participant recruitment, data collection protocols, and workflows for an interdisciplinary team.",
+          ],
+        },
+      ],
+    },
+    {
+      heading: "Leadership",
+      entries: [
+        {
+          title: "President, Coach & Captain",
+          org: "Vanderbilt Gaming",
+          dates: "2022 – 2026",
+          bullets: [
+            "Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400.",
+            "Vice President sophomore year, co-president junior year, and President senior year; team captain sophomore through junior year; Event Chair. Ran the organization's operations.",
+            "Coached Vanderbilt's competitive teams on skill, strategy, and cohesion. Played on a League of Legends team that reached at least the NECC quarterfinals every year, a first for the club.",
+            "Pushed to diversify a male-dominated board and membership: recruited and mentored younger, more diverse members to take over leadership. Handed the club to its first woman president; the board is now far more balanced by gender and race.",
+          ],
+        },
+        {
+          title: "Founder",
+          org: "Meditation & Mindfulness Club, Vanderbilt University",
+          dates: "2024 – 2026",
+          bullets: [
+            "Built a student wellness program from scratch. Facilitated sessions and supported students through mental health challenges.",
+          ],
+        },
+        {
+          title: "Youth in Government",
+          org: "YMCA, Lee County, Florida",
+          dates: "2018 – 2022",
+          bullets: [
+            "Revitalized the Lee County district's Youth in Government program after COVID-era funding cuts wiped out school clubs. Reached out to principals across the county for interested students; several schools now run their own programs.",
+            "Recruited and mentored new members, coaching them to write bills, debate, and trust that their ideas were worth hearing.",
+            "Selected twice to represent Florida at the YMCA's Conference on National Affairs (CONA).",
+            "Volunteer YMCA camp counselor: the first non-binary camp counselor in Florida's YMCA.",
+          ],
+        },
+      ],
+    },
+    {
+      heading: "Training",
+      entries: [
+        {
+          title: "Mindfulness Meditation Teacher Certification Program (MMTCP)",
+          org: "with Jack Kornfield and Tara Brach",
+          dates: "Admitted 2026",
+          bullets: ["Admitted with a 75% scholarship."],
+        },
+      ],
+    },
+    {
+      heading: "Selected coursework",
+      list: [
+        "Ethics of Artificial Intelligence",
+        "Artificial Intelligence in Social Systems",
+        "Independent Research: AI in Higher Education",
+        "Human Flourishing",
+        "Formal Logic",
+        "Statistics for Social Scientists",
+        "The Historian and the Law",
+        "The Politics of Asylum",
+        "Human Behavior in Organizations",
+      ],
+    },
+  ],
 };

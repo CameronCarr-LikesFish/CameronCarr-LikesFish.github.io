@@ -13,6 +13,9 @@ const Cosmos = (function () {
   const R_EARTH = 6371;                 // km
   const LAT0 = 32, LON0 = -84;          // the globe faces the southeastern US
   const INNER_SPAN = 1250;              // km across the screen's short side at the innermost era
+  // Vanderbilt is framed tighter than one plain zoom step out, so Tennessee
+  // reads as the subject rather than the whole continent.
+  const COLLEGE_SPAN = 2600;
 
   // Where each level looks.
   const FOCUS = {
@@ -80,7 +83,7 @@ const Cosmos = (function () {
     const box = [minX, minY, maxX, maxY];
     if (ring) { ring.box = box; return ring; }
     // The North American coast is coarse at this detail; up close it gives
-    // way to the finer state outlines.
+    // way to the finer coasts in GEO.landNear.
     let northAmerica = false;
     for (let i = 0; i < n && !northAmerica; i++) {
       const lon = flat[i * 2], lat = flat[i * 2 + 1];
@@ -95,6 +98,7 @@ const Cosmos = (function () {
     if (Math.abs(dLon - lastDLon) < 0.01) return;
     lastDLon = dLon;
     projected.land.forEach((r) => projectRing(r.flat, r, dLon));
+    projected.near.forEach((r) => projectRing(r.flat, r, dLon));
     projected.states.forEach((st) => st.rings.forEach((r) => projectRing(r.flat, r, dLon)));
   }
 
@@ -103,6 +107,7 @@ const Cosmos = (function () {
     projected = {
       states: GEO.states.map((s) => ({ name: s.name, rings: s.rings.map((r) => projectRing(r)) })),
       land: GEO.land.map((r) => projectRing(r)),
+      near: (GEO.landNear || []).map((r) => projectRing(r)),
     };
   }
 
@@ -116,8 +121,8 @@ const Cosmos = (function () {
   // Screen scale (px per km) and world focus at an integer level.
   function level(d, unit, h) {
     if (d >= 1) {
-      const span = INNER_SPAN * Math.pow(zoomFactor, maxDepth - d);
       const key = ["now", "college", "personal"][Math.min(2, d - 1)];
+      const span = key === "college" ? COLLEGE_SPAN : INNER_SPAN * Math.pow(zoomFactor, maxDepth - d);
       const [x, y] = project(...FOCUS[key]);
       return { s: unit / span, x, y };
     }
@@ -256,27 +261,32 @@ const Cosmos = (function () {
     ctx.arc(gx, gy, gr, 0, Math.PI * 2);
     ctx.fill();
 
-    // Land, darker than the ocean.
-    const coarseA = 1 - smooth(1.9, 2.4, z);
+    // Land, darker than the ocean. North America swaps its coarse outline
+    // for the finer one on the way in (both drawn while they overlap, so
+    // nothing flickers). Each set gets its own fill: their rings wind
+    // differently, and one path would cut holes where they overlap.
+    const useCoarse = z < 1.6, useNear = z > 1.3 && projected.near.length > 0;
     ctx.fillStyle = rgba(LAND, 1);
     ctx.beginPath();
     projected.land.forEach((r) => {
-      if (!r.northAmerica || coarseA > 0.5) traceRing(ctx, r, cam, w, h);
+      if (!r.northAmerica || useCoarse || !useNear) traceRing(ctx, r, cam, w, h);
     });
     ctx.fill();
-    const fineA = smooth(1.5, 2.1, z);
-    if (fineA > 0.01) {
-      ctx.fillStyle = rgba(LAND, fineA);
+    if (useNear) {
       ctx.beginPath();
-      projected.states.forEach((st) => st.rings.forEach((r) => traceRing(ctx, r, cam, w, h)));
+      projected.near.forEach((r) => traceRing(ctx, r, cam, w, h));
       ctx.fill();
     }
 
     // Coastlines on the globe.
     if (landA > 0.01) {
+      const nearCoast = useNear && z > 1.45;
       ctx.strokeStyle = rgba([200, 220, 245], 0.38 * landA);
       ctx.beginPath();
-      projected.land.forEach((r) => strokeRing(ctx, r, cam, w, h));
+      projected.land.forEach((r) => {
+        if (!(nearCoast && r.northAmerica)) strokeRing(ctx, r, cam, w, h);
+      });
+      if (nearCoast) projected.near.forEach((r) => strokeRing(ctx, r, cam, w, h));
       ctx.stroke();
     }
 

@@ -34,6 +34,7 @@
   const aka = [SETTINGS.fullName, SETTINGS.pronouns].filter((s) => s && s !== SETTINGS.displayName);
   document.querySelector(".head__aka").textContent = aka.join(" · ");
   document.querySelector(".head__tagline").textContent = SETTINGS.tagline || "";
+  document.querySelector(".head__seeking").textContent = SETTINGS.seeking || "";
 
   const contact = document.querySelector(".head__contact");
   function addContact(el) {

@@ -41,6 +41,7 @@
     </h1>
     <p class="identity__full"></p>
     <p class="identity__tagline"></p>
+    <p class="identity__seeking"></p>
     <ul class="contact" aria-label="Contact"></ul>
   </header>
 
@@ -53,7 +54,6 @@
       <span class="position__era"></span>
       <span class="position__sub"></span>
     </div>
-    <p class="hint"></p>
     <p class="position__sky"></p>
   </div>
 
@@ -86,18 +86,23 @@
     </svg>
   </div>
 
+  <!-- The tag filter: one button that opens the tags above it. -->
   <div class="tag-bar" role="group">
     <div class="tag-bar__top">
+      <button type="button" class="tag-bar__toggle" aria-expanded="false" aria-controls="tag-groups"></button>
       <p class="tag-bar__status" role="status" aria-live="polite"></p>
       <button type="button" class="tag-bar__clear" hidden></button>
     </div>
-    <div class="tag-bar__groups"></div>
+    <div class="tag-bar__groups" id="tag-groups" hidden></div>
   </div>
 
   <nav class="era-nav" aria-label="Eras">
     <span class="era-nav__track" aria-hidden="true"><span class="era-nav__marker"></span></span>
     <ol class="era-nav__list"></ol>
   </nav>
+
+  <!-- First-visit hint beside the zoom buttons; gone after the first zoom. -->
+  <p class="zoom-hint" hidden></p>
 
   <div class="zoom-controls" role="group" aria-label="Zoom">
     <button type="button" class="zoom-btn" data-zoom="in" aria-label="Zoom in, back in time" title="Zoom in: back in time">+</button>

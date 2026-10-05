@@ -9,8 +9,8 @@
   const ZOOM_FACTOR = 3.5;
   // The figure's height in px at the Future (depth 0), and how much it grows
   // with each step into the past.
-  const FIGURE_BASE = 18;
-  const FIGURE_GROWTH = 1.65;
+  const FIGURE_BASE = 26;
+  const FIGURE_GROWTH = 1.46;
   // Length of a one-step zoom, in ms. Multi-step jumps take a little longer.
   const STEP_MS = 700;
   // false: map convention, scroll up zooms in (back in time).
@@ -43,6 +43,7 @@
     anchor: null,       // item the sub-zoom zooms toward (kept while closing)
     tag: null,          // the active tag filter, or null
     edges: [],          // constellation lines for the active tag: [itemA, itemB]
+    eraOpacity: [],     // how visible each era is right now (applyCamera)
   };
 
   const els = {
@@ -66,6 +67,9 @@
     tagBar: document.querySelector(".tag-bar"),
     tagStatus: document.querySelector(".tag-bar__status"),
     tagClear: document.querySelector(".tag-bar__clear"),
+    tagToggle: document.querySelector(".tag-bar__toggle"),
+    tagGroups: document.querySelector(".tag-bar__groups"),
+    zoomHint: document.querySelector(".zoom-hint"),
     eras: [],
     eraTitles: [],
     navButtons: [],
@@ -104,14 +108,9 @@
     document.querySelector(".identity__pronouns").textContent = SETTINGS.pronouns;
     document.querySelector(".identity__full").textContent = SETTINGS.fullName;
     document.querySelector(".identity__tagline").textContent = SETTINGS.tagline || "";
+    document.querySelector(".identity__seeking").textContent = SETTINGS.seeking || "";
     document.querySelector(".resume-link").textContent = UI_TEXT.resumeLink || "Resume";
     renderContact();
-    const touchFirst = window.matchMedia("(pointer: coarse)").matches;
-    document.querySelector(".hint").textContent = touchFirst
-      ? "Swipe or pinch to move through time."
-      : WHEEL_DOWN_ZOOMS_IN
-        ? "Scroll down to go back in time, up to go forward."
-        : "Scroll up to go back in time, down to go forward.";
   }
 
   function renderContact() {
@@ -320,6 +319,7 @@
       el.style.setProperty("--sky-fade", t >= 0 ? "1" : clamp(1 + t * 1.6, 0, 1).toFixed(3));
       el.style.opacity = opacity.toFixed(3);
       el.style.visibility = opacity < 0.01 ? "hidden" : "visible";
+      state.eraOpacity[d] = opacity;
     });
 
     // Sub-zoom. [px, py] is the anchor item's offset from the screen center.
@@ -343,24 +343,32 @@
     drawLines();
   }
 
-  // At the Future level, the small figure stands on Earth's horizon, looking
-  // up at the sky. Elsewhere it rests in its usual corner.
-  let figureRest = null;                // its resting distance from the bottom, in px
+  // At the Future level, the small figure walks out of its corner and stands
+  // on Earth's horizon, right of centre, looking up at the open sky (as in
+  // the link-preview image). Elsewhere it rests in its corner.
+  const FIGURE_HORIZON_X = 0.68;        // where it stands, as a fraction of screen width
+  let figureRest = null;                // its resting { left, bottom }, in px
 
   function placeFigure(depth) {
     if (typeof Cosmos === "undefined" || !Cosmos.groundAt) return;
+    const f = els.figure;
     if (figureRest == null) {
-      els.figure.style.bottom = "";
-      figureRest = parseFloat(getComputedStyle(els.figure).bottom) || 0;
+      f.style.left = f.style.bottom = "";
+      const cs = getComputedStyle(f);
+      figureRest = { left: parseFloat(cs.left) || 0, bottom: parseFloat(cs.bottom) || 0 };
     }
-    const r = els.figure.getBoundingClientRect();
-    const g = Cosmos.groundAt(r.left + r.width / 2, innerWidth, innerHeight, depth);
-    if (g.y == null || g.weight <= 0) {
-      els.figure.style.bottom = "";
+    const width = f.getBoundingClientRect().width;
+    const weight = Cosmos.groundAt(innerWidth / 2, innerWidth, innerHeight, depth).weight;
+    if (weight <= 0) {
+      f.style.left = f.style.bottom = "";
       return;
     }
-    const onGround = innerHeight - g.y;
-    els.figure.style.bottom = (figureRest + (onGround - figureRest) * g.weight).toFixed(1) + "px";
+    const left = figureRest.left + (innerWidth * FIGURE_HORIZON_X - width / 2 - figureRest.left) * weight;
+    const g = Cosmos.groundAt(left + width / 2, innerWidth, innerHeight, depth);
+    const bottom = g.y == null ? figureRest.bottom
+      : figureRest.bottom + (innerHeight - g.y - figureRest.bottom) * weight;
+    f.style.left = left.toFixed(1) + "px";
+    f.style.bottom = bottom.toFixed(1) + "px";
   }
 
   function anchorOffset() {
@@ -399,6 +407,8 @@
     els.posSky.textContent = era.sky
       ? `${UI_TEXT.skyLabel || "Sky"}: ${era.sky.title} · ${era.sky.credit}`
       : "";
+
+    if (hint.shown && (level !== hint.level || inDetail)) hideHint(true);
 
     els.zoomIn.setAttribute("aria-disabled", String(inDetail || level >= MAX_DEPTH));
     els.zoomOut.setAttribute("aria-disabled", String(!inDetail && level <= 0));
@@ -556,6 +566,12 @@
     els.tagBar.setAttribute("aria-label", UI_TEXT.tagBarLabel);
     els.tagClear.textContent = UI_TEXT.clearFilter;
     els.tagClear.addEventListener("click", () => setTag(null));
+    els.tagToggle.textContent = UI_TEXT.filterToggle || UI_TEXT.tagBarLabel;
+    els.tagToggle.addEventListener("click", () => setTagsOpen(els.tagGroups.hidden));
+    // A click anywhere else closes the tags.
+    document.addEventListener("pointerdown", (e) => {
+      if (!els.tagGroups.hidden && !els.tagBar.contains(e.target)) setTagsOpen(false);
+    });
 
     const groups = [
       ["theme", UI_TEXT.themesLabel],
@@ -575,7 +591,10 @@
         const b = make("button", "tag", t.label);
         b.type = "button";
         b.setAttribute("aria-pressed", "false");
-        b.addEventListener("click", () => setTag(state.tag === t.id ? null : t.id));
+        b.addEventListener("click", () => {
+          setTag(state.tag === t.id ? null : t.id);
+          setTagsOpen(false, true);
+        });
         group.append(b);
         els.tagButtons.set(t.id, b);
       });
@@ -583,8 +602,19 @@
     });
   }
 
+  // Open or close the list of tags. focusToggle: after picking a tag, focus
+  // goes back to the toggle, since the tag buttons are about to be hidden.
+  function setTagsOpen(open, focusToggle) {
+    els.tagGroups.hidden = !open;
+    els.tagBar.classList.toggle("is-open", open);
+    els.tagToggle.setAttribute("aria-expanded", String(open));
+    if (open) (els.tagButtons.get(state.tag) || els.tagGroups.querySelector(".tag"))?.focus();
+    else if (focusToggle) els.tagToggle.focus();
+  }
+
   function setTag(id) {
     state.tag = id;
+    els.tagToggle.classList.toggle("is-active", !!id);
     els.tagButtons.forEach((b, tid) => b.setAttribute("aria-pressed", String(tid === id)));
     applyFilter();
   }
@@ -635,7 +665,9 @@
   }
 
   // Lines for the lit items: within each era, the shortest set of lines that
-  // joins them; between eras, one line from each era to the next one in time.
+  // joins them. (Lines between eras ran off-screen or ended in the middle of
+  // the map, so each era keeps its own small constellation; the status line
+  // says how many eras match.)
   function constellation(items) {
     const byDepth = new Map();
     items.forEach((it) => {
@@ -643,19 +675,7 @@
       if (!byDepth.has(d)) byDepth.set(d, []);
       byDepth.get(d).push(it);
     });
-    const groups = [...byDepth.keys()].sort((a, b) => a - b).map((d) => byDepth.get(d));
-
-    const edges = groups.flatMap(spanningTree);
-    for (let g = 1; g < groups.length; g++) {
-      let best = null;
-      groups[g - 1].forEach((a) => groups[g].forEach((b) => {
-        const [p, q] = [refPoint(a), refPoint(b)];
-        const d = Math.hypot(p[0] - q[0], p[1] - q[1]);
-        if (!best || d < best.d) best = { d, a, b };
-      }));
-      edges.push([best.a, best.b]);
-    }
-    return edges;
+    return [...byDepth.values()].flatMap(spanningTree);
   }
 
   // Minimum spanning tree (Prim's algorithm) over a handful of items.
@@ -710,15 +730,20 @@
     if (!state.edges.length) return;
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 1;
-    ctx.beginPath();
+    // Each line fades with its era, so hidden eras draw nothing.
     state.edges.forEach(([a, b]) => {
+      const alpha = state.eraOpacity[depthOfItem(a)] ?? 0;
+      if (alpha < 0.02) return;
       const p = starCenter(a.id);
       const q = starCenter(b.id);
       if (!p || !q) return;
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
       ctx.moveTo(p[0], p[1]);
       ctx.lineTo(q[0], q[1]);
+      ctx.stroke();
     });
-    ctx.stroke();
+    ctx.globalAlpha = 1;
   }
 
   // -------------------------------------------------------------------------
@@ -858,12 +883,11 @@
   function declineWall() {
     state.pendingWall = null;
     if (els.wall.open) els.wall.close();
-    // Back to the starting view. If the URL itself points past the wall
-    // (a shared link), replace it rather than adding a history entry.
-    const startId = ERAS[START_DEPTH].id;
+    // Stay where you were: the camera never moved for the prompt. Only a URL
+    // that itself points past the wall (a shared link) needs somewhere else
+    // to land, so it's replaced with the starting view.
     const r = routeFor(currentHashId());
-    if (r && r.era >= WALL_DEPTH) location.replace("#" + startId);
-    else go(startId);
+    if (r && r.era >= WALL_DEPTH) location.replace("#" + ERAS[START_DEPTH].id);
   }
 
   function renderWall() {
@@ -890,10 +914,11 @@
   const OPENING_MS = 2500;
   const DISMISS_EVENTS = ["pointerdown", "keydown", "wheel", "touchstart"];
 
+  // Returns true if the line is showing (the zoom hint waits for it).
   function showOpening() {
-    if (!UI_TEXT.openingLine || els.wall.open) return;
+    if (!UI_TEXT.openingLine || els.wall.open) return false;
     try {
-      if (sessionStorage.getItem(OPENING_KEY)) return;
+      if (sessionStorage.getItem(OPENING_KEY)) return false;
       sessionStorage.setItem(OPENING_KEY, "1");
     } catch (e) { /* private mode: show it anyway */ }
 
@@ -908,9 +933,53 @@
       DISMISS_EVENTS.forEach((t) => window.removeEventListener(t, close, true));
       el.classList.remove("is-shown");
       setTimeout(() => { el.hidden = true; }, 900);
+      setTimeout(showHint, 500);
     }
     timer = setTimeout(close, OPENING_MS);
     DISMISS_EVENTS.forEach((t) => window.addEventListener(t, close, { capture: true, passive: true }));
+    return true;
+  }
+
+  // -------------------------------------------------------------------------
+  // The zoom hint: on a first visit, a short note beside the + and − buttons
+  // on how to move through time. It goes away after the first zoom and stays
+  // away for the rest of the visit.
+  // -------------------------------------------------------------------------
+
+  const HINT_KEY = "camcar.hintDone";
+  const hint = { shown: false, level: null };
+
+  function showHint() {
+    if (hint.shown || state.detail || els.wall.open) return;
+    try { if (sessionStorage.getItem(HINT_KEY)) return; } catch (e) { /* show it */ }
+    const touchFirst = window.matchMedia("(pointer: coarse)").matches;
+    const how = touchFirst
+      ? UI_TEXT.hintTouch
+      : WHEEL_DOWN_ZOOMS_IN
+        ? "Scroll down to go back in time, up to go forward."
+        : UI_TEXT.hintScroll;
+    els.zoomHint.replaceChildren(
+      make("span", "zoom-hint__how", how),
+      make("span", "zoom-hint__buttons", UI_TEXT.hintButtons));
+    els.zoomHint.hidden = false;
+    hint.shown = true;
+    hint.level = state.level;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      els.zoomHint.classList.add("is-shown");
+      document.body.classList.add("hint-on");
+    }));
+  }
+
+  // done: the visitor has zoomed, so don't show it again this visit.
+  function hideHint(done) {
+    if (!hint.shown) return;
+    hint.shown = false;
+    if (done) {
+      try { sessionStorage.setItem(HINT_KEY, "1"); } catch (e) { /* memory only */ }
+    }
+    els.zoomHint.classList.remove("is-shown");
+    document.body.classList.remove("hint-on");
+    setTimeout(() => { if (!hint.shown) els.zoomHint.hidden = true; }, 600);
   }
 
   // -------------------------------------------------------------------------
@@ -1017,6 +1086,11 @@
 
   function onKey(e) {
     if (els.wall.open) return; // the dialog handles its own keys
+    if (e.key === "Escape" && !els.tagGroups.hidden) {
+      e.preventDefault();
+      setTagsOpen(false, els.tagBar.contains(document.activeElement));
+      return;
+    }
     if (e.key === "Escape" && (state.openItem || state.detail)) {
       e.preventDefault();
       go(ERAS[state.level].id);
@@ -1130,5 +1204,5 @@
   setActive(state.level, null);
   applyCamera();
   route(true);
-  showOpening();
+  if (!showOpening()) setTimeout(showHint, 700);
 })();

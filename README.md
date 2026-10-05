@@ -7,13 +7,19 @@ A personal site for Cam Carr (Cameron Carr, she/they), a 2026 Vanderbilt graduat
 | Era | The map shows |
 |---|---|
 | **Goals, hopes, and dreams** | Earth's curved horizon at night, with a small figure standing on it under a wide sky |
-| **Now** | The whole Earth, gently rocking, with Florida marked (home again). This is where the site opens, with her name, tagline, and contact links. |
-| **Vanderbilt** | Tennessee, with Nashville marked: the professional core of her college years |
+| **Now** | The whole Earth, gently rocking, with Florida marked (home again). This is where the site opens, with her name, tagline, the work she's looking for, and contact links. |
+| **Vanderbilt** | The Southeast, with Tennessee outlined and Nashville marked: the professional core of her college years |
 | **Personal** | Florida, where she grew up. It sits behind a short note on authenticity, and holds the stories behind the professional items. |
 
-For visitors who'd rather not zoom, a **Resume** button (top right, in every era) opens a plain, one-page resume that prints cleanly or saves as a PDF.
+## Getting around
 
-Items open into panels. A tag bar lights up related items across eras as constellations. "Selected coursework" opens into its own small sky of course constellations.
+- **Scroll** to move through time: scroll up to go back (zoom in), down to go forward (zoom out). On a phone, swipe or pinch.
+- **The + and − buttons** (bottom right) do the same, one step at a time. So do the arrow keys and the + and − keys.
+- **The timeline** along the bottom jumps straight to any era.
+- On a first visit, a short hint beside the + and − buttons explains this. It goes away after the first zoom.
+- **Items** open into panels. "Selected coursework" opens into its own small sky of course constellations.
+- **Filter by tag** (bottom centre) lights up the items that share a theme or skill, joined as a constellation within each era.
+- **Resume** (top right, in every era) opens a plain, one-page resume for visitors who'd rather not zoom. It prints cleanly or saves as a PDF.
 
 ## How it was made
 
@@ -42,7 +48,7 @@ Plain HTML, CSS, and JavaScript, with no framework and no build step.
 | `main.js` | Zoom, navigation, URLs (every era and item has its own `#link`), panels, the tag filter and constellation lines, the wall prompt, keyboard, touch, and reduced-motion handling |
 | `cosmos.js` | The map under the content, drawn on a canvas: an orthographic Earth, state outlines, the horizon. Each level has its own focus, so the view drifts as it zooms. |
 | `starfield.js` | Generative stars from a fixed seed, so the sky is the same on every visit |
-| `geo.js` | Simplified map outlines (generated) |
+| `geo.js` | Simplified map outlines (generated): world land, US states, and finer North American coasts for the close views |
 | `styles.css` | All colours and fonts as CSS variables |
 | `resume.html`, `resume.js`, `resume.css` | The plain resume page, filled from `RESUME` in `content.js`, with print styles for one letter-size page |
 
@@ -57,4 +63,4 @@ To run it locally, open `index.html`, or serve the folder with `python -m http.s
 ## Credits
 
 - Fonts: [Cormorant Garamond](https://github.com/CatharsisFonts/Cormorant) and [Inter](https://rsms.me/inter/), both under the SIL Open Font License. The license files are in `fonts/`.
-- Map data, public domain: US state shapes from the US Census Bureau (via [us-atlas](https://github.com/topojson/us-atlas)), and world land from [Natural Earth](https://www.naturalearthdata.com/) (via [world-atlas](https://github.com/topojson/world-atlas)).
+- Map data, public domain: US state shapes from the US Census Bureau (via [us-atlas](https://github.com/topojson/us-atlas)), and world land from [Natural Earth](https://www.naturalearthdata.com/) (via [world-atlas](https://github.com/topojson/world-atlas); the 1:50m coasts for the close views).

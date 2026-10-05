@@ -101,7 +101,9 @@ a:hover { text-decoration-color: var(--link); }
 
 .head__aka { margin: 0.25rem 0 0; color: var(--ink-dim); }
 
-.head__tagline { margin: 0.6rem 0 0.7rem; max-width: 38rem; }
+.head__tagline { margin: 0.6rem 0 0.2rem; max-width: 38rem; }
+.head__seeking { margin: 0 0 0.7rem; max-width: 38rem; font-style: italic; color: var(--ink-dim); }
+.head__seeking:empty { display: none; }
 
 .head__contact {
   list-style: none;
@@ -173,17 +175,18 @@ a:hover { text-decoration-color: var(--link); }
 /* ----- Print: one plain page ----- */
 
 @media print {
-  @page { size: letter; margin: 0.45in 0.55in; }
+  @page { size: letter; margin: 0.4in 0.55in; }
 
   html, body { background: #fff; }
-  body { padding: 0; font-size: 9pt; line-height: 1.32; color: #000; }
+  body { padding: 0; font-size: 9pt; line-height: 1.28; color: #000; }
   .bar, .noscript { display: none; }
   .sheet { max-width: none; padding: 0; box-shadow: none; border-radius: 0; background: #fff; }
   .head { padding-bottom: 0.55rem; }
   .head__name { font-size: 22pt; }
   .head__aka { margin-top: 0.1rem; }
-  .head__tagline { margin: 0.3rem 0 0.3rem; max-width: none; }
-  .head__contact { font-size: 8.5pt; }
+  .head__tagline { margin: 0.3rem 0 0.1rem; max-width: none; }
+  .head__seeking { margin: 0 0 0.3rem; max-width: none; }
+  .head__contact { font-size: 8.5pt; gap: 0.1rem 0.9rem; }   /* one line */
   .section { margin-top: 0.7rem; }
   .section__heading { margin-bottom: 0.25rem; }
   .entry + .entry { margin-top: 0.45rem; }

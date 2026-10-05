@@ -10,6 +10,8 @@ const SETTINGS = {
   displayName: "Cam Carr",
   fullName: "Cameron Carr",
   tagline: "Vanderbilt \u201926 history honors grad, pursuing questions of human flourishing in a world increasingly shaped by AI.",
+  // The work she's looking for: under the tagline in Now, and on the resume.
+  seeking: "Looking for frontier work that advances society in a prosocial way.",
   pronouns: "she/they",        // shown in the header; change here only
   email: "CameronCarr55@gmail.com",
   phone: "",                   // left blank on purpose: this file is public
@@ -59,7 +61,13 @@ const UI_TEXT = {
   backToProfessional: "Back to the professional side",
   beneathLabel: "Behind",         // shown as "Behind: The Soul of Transhumanism"
   beneathThis: "The story behind this", // heading in a professional item's panel
+  // The first-visit hint beside the + and − buttons. It goes away after the
+  // first zoom.
+  hintScroll: "Scroll up to go back in time, down to go forward.",
+  hintTouch: "Swipe or pinch to move through time.",
+  hintButtons: "Or use the + and − buttons.",
   tagBarLabel: "Filter by tag",
+  filterToggle: "Filter by tag",
   themesLabel: "Themes",
   skillsLabel: "Skills",
   clearFilter: "Clear",
@@ -129,7 +137,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "A 100-page senior honors thesis on the history of transhumanist thought.",
-    body: "Senior honors thesis in History, 2024–2026: \"The Soul of Transhumanism: Rationalism and Dissent in the Early History of Transhumanism.\" Advised by Dr. Ole Molvig.\n\nThe thesis traces rationalism, elitism, and gendered ideology in transhumanist thought, from early 20th-century British scientific socialists to today's Silicon Valley AI culture. It argues that the values embedded in AI culture are historically contingent, not neutral or inevitable, which speaks directly to whose values get encoded into AI systems.\n\nIt earned Honors in History, which only a handful of history students receive each year.",
+    body: "Senior honors thesis in History, 2024–2026: \"The Soul of Transhumanism: Rationalism and Dissent in the Early History of Transhumanism.\" Advised by Dr. Ole Molvig.\n\nThe thesis traces rationalism, elitism, and gendered ideology in transhumanist thought, from early 20th-century British scientific socialists to today's Silicon Valley AI culture. It argues that the values embedded in AI culture are historically contingent, not neutral or inevitable, which speaks directly to whose values get encoded into AI systems.\n\nIt earned Honors in History.",
     tags: ["transhumanism", "ai", "writing", "research"],
     // The PDF is hosted with the site (signed approval page removed). If the
     // Vanderbilt repository link becomes available, it can be added here too.
@@ -178,7 +186,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "Led a 300+ member club. Its League of Legends team reached the NECC quarterfinals or better every year, a club first.",
-    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team captain sophomore through junior year. On the board from sophomore year: Vice President sophomore year, co-president junior year, and President senior year. As coach, developed player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year. No other Vanderbilt Gaming league team in the club's history has reached the quarterfinals.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as co-president and President. The board I led was male-dominated, and mostly chosen by the board before it, so I raised up younger, more diverse members to take things over. Handed the club to its first woman president, to my knowledge, and its board is now far more balanced by gender and race. Also served as Event Chair.",
+    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team captain sophomore through junior year. On the board from sophomore year: Vice President sophomore year, co-president junior year, and President senior year. As coach, developed player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as co-president and President. The board I led was male-dominated, and mostly chosen by the board before it, so I raised up younger, more diverse members to take things over. Its board is now far more balanced by gender and race. Also served as Event Chair.",
     tags: ["gaming", "teaching", "leadership"],
     image: null,
   },
@@ -191,7 +199,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "Core QA for FlourishBench, PAL's flagship AI benchmark. The only intern given a contract extension.",
-    body: "Operations intern at Positive AI Labs, 2026 to present.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset.\n\nDesigns and deploys AI-driven triggers and automation pipelines that streamline routine and multi-step operational workflows, and organizes and maintains datasets and internal information systems.\n\nThe only intern to receive a contract extension, earned through independent ownership of work, sound judgment on when to escalate, and clear communication in a fast-paced startup.",
+    body: "Operations intern at Positive AI Labs, 2026 to present.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset.\n\nDesigns and deploys AI-driven triggers and automation pipelines that streamline routine and multi-step operational workflows, and organizes and maintains datasets and internal information systems.\n\nThe only intern to receive a contract extension.",
     tags: ["ai", "problem-solving", "writing"],
     image: null,
   },

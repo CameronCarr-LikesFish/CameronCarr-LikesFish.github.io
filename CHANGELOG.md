@@ -11,15 +11,39 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## Open (not yet decided or done)
 
-- **Tone:** trim superlatives the design review flagged. "First woman president" and "a club first" each appear twice. Also "only a handful of history students…", "Florida's first non-binary YMCA camp counselor", and a self-assessment line in the Positive AI Labs item.
 - **An honest note that Claude built the site and the words are Cam's.** The authenticity note names AI as part of the problem, so saying this plainly turns a tension into a strength.
 - **The Awards tag:** keep, rename, or drop it. The review felt it reads as a trophy case.
-- **A Future item on the work Cam wants next** (from the interview).
-- **Interview topics still to cover:** Youth in Government (and which item it belongs behind), why Law, History, and Society, and the fish story.
-- **Pinned for near the end:**
-  - A short first-visit note explaining that scrolling zooms in and out, deferred while the design keeps changing.
-  - The thesis's Vanderbilt repository link, for when that site works again.
-- **Smaller:** whether "No, take me back" at the Personal window should return to Now (current) or to Vanderbilt.
+- **Interview topics still to cover:** why Law, History, and Society, and the fish story. (Youth in Government is on the resume now; its map item could grow from the same answers.)
+- **The thesis's Vanderbilt repository link,** for when that site works again.
+- **Cam's new resume** is coming; the resume page will be updated from it.
+- **A custom domain,** once one is registered and verified.
+
+---
+
+## 2026-10-05
+
+### Polish: a zoom hint, finer maps, a quieter filter
+
+**Added**
+- **A first-visit hint** beside the + and − buttons: "Scroll up to go back in time, down to go forward. Or use the + and − buttons." (On phones: swipe or pinch.) The buttons glow softly while it shows, and it goes away after the first zoom.
+- **What Cam is looking for,** under her tagline in Now and on the resume: "Looking for frontier work that advances society in a prosocial way."
+
+**Changed**
+- **Finer coastlines up close.** Vanderbilt and Personal now use Natural Earth's 1:50m coasts instead of a coarse outline of the whole Americas, so Florida's outline lines up with the land under it.
+- **Vanderbilt is framed tighter,** so Tennessee reads as the subject instead of the whole continent.
+- **The tag bar is one "Filter by tag" button.** The tags open above it and close after a pick.
+- **Constellations stay within an era.** Lines between eras used to run off the screen or stop in the middle of the globe.
+- **The figure walks out onto the horizon** in Goals, hopes, and dreams, right of centre (as in the link-preview image), and is a little taller there.
+- **"No, take me back"** at the Personal window now keeps you where you were, instead of jumping to Now.
+- "Goals, hopes, and dreams" fits on one line. "Back to the professional side" has a solid backing, so map lines don't run through it.
+
+**Removed (superlatives)**
+- "Which only a handful of history students receive each year" (thesis).
+- "No other Vanderbilt Gaming league team… has reached the quarterfinals", which repeated "a club first".
+- "First woman president" from the Vanderbilt Gaming item. It stays in "Common ground", where the story earns it.
+- The self-assessment after "the only intern to receive a contract extension" (Positive AI Labs).
+
+**Why:** the design review's main finding was that visitors couldn't tell the map zooms. The rest are its polish notes, plus superlatives Cam agreed to trim. "Florida's first non-binary YMCA camp counselor" stays: Cam reaffirmed it.
 
 ---
 

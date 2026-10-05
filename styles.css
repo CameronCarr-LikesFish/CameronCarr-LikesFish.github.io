@@ -143,7 +143,7 @@ button { font: inherit; color: inherit; }
   top: 13%;
   left: 50%;
   transform: translateX(-50%);
-  width: min(30rem, 40%);
+  width: min(42rem, 64%);
   text-align: center;
 }
 
@@ -165,7 +165,11 @@ button { font: inherit; color: inherit; }
   font-size: clamp(0.95rem, 1.5vw, 1.15rem);
 }
 
-.era__back { margin-top: 0.9rem; font-size: 0.85rem; }
+.era__back {
+  margin-top: 0.9rem;
+  font-size: 0.85rem;
+  background: var(--panel-solid);
+}
 
 /* The era's NASA photograph: faint, behind the generative stars' glow and
    all text. --sky-opacity is tuned per era (bright images get less). */
@@ -297,6 +301,17 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
   color: var(--ink);
 }
 
+/* What she's looking for, under the tagline. */
+.identity__seeking {
+  margin: -0.2rem 0 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  font-style: italic;
+  color: var(--accent);
+}
+
+.identity__seeking:empty { display: none; }
+
 .identity__pronouns {
   font-family: var(--font-body);
   font-size: 0.85rem;
@@ -371,8 +386,6 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 }
 
 .position__sub { display: block; color: var(--ink-dim); }
-
-.hint { margin: 0.4rem 0 0; font-size: 0.75rem; color: var(--ink-dim); }
 
 .position__sky {
   margin: 0.3rem 0 0;
@@ -458,6 +471,38 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 .zoom-btn:hover { border-color: var(--accent); }
 
 .zoom-btn[aria-disabled="true"] { opacity: 0.35; cursor: default; }
+
+/* ----- Zoom hint: first visit only, beside the buttons ----- */
+
+.zoom-hint {
+  position: fixed;
+  right: 5rem;
+  bottom: 1.3rem;
+  z-index: 3;
+  max-width: 17rem;
+  margin: 0;
+  text-align: right;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  text-shadow: var(--text-halo);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(0.5rem);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.zoom-hint.is-shown { opacity: 1; transform: none; }
+
+.zoom-hint__how { display: block; color: var(--ink); }
+.zoom-hint__buttons { display: block; margin-top: 0.2rem; color: var(--ink-dim); }
+
+/* While the hint shows, the buttons it points to glow softly. */
+body.hint-on .zoom-btn {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(227, 169, 179, 0.35);
+}
+
+.zoom-btn { transition: border-color 0.4s, box-shadow 0.4s; }
 
 /* ----- Item panel ----- */
 
@@ -688,23 +733,59 @@ body.is-filtering .item.is-lit { opacity: 1; }
   transform: translateX(-50%);
   width: max-content;
   max-width: calc(100vw - 9rem);
+  display: flex;
+  flex-direction: column-reverse;     /* the tags open above the button */
+  align-items: center;
+  gap: 0.5rem;
   text-align: center;
 }
 
 .tag-bar__top {
   display: flex;
   justify-content: center;
-  align-items: baseline;
-  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.7rem;
 }
+
+.tag-bar__toggle {
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tag-bar__toggle::after {
+  content: "";
+  display: inline-block;
+  width: 0.38em;
+  height: 0.38em;
+  margin: 0 0 0.18em 0.5em;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(-135deg);           /* a small chevron pointing up */
+  vertical-align: middle;
+  transition: transform 0.2s;
+}
+
+.tag-bar__toggle[aria-expanded="true"]::after { transform: rotate(45deg); margin-bottom: 0.32em; }
+
+.tag-bar__toggle:hover,
+.tag-bar__toggle[aria-expanded="true"],
+.tag-bar__toggle.is-active { color: var(--ink); border-color: var(--accent); }
 
 .tag-bar__status {
-  margin: 0 0 0.4rem;
+  margin: 0;
   font-size: 0.8rem;
   color: var(--accent);
+  text-shadow: var(--text-halo);
 }
 
-.tag-bar__status:empty { margin: 0; }
+.tag-bar__status:empty { display: none; }
 
 .tag-bar__clear {
   padding: 0;
@@ -721,9 +802,14 @@ body.is-filtering .item.is-lit { opacity: 1; }
 
 .tag-bar__groups {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.35rem 1.1rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel-solid);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .tag-group {
@@ -997,6 +1083,7 @@ body.is-fading .detail { opacity: 0 !important; transition: opacity 0.16s ease; 
 .btn:focus-visible,
 .panel__close:focus-visible,
 .tag-bar__clear:focus-visible,
+.tag-bar__toggle:focus-visible,
 .resume-link:focus-visible,
 .contact a:focus-visible {
   outline: 2px solid var(--accent);
@@ -1039,7 +1126,14 @@ body.is-fading #lines { opacity: 0; }
 
   .site-header { top: 0.75rem; left: 1rem; max-width: 58vw; }
   .identity { font-size: 1.45rem; }
-  .identity__tagline { font-size: 0.72rem; margin-bottom: 0.3rem; }
+  .identity__tagline { font-size: 0.72rem; margin: 0.4rem 0 0.3rem; }
+  .identity__seeking { font-size: 0.72rem; margin-top: -0.15rem; }
+  /* Below the name, the header can use the full width: the Resume button
+     only shares the first line. */
+  .site-header { max-width: calc(100vw - 2rem); }
+  .identity { max-width: calc(100vw - 8rem); }
+  /* In Now the header is taller, so the era title sits a little lower. */
+  .era[data-era="now"] .era__head { top: 21%; }
   .identity__full { display: none; }   /* the name and tagline say enough on a phone */
 
   /* The timeline already shows where you are; keep the label for screen
@@ -1060,7 +1154,6 @@ body.is-fading #lines { opacity: 0; }
   .resume-link { top: 0.85rem; right: 1rem; padding: 0.35rem 0.8rem; font-size: 0.75rem; }
   .position__label { font-size: 0.65rem; }
   .position__era { font-size: 1rem; }
-  .hint { font-size: 0.68rem; }
 
   .era__head { top: 17%; width: 70%; }
   .era__title { font-size: 1.9rem; }
@@ -1073,28 +1166,20 @@ body.is-fading #lines { opacity: 0; }
   .item__parent { font-size: 0.66rem; }
   .item__star { margin-bottom: 0.3rem; }
 
-  /* Tags: one row that scrolls sideways. */
+  /* Tags: the button sits above the timeline; the list opens as a card. */
   .tag-bar {
     bottom: 3.9rem;
-    left: 0;
-    right: 0;
-    width: auto;
-    max-width: none;
-    transform: none;
+    max-width: calc(100vw - 2rem);
   }
-  .tag-bar__groups {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 0.3rem 1rem;
-    scrollbar-width: none;
-    /* Fade the right edge to hint that the row scrolls. */
-    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
-    mask-image: linear-gradient(90deg, #000 85%, transparent);
-  }
-  .tag-bar__groups::-webkit-scrollbar { display: none; }
-  .tag-group { flex-wrap: nowrap; }
+  .tag-bar__groups { padding: 0.65rem 0.75rem; }
   .tag { white-space: nowrap; }
+
+  .zoom-hint {
+    right: 4rem;
+    bottom: 7.5rem;
+    max-width: min(13rem, 52vw);
+    font-size: 0.78rem;
+  }
 
   .era-nav { bottom: 0.6rem; }
   .era-nav__btn { font-size: 0.72rem; line-height: 1.2; }
@@ -1148,9 +1233,11 @@ body.is-fading #lines { opacity: 0; }
 .identity__full { display: none; }
 
 .identity__tagline,
+.identity__seeking,
 .contact { transition: opacity 0.35s ease, visibility 0.35s; }
 
 body:not([data-era="now"]) .identity__tagline,
+body:not([data-era="now"]) .identity__seeking,
 body:not([data-era="now"]) .contact {
   opacity: 0;
   visibility: hidden;

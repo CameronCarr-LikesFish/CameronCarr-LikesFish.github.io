@@ -22,7 +22,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-07
 
-### Cards instead of pins; portfolio and resume in Now
+### Cards instead of pins; portfolio and resume in Now (`85c465c`)
 
 **Changed**
 - **Items are cards** instead of glowing dots with labels. On a map, a dot above a label reads as a location pin ("this happened here"). Taking the dots away on their own (tried on 2026-09-30) made the titles stop looking clickable; cards fix both. "Selected coursework" says "Zoom in" on its card.
@@ -39,7 +39,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-05
 
-### Polish: a zoom hint, finer maps, a quieter filter
+### Polish: a zoom hint, finer maps, a quieter filter (`9a64020`)
 
 **Added**
 - **A first-visit hint** beside the + and − buttons: "Scroll up to go back in time, down to go forward. Or use the + and − buttons." (On phones: swipe or pinch.) The buttons glow softly while it shows, and it goes away after the first zoom.

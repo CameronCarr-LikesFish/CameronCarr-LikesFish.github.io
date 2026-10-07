@@ -28,7 +28,6 @@
   --accent: #e3a9b3;
   --accent-ink: #26131b;                     /* text on an accent background */
   --accent-glow: rgba(227, 169, 179, 0.7);
-  --constellation: rgba(227, 169, 179, 0.55);
   --line: rgba(232, 236, 245, 0.18);
   --panel: rgba(10, 15, 34, 0.72);
   --panel-solid: rgba(9, 13, 30, 0.95);
@@ -95,10 +94,9 @@ button { font: inherit; color: inherit; }
 
 /* ----- Layers ----- */
 
-/* Stack, back to front: sky, constellation lines, eras, fixed UI, panel. */
+/* Stack, back to front: sky, eras, fixed UI, panel. */
 
-#sky,
-#lines {
+#sky {
   position: fixed;
   inset: 0;
   width: 100%;
@@ -106,8 +104,6 @@ button { font: inherit; color: inherit; }
   z-index: 0;
   pointer-events: none;
 }
-
-#lines { z-index: 1; }
 
 #stage {
   position: fixed;
@@ -216,33 +212,30 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 
 /* ----- Items ----- */
 
+/* Each item is a card: a quiet labelled button. (A glowing dot above a
+   label read as a location pin on the map.) */
 .item {
   position: absolute;
   width: min(15rem, 28vw);
   transform: translate(-50%, -50%);
-  padding: 0.5rem 0.6rem;
-  background: none;
-  border: 1px solid transparent;
+  padding: 0.55rem 0.9rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
   border-radius: 12px;
   text-align: center;
   text-shadow: var(--text-halo);
   cursor: pointer;
+  transition: opacity 0.3s, border-color 0.2s, box-shadow 0.3s, background 0.2s;
+}
+
+.item:hover,
+.item.is-selected {
+  border-color: var(--accent);
+  background: var(--panel-solid);
 }
 
 .item:hover .item__title,
 .item.is-selected .item__title { color: var(--accent); }
-
-.item.is-selected { border-color: var(--line); }
-
-.item__star {
-  display: block;
-  width: 8px;
-  height: 8px;
-  margin: 0 auto 0.5rem;
-  border-radius: 50%;
-  background: var(--ink);
-  box-shadow: 0 0 8px 2px var(--star-glow);
-}
 
 .item__parent {
   display: block;
@@ -339,7 +332,7 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 .contact a { color: var(--ink); text-decoration-color: var(--line); }
 .contact a:hover { text-decoration-color: var(--accent); }
 
-/* ----- Resume link: top right, in every era ----- */
+/* ----- Resume link: top right, in Now (with the rest of the header) ----- */
 
 .resume-link {
   position: fixed;
@@ -711,17 +704,13 @@ body.hint-on .zoom-btn {
 
 /* ----- Tag filter: lit and dimmed items ----- */
 
-.item { transition: opacity 0.3s; }
-
-body.is-filtering .item { opacity: 0.25; }
+body.is-filtering .item { opacity: 0.3; }
+body.is-filtering .item:hover { opacity: 0.85; }
 body.is-filtering .item.is-lit { opacity: 1; }
 
-.item__star { transition: transform 0.3s, background 0.3s, box-shadow 0.3s; }
-
-.item.is-lit .item__star {
-  background: #fff;
-  box-shadow: 0 0 10px 3px var(--accent-glow);
-  transform: scale(1.5);
+.item.is-lit {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(227, 169, 179, 0.35);
 }
 
 /* ----- Tag bar (above the timeline) ----- */
@@ -983,22 +972,7 @@ body.is-filtering .item.is-lit { opacity: 1; }
   position: relative;
   list-style: none;
   margin: 0;
-  padding: 0 0 0 2.4rem;
-}
-
-.cluster__lines {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.cluster__lines polyline {
-  fill: none;
-  stroke: var(--constellation);
-  stroke-width: 1;
+  padding: 0 0 0 1.2rem;
 }
 
 .course {
@@ -1009,7 +983,7 @@ body.is-filtering .item.is-lit { opacity: 1; }
 
 .course__star {
   position: absolute;
-  left: calc(-2.4rem + var(--dx, 8px));
+  left: -0.85rem;
   top: 0.85rem;
   width: 7px;
   height: 7px;
@@ -1051,12 +1025,17 @@ body.in-detail .tag-bar { visibility: hidden; }
 
 body.is-fading .detail { opacity: 0 !important; transition: opacity 0.16s ease; }
 
-/* Items that open a sub-zoom get a faint ring around their star. */
+/* Items that open a sub-zoom say so. */
 .item--zoomable { cursor: zoom-in; }
 
-.item--zoomable .item__star {
-  outline: 1px solid var(--accent);
-  outline-offset: 4px;
+.item--zoomable::after {
+  content: "Zoom in";
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
 }
 
 /* ----- Accessibility helpers ----- */
@@ -1099,23 +1078,18 @@ html, body { overscroll-behavior: none; }
 
 /* ----- Reduced motion: fades instead of zooms ----- */
 
-#stage,
-#lines { transition: opacity 0.16s ease; }
+#stage { transition: opacity 0.16s ease; }
 
-body.is-fading #stage,
-body.is-fading #lines { opacity: 0; }
+body.is-fading #stage { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .panel { transform: none; }
-  .item__star { transition: none; }
-  .item.is-lit .item__star { transform: none; }
 }
 
 /* ----- Short screens: drop item summaries so items don't collide ----- */
 
 @media (max-height: 640px) {
   .item__summary { display: none; }
-  .item__star { margin-bottom: 0.3rem; }
   .era__head { top: 11%; }
 }
 
@@ -1160,11 +1134,10 @@ body.is-fading #lines { opacity: 0; }
   .era__subtitle { font-size: 0.9rem; }
   .era__back { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
 
-  .item { width: 31vw; padding: 0.3rem; }
+  .item { width: 31vw; padding: 0.4rem 0.45rem; }
   .item__title { font-size: 0.98rem; }
   .item__summary { display: none; }
   .item__parent { font-size: 0.66rem; }
-  .item__star { margin-bottom: 0.3rem; }
 
   /* Tags: the button sits above the timeline; the list opens as a card. */
   .tag-bar {
@@ -1174,12 +1147,19 @@ body.is-fading #lines { opacity: 0; }
   .tag-bar__groups { padding: 0.65rem 0.75rem; }
   .tag { white-space: nowrap; }
 
+  /* On phones the hint sits centred above "Filter by tag", clear of the
+     items and the buttons. */
   .zoom-hint {
-    right: 4rem;
-    bottom: 7.5rem;
-    max-width: min(13rem, 52vw);
+    left: 50%;
+    right: auto;
+    bottom: 6.4rem;
+    width: min(16rem, 70vw);
+    max-width: none;
+    text-align: center;
     font-size: 0.78rem;
+    transform: translate(-50%, 0.5rem);
   }
+  .zoom-hint.is-shown { transform: translate(-50%, 0); }
 
   .era-nav { bottom: 0.6rem; }
   .era-nav__btn { font-size: 0.72rem; line-height: 1.2; }
@@ -1234,10 +1214,12 @@ body.is-fading #lines { opacity: 0; }
 
 .identity__tagline,
 .identity__seeking,
+.resume-link,
 .contact { transition: opacity 0.35s ease, visibility 0.35s; }
 
 body:not([data-era="now"]) .identity__tagline,
 body:not([data-era="now"]) .identity__seeking,
+body:not([data-era="now"]) .resume-link,
 body:not([data-era="now"]) .contact {
   opacity: 0;
   visibility: hidden;

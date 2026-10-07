@@ -20,6 +20,23 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ---
 
+## 2026-10-07
+
+### Cards instead of pins; portfolio and resume in Now
+
+**Changed**
+- **Items are cards** instead of glowing dots with labels. On a map, a dot above a label reads as a location pin ("this happened here"). Taking the dots away on their own (tried on 2026-09-30) made the titles stop looking clickable; cards fix both. "Selected coursework" says "Zoom in" on its card.
+- **Portfolio projects moved to Now** (from Goals, hopes, and dreams), and dropped "in progress" from the name. The projects are current work, not a hope.
+- **The Resume button lives in Now,** with the rest of the present-day header, instead of showing in every era.
+- **A faded card comes back up on hover** while a tag filter is on, so it's clear it can still be opened.
+
+**Removed**
+- **Constellation lines,** everywhere: between matching items when a tag is on, and between the courses in the coursework view. The tag filter still lights up matching cards.
+
+**Why:** Cam found the dots read as location pins. She compared three options (the dots, a small star beside each title, and cards) and chose cards.
+
+---
+
 ## 2026-10-05
 
 ### Polish: a zoom hint, finer maps, a quieter filter
@@ -32,7 +49,6 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 - **Finer coastlines up close.** Vanderbilt and Personal now use Natural Earth's 1:50m coasts instead of a coarse outline of the whole Americas, so Florida's outline lines up with the land under it.
 - **Vanderbilt is framed tighter,** so Tennessee reads as the subject instead of the whole continent.
 - **The tag bar is one "Filter by tag" button.** The tags open above it and close after a pick.
-- **Constellations stay within an era.** Lines between eras used to run off the screen or stop in the middle of the globe.
 - **The figure walks out onto the horizon** in Goals, hopes, and dreams, right of centre (as in the link-preview image), and is a little taller there.
 - **"No, take me back"** at the Personal window now keeps you where you were, instead of jumping to Now.
 - "Goals, hopes, and dreams" fits on one line. "Back to the professional side" has a solid backing, so map lines don't run through it.

@@ -7,7 +7,7 @@ A personal site for Cam Carr (Cameron Carr, she/they), a 2026 Vanderbilt graduat
 | Era | The map shows |
 |---|---|
 | **Goals, hopes, and dreams** | Earth's curved horizon at night, with a small figure standing on it under a wide sky |
-| **Now** | The whole Earth, gently rocking, with Florida marked (home again). This is where the site opens, with her name, tagline, the work she's looking for, and contact links. |
+| **Now** | The whole Earth, gently rocking, with Florida marked (home again). This is where the site opens, with her name, tagline, the work she's looking for, contact links, her resume, and her portfolio projects. |
 | **Vanderbilt** | The Southeast, with Tennessee outlined and Nashville marked: the professional core of her college years |
 | **Personal** | Florida, where she grew up. It sits behind a short note on authenticity, and holds the stories behind the professional items. |
 
@@ -17,9 +17,9 @@ A personal site for Cam Carr (Cameron Carr, she/they), a 2026 Vanderbilt graduat
 - **The + and − buttons** (bottom right) do the same, one step at a time. So do the arrow keys and the + and − keys.
 - **The timeline** along the bottom jumps straight to any era.
 - On a first visit, a short hint beside the + and − buttons explains this. It goes away after the first zoom.
-- **Items** open into panels. "Selected coursework" opens into its own small sky of course constellations.
-- **Filter by tag** (bottom centre) lights up the items that share a theme or skill, joined as a constellation within each era.
-- **Resume** (top right, in every era) opens a plain, one-page resume for visitors who'd rather not zoom. It prints cleanly or saves as a PDF.
+- **Items** are small cards that open into panels. "Selected coursework" zooms into its own view of the courses.
+- **Filter by tag** (bottom centre) lights up the cards that share a theme or skill and fades the rest.
+- **Resume** (top right, in Now) opens a plain, one-page resume for visitors who'd rather not zoom. It prints cleanly or saves as a PDF.
 
 ## How it was made
 
@@ -45,7 +45,7 @@ Plain HTML, CSS, and JavaScript, with no framework and no build step.
 |---|---|
 | `index.html` | Page structure and link-preview tags |
 | `content.js` | **All text and settings**: eras, items, tags, the coursework sub-zoom, the resume, interface text. Editing words never means touching layout code. |
-| `main.js` | Zoom, navigation, URLs (every era and item has its own `#link`), panels, the tag filter and constellation lines, the wall prompt, keyboard, touch, and reduced-motion handling |
+| `main.js` | Zoom, navigation, URLs (every era and item has its own `#link`), panels, the tag filter, the wall prompt, the zoom hint, keyboard, touch, and reduced-motion handling |
 | `cosmos.js` | The map under the content, drawn on a canvas: an orthographic Earth, state outlines, the horizon. Each level has its own focus, so the view drifts as it zooms. |
 | `starfield.js` | Generative stars from a fixed seed, so the sky is the same on every visit |
 | `geo.js` | Simplified map outlines (generated): world land, US states, and finer North American coasts for the close views |

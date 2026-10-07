@@ -42,8 +42,6 @@
     detail: null,       // id of the item whose sub-zoom is open, or null
     anchor: null,       // item the sub-zoom zooms toward (kept while closing)
     tag: null,          // the active tag filter, or null
-    edges: [],          // constellation lines for the active tag: [itemA, itemB]
-    eraOpacity: [],     // how visible each era is right now (applyCamera)
   };
 
   const els = {
@@ -62,7 +60,6 @@
     panel: document.querySelector(".panel"),
     wall: document.querySelector(".wall"),
     opening: document.querySelector(".opening"),
-    lines: document.getElementById("lines"),
     figure: document.querySelector(".figure"),
     tagBar: document.querySelector(".tag-bar"),
     tagStatus: document.querySelector(".tag-bar__status"),
@@ -191,10 +188,6 @@
     b.style.left = x + "%";
     b.style.top = y + "%";
 
-    const star = make("span", "item__star");
-    star.setAttribute("aria-hidden", "true");
-    b.append(star);
-
     const parent = itemById.get(it.parent);
     if (it.layer === "personal" && parent) {
       b.append(make("span", "item__parent", `${UI_TEXT.beneathLabel}: ${parent.short || parent.title}`));
@@ -319,7 +312,6 @@
       el.style.setProperty("--sky-fade", t >= 0 ? "1" : clamp(1 + t * 1.6, 0, 1).toFixed(3));
       el.style.opacity = opacity.toFixed(3);
       el.style.visibility = opacity < 0.01 ? "hidden" : "visible";
-      state.eraOpacity[d] = opacity;
     });
 
     // Sub-zoom. [px, py] is the anchor item's offset from the screen center.
@@ -328,7 +320,6 @@
     const worldFade = clamp(1 - k * 1.6, 0, 1);
     els.world.style.transform = k ? `translate(${-px * m * k}px, ${-py * m * k}px) scale(${m})` : "";
     els.world.style.opacity = k ? worldFade.toFixed(3) : "";
-    els.lines.style.opacity = k ? worldFade.toFixed(3) : "";
     const detailFade = clamp((k - 0.15) / 0.6, 0, 1);
     const ds = Math.pow(ZOOM_FACTOR, k - 1);
     els.detail.style.transform =
@@ -340,7 +331,6 @@
     els.figure.style.setProperty("--figure-h", (FIGURE_BASE * Math.pow(FIGURE_GROWTH, z)).toFixed(2) + "px");
     Starfield.setDepth(z + k * 0.6);
     placeFigure(z + k * 0.6);
-    drawLines();
   }
 
   // At the Future level, the small figure walks out of its corner and stands
@@ -510,9 +500,8 @@
       h.id = headingId;
       const list = make("ol", "cluster__list");
       list.setAttribute("aria-labelledby", headingId);
-      g.entries.forEach((c, ci) => {
+      g.entries.forEach((c) => {
         const li = make("li", "course");
-        li.style.setProperty("--dx", CLUSTER_OFFSETS[ci % CLUSTER_OFFSETS.length] + "px");
         const star = make("span", "course__star");
         star.setAttribute("aria-hidden", "true");
         const top = make("span", "course__top");
@@ -529,37 +518,10 @@
       section.append(h, list);
       return section;
     }));
-    requestAnimationFrame(drawClusterLines);
-  }
-
-  // Each list's stars sit at slightly different offsets, joined by a thin
-  // line, so every group reads as a small constellation.
-  const CLUSTER_OFFSETS = [6, 17, 3, 13, 8, 19];
-
-  function drawClusterLines() {
-    els.detail.querySelectorAll(".cluster__list").forEach((list) => {
-      list.querySelector(".cluster__lines")?.remove();
-      // Measure on screen, then undo the layer's current zoom scale.
-      const lr = list.getBoundingClientRect();
-      const sc = lr.width / list.offsetWidth || 1;
-      const pts = [...list.querySelectorAll(".course__star")].map((s) => {
-        const r = s.getBoundingClientRect();
-        return `${((r.left + r.width / 2 - lr.left) / sc).toFixed(1)},` +
-               `${((r.top + r.height / 2 - lr.top) / sc).toFixed(1)}`;
-      });
-      if (pts.length < 2) return;
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute("class", "cluster__lines");
-      svg.setAttribute("aria-hidden", "true");
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      line.setAttribute("points", pts.join(" "));
-      svg.append(line);
-      list.prepend(svg);
-    });
   }
 
   // -------------------------------------------------------------------------
-  // Tags and constellations
+  // Tags
   // -------------------------------------------------------------------------
 
   function renderTagBar() {
@@ -640,8 +602,6 @@
       b.setAttribute("aria-label", b.dataset.label + (lit ? matchText : ""));
     });
 
-    state.edges = constellation(lit);
-
     if (state.tag) {
       const label = tagById.get(state.tag).label;
       const eraCount = new Set(lit.map(depthOfItem)).size;
@@ -653,97 +613,6 @@
       els.tagStatus.textContent = "";
     }
     els.tagClear.hidden = !state.tag;
-    drawLines();
-  }
-
-  // Where an item sits when the whole map is zoomed all the way out. Using
-  // this fixed frame keeps each constellation's shape stable while zooming.
-  function refPoint(it) {
-    const [x, y] = els.itemSlots.get(it.id);
-    const s = Math.pow(ZOOM_FACTOR, -depthOfItem(it));
-    return [(x - 50) * 1.6 * s, (y - 50) * s];
-  }
-
-  // Lines for the lit items: within each era, the shortest set of lines that
-  // joins them. (Lines between eras ran off-screen or ended in the middle of
-  // the map, so each era keeps its own small constellation; the status line
-  // says how many eras match.)
-  function constellation(items) {
-    const byDepth = new Map();
-    items.forEach((it) => {
-      const d = depthOfItem(it);
-      if (!byDepth.has(d)) byDepth.set(d, []);
-      byDepth.get(d).push(it);
-    });
-    return [...byDepth.values()].flatMap(spanningTree);
-  }
-
-  // Minimum spanning tree (Prim's algorithm) over a handful of items.
-  function spanningTree(items) {
-    if (items.length < 2) return [];
-    const pts = items.map(refPoint);
-    const inTree = [true];
-    const best = pts.map((p) => Math.hypot(p[0] - pts[0][0], p[1] - pts[0][1]));
-    const from = pts.map(() => 0);
-    const edges = [];
-    for (let n = 1; n < pts.length; n++) {
-      let k = -1;
-      for (let i = 0; i < pts.length; i++) {
-        if (!inTree[i] && (k < 0 || best[i] < best[k])) k = i;
-      }
-      inTree[k] = true;
-      edges.push([items[from[k]], items[k]]);
-      for (let i = 0; i < pts.length; i++) {
-        const d = Math.hypot(pts[i][0] - pts[k][0], pts[i][1] - pts[k][1]);
-        if (!inTree[i] && d < best[i]) {
-          best[i] = d;
-          from[i] = k;
-        }
-      }
-    }
-    return edges;
-  }
-
-  let lineColor = "rgba(255, 255, 255, 0.5)";
-
-  function resizeLines() {
-    const css = getComputedStyle(document.documentElement).getPropertyValue("--constellation").trim();
-    if (css) lineColor = css;
-    const dpr = window.devicePixelRatio || 1;
-    els.lines.width = Math.round(innerWidth * dpr);
-    els.lines.height = Math.round(innerHeight * dpr);
-    els.lines.getContext("2d").setTransform(dpr, 0, 0, dpr, 0, 0);
-    drawLines();
-  }
-
-  function starCenter(id) {
-    const star = els.itemButtons.get(id)?.querySelector(".item__star");
-    if (!star) return null;
-    const r = star.getBoundingClientRect();
-    return [r.left + r.width / 2, r.top + r.height / 2];
-  }
-
-  // Redrawn every animation frame, so the lines follow the zoom.
-  function drawLines() {
-    const ctx = els.lines.getContext("2d");
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
-    if (!state.edges.length) return;
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 1;
-    // Each line fades with its era, so hidden eras draw nothing.
-    state.edges.forEach(([a, b]) => {
-      const alpha = state.eraOpacity[depthOfItem(a)] ?? 0;
-      if (alpha < 0.02) return;
-      const p = starCenter(a.id);
-      const q = starCenter(b.id);
-      if (!p || !q) return;
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      ctx.moveTo(p[0], p[1]);
-      ctx.lineTo(q[0], q[1]);
-      ctx.stroke();
-    });
-    ctx.globalAlpha = 1;
   }
 
   // -------------------------------------------------------------------------
@@ -1173,11 +1042,8 @@
     window.addEventListener("resize", () => {
       figureRest = null;
       positionPanel();
-      resizeLines();
       applyCamera();
-      drawClusterLines();
     });
-    document.fonts?.ready.then(drawClusterLines);
     els.zoomIn.addEventListener("click", () => step(1));
     els.zoomOut.addEventListener("click", () => step(-1));
     els.panel.querySelector(".panel__close").addEventListener("click", () => go(ERAS[state.level].id));
@@ -1195,7 +1061,6 @@
   renderTagBar();
   renderWall();
   bindInputs();
-  resizeLines();
   try {
     Starfield.init(els.sky, { zoomFactor: ZOOM_FACTOR });
   } catch (err) {

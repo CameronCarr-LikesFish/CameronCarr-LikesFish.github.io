@@ -74,7 +74,7 @@ const UI_TEXT = {
   noMatches: "Nothing tagged {tag} yet.",
   backFromDetail: "Back to {era}",  // button at the top of a sub-zoom
   skyLabel: "Sky",                  // "Sky: <photo title> · <credit>"
-  resumeLink: "Resume",             // top right, every era: opens resume.html
+  resumeLink: "Resume",             // top right in Now: opens resume.html
 };
 
 // ---------------------------------------------------------------------------
@@ -204,6 +204,18 @@ const ITEMS = [
     image: null,
   },
   {
+    id: "portfolio",
+    title: "Portfolio projects",
+    era: "now",
+    layer: "professional",
+    parent: null,
+    summary: "Starting with this site, built with Claude.",
+    body: "A growing portfolio of projects made with Claude. The first is this site: a map of a life that you move through by zooming, where zooming out moves forward in time toward the future. It was built with Claude Code from a written brief.\n\nMore projects will be added here as they're built.",
+    tags: ["ai"],
+    links: [{ label: "See how this site is built", url: "https://github.com/CameronCarr-LikesFish/CameronCarr-LikesFish.github.io" }],
+    image: null,
+  },
+  {
     id: "mmtcp",
     title: "Mindfulness Meditation Teacher Certification",
     era: "now",
@@ -225,18 +237,6 @@ const ITEMS = [
     summary: "The hope ahead: teaching meditation to help people heal.",
     body: "Meditation has been a thread through my whole life. I was introduced to it as a young kid by my father, who gave me a hybrid of Buddhist and Christian practice.\n\nIn college it grew: founding the Meditation and Mindfulness Club, a course on Daoism, and a tai chi practice. Now it continues through the Mindfulness Meditation Teacher Certification Program.\n\nWhat I hope for next is to teach meditation as a way to help people heal.",
     tags: ["meditation", "teaching"],
-    image: null,
-  },
-  {
-    id: "portfolio",
-    title: "Portfolio projects in progress",
-    era: "future",
-    layer: "professional",
-    parent: null,
-    summary: "Starting with this site, built with Claude.",
-    body: "A growing portfolio of projects made with Claude. The first is this site: a map of a life that you move through by zooming, where zooming out moves forward in time toward the future. It was built with Claude Code from a written brief.\n\nMore projects will be added here as they're built.",
-    tags: ["ai"],
-    links: [{ label: "See how this site is built", url: "https://github.com/CameronCarr-LikesFish/CameronCarr-LikesFish.github.io" }],
     image: null,
   },
 
@@ -302,7 +302,7 @@ const ITEMS = [
 // Sub-zooms. An item listed here opens into its own small sky (zoom into its
 // star) instead of a text panel. Keyed by item id.
 //   stats:  short facts shown under the title
-//   groups: constellations of entries; each entry is { name, code, term, grade }
+//   groups: groups of entries; each entry is { name, code, term, grade }
 // Coursework source: unofficial transcript (2026), curated. Gen-eds are left out.
 // ---------------------------------------------------------------------------
 const DETAILS = {

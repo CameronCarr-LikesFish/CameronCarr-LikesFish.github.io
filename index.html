@@ -86,12 +86,10 @@
     </svg>
   </div>
 
-  <!-- The tag filter: one button that opens the tags above it. -->
+  <!-- Tags: one button that opens the list of tags above it. -->
   <div class="tag-bar" role="group">
     <div class="tag-bar__top">
       <button type="button" class="tag-bar__toggle" aria-expanded="false" aria-controls="tag-groups"></button>
-      <p class="tag-bar__status" role="status" aria-live="polite"></p>
-      <button type="button" class="tag-bar__clear" hidden></button>
     </div>
     <div class="tag-bar__groups" id="tag-groups" hidden></div>
   </div>
@@ -121,6 +119,20 @@
     <div class="panel__children"></div>
     <button type="button" class="btn panel__back"></button>
   </aside>
+
+  <!-- A tag's view: everything with that tag, from the future back to the
+       past (#tag-leadership, ...). Filled from main.js. -->
+  <dialog class="tag-view" aria-labelledby="tag-view-title" data-scrollable>
+    <div class="tag-view__inner">
+      <button type="button" class="btn tag-view__back"></button>
+      <p class="tag-view__label"></p>
+      <h2 class="tag-view__title" id="tag-view-title" tabindex="-1"></h2>
+      <p class="tag-view__subtitle"></p>
+      <div class="tag-view__eras"></div>
+      <div class="tag-view__more"></div>
+      <div class="tag-view__others"></div>
+    </div>
+  </dialog>
 
   <dialog class="wall" aria-labelledby="wall-title" aria-describedby="wall-note">
     <h2 class="wall__title" id="wall-title"></h2>

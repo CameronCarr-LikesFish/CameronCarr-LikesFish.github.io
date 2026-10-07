@@ -66,11 +66,16 @@ const UI_TEXT = {
   hintScroll: "Scroll up to go back in time, down to go forward.",
   hintTouch: "Swipe or pinch to move through time.",
   hintButtons: "Or use the + and − buttons.",
-  tagBarLabel: "Filter by tag",
-  filterToggle: "Filter by tag",
+  // Tags: pick one to see everything with it, from the future back to the past.
+  tagBarLabel: "Explore by tag",
+  tagToggle: "Explore by tag",
   themesLabel: "Themes",
   skillsLabel: "Skills",
-  clearFilter: "Clear",
+  tagViewLabel: "Tag",
+  tagViewSubtitle: "Everything tagged {tag}, from the future back to the past.",
+  tagViewMore: "{n} more on the personal side.",   // before the wall is crossed
+  tagViewMoreButton: "Show the personal side",
+  tagViewOthers: "Other tags",
   noMatches: "Nothing tagged {tag} yet.",
   backFromDetail: "Back to {era}",  // button at the top of a sub-zoom
   skyLabel: "Sky",                  // "Sky: <photo title> · <credit>"

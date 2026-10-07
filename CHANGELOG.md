@@ -22,6 +22,21 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-07
 
+### Explore by tag: future to past
+
+**Added**
+- **Each tag has its own view.** Pick a tag from "Explore by tag" (or from the tags in any item's panel) to see every item with it, grouped by era from Goals, hopes, and dreams back to the Personal side. Clicking an entry jumps to that item on the map. Each view has its own link (e.g. `#tag-leadership`), and the back button works.
+- Personal stories appear in a tag's view only after the visitor has said yes at "A note on authenticity". Until then the view says how many more there are, with a button to the note.
+
+**Removed**
+- The old filter that lit up matching cards and faded the rest. The tag view does the same job more clearly.
+
+**Fixed**
+- The desktop zoom hint sits just above the + and − buttons, so it can't overlap the timeline in a narrower window.
+
+**Why:** Cam wanted a visitor to click a tag like Leadership and see everything related to it, from the future to the past.
+
+
 ### Cards instead of pins; portfolio and resume in Now (`85c465c`)
 
 **Changed**

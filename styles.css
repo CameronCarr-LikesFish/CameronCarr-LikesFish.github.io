@@ -469,8 +469,8 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 
 .zoom-hint {
   position: fixed;
-  right: 5rem;
-  bottom: 1.3rem;
+  right: 1.5rem;
+  bottom: 7.1rem;                     /* just above the + and − buttons */
   z-index: 3;
   max-width: 17rem;
   margin: 0;
@@ -480,7 +480,7 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
   text-shadow: var(--text-halo);
   pointer-events: none;
   opacity: 0;
-  transform: translateX(0.5rem);
+  transform: translateY(0.5rem);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
@@ -702,16 +702,158 @@ body.hint-on .zoom-btn {
   background: linear-gradient(90deg, transparent, rgba(236, 239, 247, 0.35), transparent);
 }
 
-/* ----- Tag filter: lit and dimmed items ----- */
+/* ----- Tag view: everything with one tag, future to past ----- */
 
-body.is-filtering .item { opacity: 0.3; }
-body.is-filtering .item:hover { opacity: 0.85; }
-body.is-filtering .item.is-lit { opacity: 1; }
-
-.item.is-lit {
-  border-color: var(--accent);
-  box-shadow: 0 0 14px rgba(227, 169, 179, 0.35);
+.tag-view {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(5, 8, 20, 0.9);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);          /* keep the map from showing through the text */
+  color: var(--ink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
 }
+
+.tag-view[open] { animation: tag-view-in 0.35s ease; }
+@keyframes tag-view-in { from { opacity: 0; } }
+
+.tag-view::backdrop { background: transparent; }
+
+.tag-view__inner {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 5rem;
+  text-align: center;
+}
+
+.tag-view__back { font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+.tag-view__label {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+.tag-view__title {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+}
+
+.tag-view__title:focus { outline: none; }
+
+.tag-view__subtitle { margin: 0.5rem 0 0; color: var(--ink-dim); }
+
+.tag-view__era { margin-top: 2.25rem; text-align: left; }
+
+.tag-view__era-title {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  color: var(--ink);
+}
+
+.tag-view__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.tag-view__entry {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.tag-view__entry:hover {
+  border-color: var(--accent);
+  background: var(--panel-solid);
+}
+
+.tag-view__entry-parent {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent);
+}
+
+.tag-view__entry-title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  transition: color 0.2s;
+}
+
+.tag-view__entry:hover .tag-view__entry-title { color: var(--accent); }
+
+.tag-view__entry-summary {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink-dim);
+}
+
+.tag-view__more { margin-top: 2rem; color: var(--ink-dim); }
+.tag-view__more:empty { display: none; }
+.tag-view__more p { margin: 0 0 0.6rem; }
+
+.tag-view__others {
+  margin-top: 2.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.tag-view__others-title {
+  flex-basis: 100%;
+  margin: 0 0 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+}
+
+/* The tags in an item's panel open their tag view. */
+.panel__tag {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.panel__tags li:has(.panel__tag:hover) { border-color: var(--accent); color: var(--ink); }
 
 /* ----- Tag bar (above the timeline) ----- */
 
@@ -764,30 +906,7 @@ body.is-filtering .item.is-lit { opacity: 1; }
 .tag-bar__toggle[aria-expanded="true"]::after { transform: rotate(45deg); margin-bottom: 0.32em; }
 
 .tag-bar__toggle:hover,
-.tag-bar__toggle[aria-expanded="true"],
-.tag-bar__toggle.is-active { color: var(--ink); border-color: var(--accent); }
-
-.tag-bar__status {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--accent);
-  text-shadow: var(--text-halo);
-}
-
-.tag-bar__status:empty { display: none; }
-
-.tag-bar__clear {
-  padding: 0;
-  border: 0;
-  background: none;
-  font-size: 0.8rem;
-  color: var(--ink-dim);
-  text-decoration: underline;
-  text-decoration-color: var(--line);
-  cursor: pointer;
-}
-
-.tag-bar__clear:hover { color: var(--ink); }
+.tag-bar__toggle[aria-expanded="true"] { color: var(--ink); border-color: var(--accent); }
 
 .tag-bar__groups {
   display: flex;
@@ -1061,7 +1180,8 @@ body.is-fading .detail { opacity: 0 !important; transition: opacity 0.16s ease; 
 .zoom-btn:focus-visible,
 .btn:focus-visible,
 .panel__close:focus-visible,
-.tag-bar__clear:focus-visible,
+.tag-view__entry:focus-visible,
+.panel__tag:focus-visible,
 .tag-bar__toggle:focus-visible,
 .resume-link:focus-visible,
 .contact a:focus-visible {

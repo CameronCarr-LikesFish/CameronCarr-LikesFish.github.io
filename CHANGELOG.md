@@ -21,7 +21,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-08 (evening)
 
-### An introduction on the opening card; links land closed
+### An introduction on the opening card; links land closed (`c6b4c1f`, `0d8ea4c`)
 
 **Added**
 - The first-visit card now introduces the site above the quote: "This is Cam Carr's personal website. Zoom in and out to navigate between different eras of my life and career." It stays up for 7 seconds instead of 2.5 (there's more to read), and still goes away at the first click, scroll, or key.

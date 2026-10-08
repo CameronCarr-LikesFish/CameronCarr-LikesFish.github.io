@@ -115,8 +115,7 @@ button { font: inherit; color: inherit; }
 .site-header,
 .position,
 .era-nav,
-.zoom-controls,
-.tag-bar { z-index: 3; }
+.zoom-controls { z-index: 3; }
 
 /* ----- Eras -----
    Every era is a full-viewport box scaled around the center. Each earlier era
@@ -588,23 +587,6 @@ body.hint-on .zoom-btn {
 
 .panel__links a { display: inline-block; text-decoration: none; font-size: 0.9rem; }
 
-.panel__tags {
-  list-style: none;
-  margin: 1rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.panel__tags li {
-  padding: 0.15rem 0.6rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  font-size: 0.8rem;
-  color: var(--ink-dim);
-}
-
 .panel__children h3 {
   margin: 1.5rem 0 0.5rem;
   font-size: 0.75rem;
@@ -700,259 +682,6 @@ body.hint-on .zoom-btn {
   height: 1px;
   transform: translateX(-50%);
   background: linear-gradient(90deg, transparent, rgba(236, 239, 247, 0.35), transparent);
-}
-
-/* ----- Tag view: everything with one tag, future to past ----- */
-
-.tag-view {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: rgba(5, 8, 20, 0.9);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);          /* keep the map from showing through the text */
-  color: var(--ink);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--line) transparent;
-}
-
-.tag-view[open] { animation: tag-view-in 0.35s ease; }
-@keyframes tag-view-in { from { opacity: 0; } }
-
-.tag-view::backdrop { background: transparent; }
-
-.tag-view__inner {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 3.5rem 1.5rem 5rem;
-  text-align: center;
-}
-
-.tag-view__back { font-size: 0.85rem; margin-bottom: 1.5rem; }
-
-.tag-view__label {
-  margin: 0;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--accent);
-}
-
-.tag-view__title {
-  margin: 0.2rem 0 0;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2.2rem, 5vw, 3.2rem);
-  line-height: 1.1;
-}
-
-.tag-view__title:focus { outline: none; }
-
-.tag-view__subtitle { margin: 0.5rem 0 0; color: var(--ink-dim); }
-
-.tag-view__era { margin-top: 2.25rem; text-align: left; }
-
-.tag-view__era-title {
-  margin: 0 0 0.6rem;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.35rem;
-  color: var(--ink);
-}
-
-.tag-view__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.6rem;
-}
-
-.tag-view__entry {
-  display: block;
-  width: 100%;
-  padding: 0.8rem 1rem;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.tag-view__entry:hover {
-  border-color: var(--accent);
-  background: var(--panel-solid);
-}
-
-.tag-view__entry-parent {
-  display: block;
-  margin-bottom: 0.1rem;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--accent);
-}
-
-.tag-view__entry-title {
-  display: block;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.2rem;
-  line-height: 1.25;
-  transition: color 0.2s;
-}
-
-.tag-view__entry:hover .tag-view__entry-title { color: var(--accent); }
-
-.tag-view__entry-summary {
-  display: block;
-  margin-top: 0.2rem;
-  font-size: 0.88rem;
-  line-height: 1.45;
-  color: var(--ink-dim);
-}
-
-.tag-view__more { margin-top: 2rem; color: var(--ink-dim); }
-.tag-view__more:empty { display: none; }
-.tag-view__more p { margin: 0 0 0.6rem; }
-
-.tag-view__others {
-  margin-top: 2.75rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.35rem;
-}
-
-.tag-view__others-title {
-  flex-basis: 100%;
-  margin: 0 0 0.3rem;
-  font-size: 0.72rem;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ink-dim);
-}
-
-/* The tags in an item's panel open their tag view. */
-.panel__tag {
-  padding: 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-.panel__tags li:has(.panel__tag:hover) { border-color: var(--accent); color: var(--ink); }
-
-/* ----- Tag bar (above the timeline) ----- */
-
-.tag-bar {
-  position: fixed;
-  left: 50%;
-  bottom: 4.6rem;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: calc(100vw - 9rem);
-  display: flex;
-  flex-direction: column-reverse;     /* the tags open above the button */
-  align-items: center;
-  gap: 0.5rem;
-  text-align: center;
-}
-
-.tag-bar__top {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.3rem 0.7rem;
-}
-
-.tag-bar__toggle {
-  padding: 0.3rem 0.9rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--panel);
-  font-size: 0.8rem;
-  color: var(--ink-dim);
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.tag-bar__toggle::after {
-  content: "";
-  display: inline-block;
-  width: 0.38em;
-  height: 0.38em;
-  margin: 0 0 0.18em 0.5em;
-  border-right: 1px solid currentColor;
-  border-bottom: 1px solid currentColor;
-  transform: rotate(-135deg);           /* a small chevron pointing up */
-  vertical-align: middle;
-  transition: transform 0.2s;
-}
-
-.tag-bar__toggle[aria-expanded="true"]::after { transform: rotate(45deg); margin-bottom: 0.32em; }
-
-.tag-bar__toggle:hover,
-.tag-bar__toggle[aria-expanded="true"] { color: var(--ink); border-color: var(--accent); }
-
-.tag-bar__groups {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--panel-solid);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-.tag-group {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.tag-group__label {
-  margin-right: 0.2rem;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-dim);
-}
-
-.tag {
-  padding: 0.12rem 0.6rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--panel);
-  font-size: 0.78rem;
-  color: var(--ink-dim);
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
-}
-
-.tag:hover { color: var(--ink); border-color: var(--accent); }
-
-.tag[aria-pressed="true"] {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-ink);
 }
 
 /* ----- The opening line ----- */
@@ -1139,9 +868,6 @@ body.hint-on .zoom-btn {
   color: var(--ink-dim);
 }
 
-/* Inside a sub-zoom the tag filter doesn't apply. */
-body.in-detail .tag-bar { visibility: hidden; }
-
 body.is-fading .detail { opacity: 0 !important; transition: opacity 0.16s ease; }
 
 /* Items that open a sub-zoom say so. */
@@ -1175,14 +901,10 @@ body.is-fading .detail { opacity: 0 !important; transition: opacity 0.16s ease; 
 /* Focus rings: one clear style everywhere, drawn outside the control. */
 .item:focus-visible,
 .era__portal:focus-visible,
-.tag:focus-visible,
 .era-nav__btn:focus-visible,
 .zoom-btn:focus-visible,
 .btn:focus-visible,
 .panel__close:focus-visible,
-.tag-view__entry:focus-visible,
-.panel__tag:focus-visible,
-.tag-bar__toggle:focus-visible,
 .resume-link:focus-visible,
 .contact a:focus-visible {
   outline: 2px solid var(--accent);
@@ -1259,21 +981,13 @@ body.is-fading #stage { opacity: 0; }
   .item__summary { display: none; }
   .item__parent { font-size: 0.66rem; }
 
-  /* Tags: the button sits above the timeline; the list opens as a card. */
-  .tag-bar {
-    bottom: 3.9rem;
-    max-width: calc(100vw - 2rem);
-  }
-  .tag-bar__groups { padding: 0.65rem 0.75rem; }
-  .tag { white-space: nowrap; }
-
-  /* On phones the hint sits centred above "Filter by tag", clear of the
+  /* On phones the hint sits centred just above the timeline, clear of the
      items and the buttons. */
   .zoom-hint {
     left: 50%;
     right: auto;
-    bottom: 6.4rem;
-    width: min(16rem, 70vw);
+    bottom: 4.4rem;
+    width: min(15rem, 62vw);
     max-width: none;
     text-align: center;
     font-size: 0.78rem;
@@ -1284,10 +998,10 @@ body.is-fading #stage { opacity: 0; }
   .era-nav { bottom: 0.6rem; }
   .era-nav__btn { font-size: 0.72rem; line-height: 1.2; }
 
-  .zoom-controls { right: 1rem; bottom: 7.4rem; }
+  .zoom-controls { right: 1rem; bottom: 4.4rem; }
   .zoom-btn { width: 2.25rem; height: 2.25rem; font-size: 1.1rem; }
 
-  .figure { left: 1.1rem; bottom: 7.6rem; }
+  .figure { left: 1.1rem; bottom: 4.6rem; }
 
   /* In a sub-zoom the list needs the width; its back button and the
      timeline are the way out. */

@@ -29,7 +29,7 @@
 </head>
 <body>
   <!-- Visual layers. Everything below is positioned with CSS, so the order
-       here is the keyboard and screen-reader order: header, map, tags,
+       here is the keyboard and screen-reader order: header, map,
        timeline, zoom, then the item panel. -->
   <canvas id="sky" aria-hidden="true"></canvas>
 
@@ -86,14 +86,6 @@
     </svg>
   </div>
 
-  <!-- Tags: one button that opens the list of tags above it. -->
-  <div class="tag-bar" role="group">
-    <div class="tag-bar__top">
-      <button type="button" class="tag-bar__toggle" aria-expanded="false" aria-controls="tag-groups"></button>
-    </div>
-    <div class="tag-bar__groups" id="tag-groups" hidden></div>
-  </div>
-
   <nav class="era-nav" aria-label="Eras">
     <span class="era-nav__track" aria-hidden="true"><span class="era-nav__marker"></span></span>
     <ol class="era-nav__list"></ol>
@@ -115,24 +107,9 @@
     <p class="panel__summary"></p>
     <div class="panel__body"></div>
     <ul class="panel__links" aria-label="Links"></ul>
-    <ul class="panel__tags" aria-label="Tags"></ul>
     <div class="panel__children"></div>
     <button type="button" class="btn panel__back"></button>
   </aside>
-
-  <!-- A tag's view: everything with that tag, from the future back to the
-       past (#tag-leadership, ...). Filled from main.js. -->
-  <dialog class="tag-view" aria-labelledby="tag-view-title" data-scrollable>
-    <div class="tag-view__inner">
-      <button type="button" class="btn tag-view__back"></button>
-      <p class="tag-view__label"></p>
-      <h2 class="tag-view__title" id="tag-view-title" tabindex="-1"></h2>
-      <p class="tag-view__subtitle"></p>
-      <div class="tag-view__eras"></div>
-      <div class="tag-view__more"></div>
-      <div class="tag-view__others"></div>
-    </div>
-  </dialog>
 
   <dialog class="wall" aria-labelledby="wall-title" aria-describedby="wall-note">
     <h2 class="wall__title" id="wall-title"></h2>

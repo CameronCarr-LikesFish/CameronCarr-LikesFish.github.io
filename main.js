@@ -1,6 +1,6 @@
 /* main.js: zoom, navigation, and state.
    Reads everything it shows from content.js
-   (SETTINGS, ERAS, START_ERA, UI_TEXT, TAGS, ITEMS). */
+   (SETTINGS, ERAS, START_ERA, UI_TEXT, ITEMS, DETAILS). */
 
 (function () {
   "use strict";
@@ -20,7 +20,6 @@
   const MAX_DEPTH = ERAS.length - 1;
   const eraDepth = new Map(ERAS.map((e, i) => [e.id, i]));
   const itemById = new Map(ITEMS.map((it) => [it.id, it]));
-  const tagById = new Map(TAGS.map((t) => [t.id, t]));
   const START_DEPTH = eraDepth.get(START_ERA) ?? 0;
   // The innermost era is the personal side, behind the wall prompt.
   const WALL_DEPTH = eraDepth.get("personal") ?? MAX_DEPTH;
@@ -41,7 +40,6 @@
     k: 0,               // sub-zoom amount (see applyCamera)
     detail: null,       // id of the item whose sub-zoom is open, or null
     anchor: null,       // item the sub-zoom zooms toward (kept while closing)
-    tag: null,          // the tag whose view is open, or null
   };
 
   const els = {
@@ -61,10 +59,6 @@
     wall: document.querySelector(".wall"),
     opening: document.querySelector(".opening"),
     figure: document.querySelector(".figure"),
-    tagBar: document.querySelector(".tag-bar"),
-    tagView: document.querySelector(".tag-view"),
-    tagToggle: document.querySelector(".tag-bar__toggle"),
-    tagGroups: document.querySelector(".tag-bar__groups"),
     zoomHint: document.querySelector(".zoom-hint"),
     eras: [],
     eraTitles: [],
@@ -519,146 +513,6 @@
   }
 
   // -------------------------------------------------------------------------
-  // Tags
-  // -------------------------------------------------------------------------
-
-  function renderTagBar() {
-    els.tagBar.setAttribute("aria-label", UI_TEXT.tagBarLabel);
-    els.tagToggle.textContent = UI_TEXT.tagToggle || UI_TEXT.tagBarLabel;
-    els.tagToggle.addEventListener("click", () => setTagsOpen(els.tagGroups.hidden));
-    // A click anywhere else closes the tags.
-    document.addEventListener("pointerdown", (e) => {
-      if (!els.tagGroups.hidden && !els.tagBar.contains(e.target)) setTagsOpen(false);
-    });
-
-    const groups = [
-      ["theme", UI_TEXT.themesLabel],
-      ["skill", UI_TEXT.skillsLabel],
-    ];
-    const wrap = els.tagBar.querySelector(".tag-bar__groups");
-    groups.forEach(([family, label]) => {
-      const tags = TAGS.filter((t) => t.family === family);
-      if (!tags.length) return;
-      const group = make("div", "tag-group");
-      group.setAttribute("role", "group");
-      group.setAttribute("aria-label", label);
-      const heading = make("span", "tag-group__label", label);
-      heading.setAttribute("aria-hidden", "true");
-      group.append(heading);
-      tags.forEach((t) => {
-        const b = make("button", "tag", t.label);
-        b.type = "button";
-        b.addEventListener("click", () => {
-          setTagsOpen(false);
-          go(TAG_PREFIX + t.id);
-        });
-        group.append(b);
-      });
-      wrap.append(group);
-    });
-  }
-
-  // Open or close the list of tags. focusToggle: after picking a tag, focus
-  // goes back to the toggle, since the tag buttons are about to be hidden.
-  function setTagsOpen(open, focusToggle) {
-    els.tagGroups.hidden = !open;
-    els.tagBar.classList.toggle("is-open", open);
-    els.tagToggle.setAttribute("aria-expanded", String(open));
-    if (open) els.tagGroups.querySelector(".tag")?.focus();
-    else if (focusToggle) els.tagToggle.focus();
-  }
-
-  // The tag view: every item with the tag, grouped by era from the future
-  // back to the past. Personal items only show once the wall is crossed;
-  // until then the view says how many more there are.
-  const TAG_PREFIX = "tag-";
-
-  function renderTagView(tagId) {
-    const tag = tagById.get(tagId);
-    const v = els.tagView;
-    const era = ERAS[state.level];
-
-    const back = v.querySelector(".tag-view__back");
-    back.textContent = "\u2190 " + UI_TEXT.backFromDetail.replace("{era}", era.label);
-    back.onclick = () => go(era.id);
-    v.querySelector(".tag-view__label").textContent = UI_TEXT.tagViewLabel;
-    v.querySelector(".tag-view__title").textContent = tag.label;
-
-    const all = ITEMS.filter((it) => it.tags.includes(tagId));
-    const shown = all.filter((it) => it.layer !== "personal" || state.crossed);
-    const hidden = all.length - shown.length;
-    v.querySelector(".tag-view__subtitle").textContent = shown.length
-      ? UI_TEXT.tagViewSubtitle.replace("{tag}", tag.label)
-      : UI_TEXT.noMatches.replace("{tag}", tag.label);
-
-    // Depth 0 is the Future, so going up in depth goes back in time.
-    v.querySelector(".tag-view__eras").replaceChildren(...ERAS.map((e, d) => {
-      const items = shown.filter((it) => depthOfItem(it) === d);
-      if (!items.length) return null;
-      const section = make("section", "tag-view__era");
-      const headingId = `tag-view-era-${e.id}`;
-      const h = make("h3", "tag-view__era-title", e.label);
-      h.id = headingId;
-      const list = make("ul", "tag-view__list");
-      list.setAttribute("aria-labelledby", headingId);
-      items.forEach((it) => {
-        const li = document.createElement("li");
-        const b = make("button", "tag-view__entry");
-        b.type = "button";
-        const parent = itemById.get(it.parent);
-        if (it.layer === "personal" && parent) {
-          b.append(make("span", "tag-view__entry-parent",
-            `${UI_TEXT.beneathLabel}: ${parent.short || parent.title}`));
-        }
-        b.append(make("span", "tag-view__entry-title", it.title),
-                 make("span", "tag-view__entry-summary", it.summary));
-        b.addEventListener("click", () => go(it.id));
-        li.append(b);
-        list.append(li);
-      });
-      section.append(h, list);
-      return section;
-    }).filter(Boolean));
-
-    const more = v.querySelector(".tag-view__more");
-    more.replaceChildren();
-    if (hidden) {
-      const b = make("button", "btn", UI_TEXT.tagViewMoreButton);
-      b.type = "button";
-      b.addEventListener("click", () => openWall(TAG_PREFIX + tagId));
-      more.append(make("p", null, UI_TEXT.tagViewMore.replace("{n}", hidden)), b);
-    }
-
-    const others = v.querySelector(".tag-view__others");
-    others.replaceChildren(make("h3", "tag-view__others-title", UI_TEXT.tagViewOthers),
-      ...TAGS.filter((t) => t.id !== tagId).map((t) => {
-        const b = make("button", "tag", t.label);
-        b.type = "button";
-        b.addEventListener("click", () => go(TAG_PREFIX + t.id));
-        return b;
-      }));
-  }
-
-  function openTagView(tagId) {
-    const fresh = state.tag !== tagId || !els.tagView.open;
-    state.tag = tagId;
-    renderTagView(tagId);
-    if (!els.tagView.open) els.tagView.showModal();
-    document.body.classList.add("in-tag-view");
-    if (fresh) {
-      els.tagView.scrollTop = 0;
-      els.tagView.querySelector(".tag-view__title").focus({ preventScroll: true });
-    }
-  }
-
-  function closeTagView() {
-    if (!els.tagView.open) return;
-    state.tag = null;
-    els.tagView.close();
-    document.body.classList.remove("in-tag-view");
-  }
-
-  // -------------------------------------------------------------------------
   // Item panel
   // -------------------------------------------------------------------------
 
@@ -705,17 +559,6 @@
       return li;
     }));
     links.hidden = validLinks.length === 0;
-
-    const tags = p.querySelector(".panel__tags");
-    tags.replaceChildren(...it.tags.map((id) => {
-      const li = document.createElement("li");
-      const b = make("button", "panel__tag", tagById.get(id)?.label ?? id);
-      b.type = "button";
-      b.addEventListener("click", () => go(TAG_PREFIX + id));
-      li.append(b);
-      return li;
-    }));
-    tags.hidden = it.tags.length === 0;
 
     // Personal items beneath this one (only once the wall is crossed).
     const children = p.querySelector(".panel__children");
@@ -868,7 +711,7 @@
   const hint = { shown: false, level: null };
 
   function showHint() {
-    if (hint.shown || state.detail || els.wall.open || els.tagView.open) return;
+    if (hint.shown || state.detail || els.wall.open) return;
     try { if (sessionStorage.getItem(HINT_KEY)) return; } catch (e) { /* show it */ }
     const touchFirst = window.matchMedia("(pointer: coarse)").matches;
     const how = touchFirst
@@ -911,11 +754,6 @@
 
   function routeFor(id) {
     if (!id) return { era: START_DEPTH, item: null };
-    // A tag's view opens over wherever the camera is.
-    if (id.startsWith(TAG_PREFIX)) {
-      const tag = id.slice(TAG_PREFIX.length);
-      return tagById.has(tag) ? { era: state.level, item: null, tag } : null;
-    }
     if (eraDepth.has(id)) return { era: eraDepth.get(id), item: null };
     const it = itemById.get(id);
     if (!it) return null;
@@ -942,12 +780,6 @@
       state.pendingWall = null;
       els.wall.close();
     }
-    if (r.tag) {
-      closePanel();
-      moveTo(r.era, null, instant);
-      return openTagView(r.tag);
-    }
-    closeTagView();
     if (r.item && !r.detail) openPanel(r.item);
     else closePanel();
     moveTo(r.era, r.detail, instant);
@@ -996,7 +828,7 @@
       return;
     }
     e.preventDefault();
-    if (els.wall.open || els.tagView.open) return;
+    if (els.wall.open) return;
 
     endGestureSoon();
     if (wheel.used) return;
@@ -1014,12 +846,7 @@
   }
 
   function onKey(e) {
-    if (els.wall.open || els.tagView.open) return; // the dialogs handle their own keys
-    if (e.key === "Escape" && !els.tagGroups.hidden) {
-      e.preventDefault();
-      setTagsOpen(false, els.tagBar.contains(document.activeElement));
-      return;
-    }
+    if (els.wall.open) return; // the dialog handles its own keys
     if (e.key === "Escape" && (state.openItem || state.detail)) {
       e.preventDefault();
       go(ERAS[state.level].id);
@@ -1049,8 +876,8 @@
   }
 
   // Touch: pinch to zoom (spread = back in time), or swipe up/down like the
-  // scroll wheel. One step per gesture. Only on the map itself, so the tag
-  // row and the panel keep their own scrolling.
+  // scroll wheel. One step per gesture. Only on the map itself, so the
+  // panel keeps its own scrolling.
   const touch = { fingers: 0, startDist: 0, x: 0, y: 0, used: false };
   const fingerGap = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
 
@@ -1102,11 +929,6 @@
     els.zoomIn.addEventListener("click", () => step(1));
     els.zoomOut.addEventListener("click", () => step(-1));
     els.panel.querySelector(".panel__close").addEventListener("click", () => go(ERAS[state.level].id));
-    // Escape in the tag view goes back to the map.
-    els.tagView.addEventListener("cancel", (e) => {
-      e.preventDefault();
-      go(ERAS[state.level].id);
-    });
   }
 
   // -------------------------------------------------------------------------
@@ -1118,7 +940,6 @@
   renderSettings();
   renderEras();
   renderNav();
-  renderTagBar();
   renderWall();
   bindInputs();
   try {

@@ -18,7 +18,6 @@ A personal site for Cam Carr (Cameron Carr, she/they), a 2026 Vanderbilt graduat
 - **The timeline** along the bottom jumps straight to any era.
 - On a first visit, a short hint beside the + and − buttons explains this. It goes away after the first zoom.
 - **Items** are small cards that open into panels. "Selected coursework" zooms into its own view of the courses.
-- **Explore by tag** (bottom centre, or the tags in any item's panel) opens everything with that tag, from the future back to the past, e.g. `#tag-leadership`. Each entry jumps to its item on the map.
 - **Resume** (top right, in Now) opens a plain, one-page resume for visitors who'd rather not zoom. It prints cleanly or saves as a PDF.
 
 ## How it was made
@@ -44,8 +43,8 @@ Plain HTML, CSS, and JavaScript, with no framework and no build step.
 | File | What it does |
 |---|---|
 | `index.html` | Page structure and link-preview tags |
-| `content.js` | **All text and settings**: eras, items, tags, the coursework sub-zoom, the resume, interface text. Editing words never means touching layout code. |
-| `main.js` | Zoom, navigation, URLs (every era, item, and tag has its own `#link`), panels, the tag views, the wall prompt, the zoom hint, keyboard, touch, and reduced-motion handling |
+| `content.js` | **All text and settings**: eras, items, the coursework sub-zoom, the resume, interface text. Editing words never means touching layout code. |
+| `main.js` | Zoom, navigation, URLs (every era and item has its own `#link`), panels, the wall prompt, the zoom hint, keyboard, touch, and reduced-motion handling |
 | `cosmos.js` | The map under the content, drawn on a canvas: an orthographic Earth, state outlines, the horizon. Each level has its own focus, so the view drifts as it zooms. |
 | `starfield.js` | Generative stars from a fixed seed, so the sky is the same on every visit |
 | `geo.js` | Simplified map outlines (generated): world land, US states, and finer North American coasts for the close views |

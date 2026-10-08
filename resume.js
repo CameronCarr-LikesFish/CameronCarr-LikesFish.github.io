@@ -30,7 +30,7 @@
   // ----- Name, tagline, contact -----
   document.title = `${SETTINGS.displayName}: Resume`;
   document.querySelector(".head__name").textContent = SETTINGS.displayName;
-  // "Cameron Carr · she/they", as in the link-preview image.
+  // "Cameron Carr · they/them", as in the link-preview image.
   const aka = [SETTINGS.fullName, SETTINGS.pronouns].filter((s) => s && s !== SETTINGS.displayName);
   document.querySelector(".head__aka").textContent = aka.join(" · ");
   document.querySelector(".head__tagline").textContent = SETTINGS.tagline || "";

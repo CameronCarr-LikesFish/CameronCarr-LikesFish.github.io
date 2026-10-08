@@ -95,9 +95,17 @@
   <!-- First-visit hint beside the zoom buttons; gone after the first zoom. -->
   <p class="zoom-hint" hidden></p>
 
+  <!-- Each button has a speech bubble naming where it goes (main.js keeps
+       the text and the button's label in step with the era). -->
   <div class="zoom-controls" role="group" aria-label="Zoom">
-    <button type="button" class="zoom-btn" data-zoom="in" aria-label="Zoom in, back in time" title="Zoom in: back in time">+</button>
-    <button type="button" class="zoom-btn" data-zoom="out" aria-label="Zoom out, forward in time" title="Zoom out: forward in time">&minus;</button>
+    <div class="zoom-row">
+      <span class="zoom-bubble" data-zoom-bubble="in" aria-hidden="true"></span>
+      <button type="button" class="zoom-btn" data-zoom="in" aria-label="Zoom in, back in time">+</button>
+    </div>
+    <div class="zoom-row">
+      <span class="zoom-bubble" data-zoom-bubble="out" aria-hidden="true"></span>
+      <button type="button" class="zoom-btn" data-zoom="out" aria-label="Zoom out, forward in time">&minus;</button>
+    </div>
   </div>
 
   <aside class="panel" id="panel" aria-labelledby="panel-title" hidden data-scrollable>

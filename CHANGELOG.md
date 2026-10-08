@@ -1,6 +1,6 @@
 # Changelog
 
-A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.github.io/), newest first. Each entry says **what** changed and **why**, because the reasons are the interesting part: most changes came from Cam reacting to what she saw.
+A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.github.io/), newest first. Each entry says **what** changed and **why**, because the reasons are the interesting part: most changes came from Cam reacting to what they saw.
 
 **How entries work**
 - Grouped by date. Within a day, each release lists its commits (`abc1234`), so any change can be traced in the repository history.
@@ -21,15 +21,20 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-08 (later)
 
-### From Cam's career profile; portfolio projects; steadier scrolling
+### From Cam's career profile; portfolio projects; zoom bubbles; steadier scrolling
 
 **Added**
-- **How I work** (Now): Cam's one-line summary, her strengths (spotting cracks early, building process, judgment at volume, leading people, learning fast), what she enjoys, and "I'm not a coder or a technical researcher. I want to be the person who makes the research and the organization run."
+- **Speech bubbles beside the + and − buttons** saying where each one goes from here, e.g. "Zoom in to see my time at Vanderbilt" and "Zoom out to see my hopes and dreams". They change with the era, and clicking one zooms. They're hidden in short windows, where they'd cover the cards. On screens up to 1200px wide, the + and − buttons sit just above the timeline so the bubbles can't run into it, and the first-visit scroll hint shows only on wider screens, where it has room.
+- **ScrimStats** is described as tracking "overly negative critique aimed at teammates" (Cam's wording).
+- **How I work** (Now): Cam's one-line summary, their strengths (spotting cracks early, building process, judgment at volume, leading people, learning fast), what they enjoy, and "I'm not a coder or a technical researcher. I want to be the person who makes the research and the organization run."
 - **Where I want to be** (Goals, hopes, and dreams): one, two, and five years out, and the kinds of roles that fit best.
 - **Portfolio projects** now describes three projects: this site, ScrimStats (with a link to its code), and Open Loops.
 - **Moving to the Berkeley area in mid-November 2026, available to start right away,** under the header in Now and on the resume.
 
 **Changed**
+- **Pronouns are they/them** everywhere: the header, the resume, the link-preview image, and this site's notes.
+- **The Resume button shows in every era again** (it had moved to Now only on 2026-10-07).
+- **Positive AI Labs ended on October 2, 2026:** the item and the resume are in the past tense, with the end date.
 - **Positive AI Labs:** first to flag that the benchmark's source material was running out, and a proposed fix that became the team's method; a five-step AI pipeline; confidential pre-release material.
 - **Sociology AI Lab:** the IRB protocol and CITI certification.
 - **Vanderbilt Gaming:** 100+ active members and several hundred involved; teams consistently beat higher-ranked opponents.
@@ -37,7 +42,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 - **The resume** adds the Human Flourishing discussion groups and a Tools line, and drops the coursework list (the site has its own coursework view) to stay on one page.
 - **Scrolling:** after a scroll or swipe moves one era, more scrolling is ignored for 1.2 seconds (and until the gesture stops), so a long trackpad flick can't skip an era by accident. The buttons and keys aren't affected.
 
-**Why:** Cam shared her career profile to fold into the site, and asked for a guard against accidental skipping.
+**Why:** Cam shared their career profile to fold into the site, asked for a guard against accidental skipping, and wanted something on screen that invites people to zoom.
 
 ---
 
@@ -70,7 +75,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 **Removed**
 - **Constellation lines,** everywhere: between matching items when a tag is on, and between the courses in the coursework view. The tag filter still lights up matching cards.
 
-**Why:** Cam found the dots read as location pins. She compared three options (the dots, a small star beside each title, and cards) and chose cards.
+**Why:** Cam found the dots read as location pins. They compared three options (the dots, a small star beside each title, and cards) and chose cards.
 
 ---
 
@@ -80,7 +85,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 **Added**
 - **A first-visit hint** beside the + and − buttons: "Scroll up to go back in time, down to go forward. Or use the + and − buttons." (On phones: swipe or pinch.) The buttons glow softly while it shows, and it goes away after the first zoom.
-- **What Cam is looking for,** under her tagline in Now and on the resume: "Looking for frontier work that advances society in a prosocial way."
+- **What Cam is looking for,** under their tagline in Now and on the resume: "Looking for frontier work that advances society in a prosocial way."
 
 **Changed**
 - **Finer coastlines up close.** Vanderbilt and Personal now use Natural Earth's 1:50m coasts instead of a coarse outline of the whole Americas, so Florida's outline lines up with the land under it.
@@ -109,7 +114,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 - **A resume page** (`resume.html`): a traditional one-column resume on a light page. It covers education, experience, leadership, training, and selected coursework, with contact links. "Print or save as PDF" gives a clean, one-page letter-size copy. The text lives in `content.js` (`RESUME`), like everything else. It uses the same facts as the map, in resume wording, and leaves out the personal side.
 
 **Fixed**
-- **Vanderbilt Gaming, corrected by Cam.** The board she led was male-dominated, and mostly chosen before her time. It was not "close to evenly split by gender", as the site said. She raised up younger, more diverse members to take over, and the board is now far more balanced by gender and race. The Vanderbilt Gaming item and "Common ground" now say this. Her roles are also corrected: Vice President sophomore year, co-president junior year, and President senior year.
+- **Vanderbilt Gaming, corrected by Cam.** The board they led was male-dominated, and mostly chosen before their time. It was not "close to evenly split by gender", as the site said. They raised up younger, more diverse members to take over, and the board is now far more balanced by gender and race. The Vanderbilt Gaming item and "Common ground" now say this. Their roles are also corrected: Vice President sophomore year, co-president junior year, and President senior year.
 
 **Why:** not every visitor wants to explore a zoomable map. A hiring reader who wants the usual one-page view can now get it in one click, from anywhere on the site. Writing the resume also surfaced the wrong board claim, which Cam corrected.
 
@@ -120,7 +125,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 ### Declutter, and open on Now (`2a5b299`, `ccbdfca`, `9ba9fc3`, `3ac1bd6`, `41197eb`)
 
 **Changed**
-- **The site opens on Now** instead of Vanderbilt. The first screen has Cam's name, tagline, contact links, the globe, and her current AI work.
+- **The site opens on Now** instead of Vanderbilt. The first screen has Cam's name, tagline, contact links, the globe, and their current AI work.
 - **The header belongs to Now.** Name and pronouns show everywhere. The tagline and contact links show only in Now and fade out in the other eras. The separate "Cameron Carr" line is gone.
 - **Items on the map show titles only.** Summaries live in each item's panel, and screen readers still hear them as the item's description.
 - **Map simplified:** only Florida and Tennessee have borders, both the same quiet light outline with a faint tint. Other state lines are gone.
@@ -133,7 +138,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 **Tried and reverted**
 - Text-only items, with no dots at rest (`41197eb`, reverted in `3ac1bd6`). The dots over the map read like pins ("this happened here"), but taking them away worked less well. The map was quietened instead.
 
-**Why:** Cam found the screen "very crowded", and she felt her present-day self (name, tagline, how to reach her) belongs in Now. Opening there puts the professional picture on the first screen. That was the brief's 10-second goal and the design review's top concern.
+**Why:** Cam found the screen "very crowded", and they felt their present-day self (name, tagline, how to reach them) belongs in Now. Opening there puts the professional picture on the first screen. That was the brief's 10-second goal and the design review's top concern.
 
 ### Fixes from an outside design review (`d217290`)
 
@@ -147,7 +152,7 @@ A separate Claude agent reviewed the site as a critical outside reader (hiring m
 - **Vanderbilt Gaming tense:** past tense throughout, since Cam has graduated.
 
 **Added**
-- **A tagline under the name:** "Vanderbilt '26 history honors grad, pursuing questions of human flourishing in a world increasingly shaped by AI." (Cam's idea. "Increasingly shaped by AI" replaced her tentative "AI dominated".)
+- **A tagline under the name:** "Vanderbilt '26 history honors grad, pursuing questions of human flourishing in a world increasingly shaped by AI." (Cam's idea. "Increasingly shaped by AI" replaced their tentative "AI dominated".)
 - **A README** on what the site is and how it was made with Claude Code.
 - **Screen readers hear what each map shows,** e.g. "Map: Tennessee, with Nashville marked".
 
@@ -168,16 +173,16 @@ A separate Claude agent reviewed the site as a critical outside reader (hiring m
 
 **Added**
 - **Personal stakes** (behind the thesis): why transhumanism is personal, a family experience of illness, and *Fullmetal Alchemist*'s idea of transcending one's mistakes.
-- **Family roots** (behind the meditation club): her dad's words on hard nights, "may you be well, may you be loved."
+- **Family roots** (behind the meditation club): their dad's words on hard nights, "may you be well, may you be loved."
 - **Years of play** (behind Vanderbilt Gaming): from Pokémon Pearl and *Super Mario Galaxy* to finding lifelong friends through Minecraft chat, and being "the best worst player."
-- **Common ground,** a new item behind Vanderbilt Gaming: holding her ground as a transgender player until the club became inclusive (including the university's "no consequences" answer), and what a team with deep differences taught her about bridging divides.
+- **Common ground,** a new item behind Vanderbilt Gaming: holding their ground as a transgender player until the club became inclusive (including the university's "no consequences" answer), and what a team with deep differences taught them about bridging divides.
 - **Vanderbilt Gaming (professional):** grew out of the League of Legends club; handed to its first woman president, with a board close to evenly split by gender.
 
 **Changed**
 - **Short names in "Behind: …" labels** (e.g. "Behind: Vanderbilt Gaming").
 - **Roomier layout** for eras with four or five items.
 
-**Why:** these came from interview-style conversations. Claude drafted from Cam's answers, trimming without polishing, and she approved each piece before it went live. She chose to include being transgender and the university's response: "part of authenticity."
+**Why:** these came from interview-style conversations. Claude drafted from Cam's answers, trimming without polishing, and they approved each piece before it went live. They chose to include being transgender and the university's response: "part of authenticity."
 
 ### Goals, hopes, and dreams; hometowns (`0383c39`)
 
@@ -215,7 +220,7 @@ A separate Claude agent reviewed the site as a critical outside reader (hiring m
 - **Each level has its own focus,** so the view drifts sideways as it zooms instead of staying pinned to one centre.
 - **Inner eras no longer preview** in the centre of the screen.
 
-**Why:** Cam wanted the scale to be real places from her life (Florida until high school, Tennessee for college, then the world), and she asked why everything had to stay centred.
+**Why:** Cam wanted the scale to be real places from their life (Florida until high school, Tennessee for college, then the world), and they asked why everything had to stay centred.
 
 ### From boxes to a cosmos (`c91c3e3`, `c4bd633`)
 
@@ -227,7 +232,7 @@ A separate Claude agent reviewed the site as a critical outside reader (hiring m
 **Added**
 - **The authenticity note.** A one-time opening line ("Through our own authenticity we may see the world's beauty.") and "A note on authenticity" in the window before the Personal side.
 
-**Why:** "beneath the wall" felt odd. Cam wanted the site to answer what she sees as a crisis of authenticity: people pressured to present a manicured, exceptional self instead of a real one.
+**Why:** "beneath the wall" felt odd. Cam wanted the site to answer what they see as a crisis of authenticity: people pressured to present a manicured, exceptional self instead of a real one.
 
 ### NASA backgrounds and link previews (`abf3277`)
 
@@ -235,7 +240,7 @@ A separate Claude agent reviewed the site as a critical outside reader (hiring m
 - **A NASA photo for each era,** ordered far to near: Webb's First Deep Field, the Cosmic Cliffs, the Pillars of Creation, and the Orion Nebula.
 - **Link-preview tags and a preview image,** so shared links look right on LinkedIn and elsewhere.
 
-**Why:** Cam asked whether the most beautiful NASA images could serve as backgrounds. She kept one (Orion), and it was removed later in favour of the ocean.
+**Why:** Cam asked whether the most beautiful NASA images could serve as backgrounds. They kept one (Orion), and it was removed later in favour of the ocean.
 
 ### Filling in the content (`6f0194c`)
 

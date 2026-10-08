@@ -60,6 +60,8 @@
     posSky: document.querySelector(".position__sky"),
     zoomIn: document.querySelector('[data-zoom="in"]'),
     zoomOut: document.querySelector('[data-zoom="out"]'),
+    zoomInBubble: document.querySelector('[data-zoom-bubble="in"]'),
+    zoomOutBubble: document.querySelector('[data-zoom-bubble="out"]'),
     panel: document.querySelector(".panel"),
     wall: document.querySelector(".wall"),
     opening: document.querySelector(".opening"),
@@ -400,12 +402,30 @@
 
     els.zoomIn.setAttribute("aria-disabled", String(inDetail || level >= MAX_DEPTH));
     els.zoomOut.setAttribute("aria-disabled", String(!inDetail && level <= 0));
+    labelZoomButtons(level, inDetail);
 
     // If focus was on something that just went inert, move it somewhere sensible.
     if (focusWasInMap) {
       (inDetail ? els.detail.querySelector(".detail__title") : els.eraTitles[level])
         .focus({ preventScroll: true });
     }
+  }
+
+  // The speech bubbles beside the + and − buttons say where each one goes
+  // from here, and the buttons' labels say the same to screen readers.
+  function labelZoomButtons(level, inDetail) {
+    const see = (era) => era.see || era.label;
+    const inTo = !inDetail && ERAS[level + 1];
+    const outText = inDetail
+      ? UI_TEXT.backFromDetail.replace("{era}", ERAS[level].label)
+      : ERAS[level - 1] && UI_TEXT.zoomOutBubble.replace("{see}", see(ERAS[level - 1]));
+    const inText = inTo && UI_TEXT.zoomInBubble.replace("{see}", see(inTo));
+    [[els.zoomIn, els.zoomInBubble, inText, "Zoom in"],
+     [els.zoomOut, els.zoomOutBubble, outText, "Zoom out"]].forEach(([btn, bubble, text, plain]) => {
+      bubble.textContent = text || "";
+      bubble.hidden = !text;
+      btn.setAttribute("aria-label", text || plain);
+    });
   }
 
   // For visitors who ask their system for reduced motion: a short fade out,
@@ -942,6 +962,10 @@
     });
     els.zoomIn.addEventListener("click", () => step(1));
     els.zoomOut.addEventListener("click", () => step(-1));
+    // The bubbles are shortcuts for their buttons (mouse and touch only; the
+    // buttons themselves are what keyboards and screen readers use).
+    els.zoomInBubble.addEventListener("click", () => step(1));
+    els.zoomOutBubble.addEventListener("click", () => step(-1));
     els.panel.querySelector(".panel__close").addEventListener("click", () => go(ERAS[state.level].id));
   }
 

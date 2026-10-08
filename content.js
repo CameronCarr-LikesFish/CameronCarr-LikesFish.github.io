@@ -10,12 +10,12 @@ const SETTINGS = {
   displayName: "Cam Carr",
   fullName: "Cameron Carr",
   tagline: "Vanderbilt \u201926 history honors grad, pursuing questions of human flourishing in a world increasingly shaped by AI.",
-  // The work she's looking for: under the tagline in Now, and on the resume.
+  // The work they're looking for: under the tagline in Now, and on the resume.
   seeking: "Looking for frontier work that advances society in a prosocial way.",
-  // Where and when she can start: under the seeking line, and on the resume.
+  // Where and when they can start: under the seeking line, and on the resume.
   // Time-bound: update or clear after the move (mid-November 2026).
   availability: "Moving to the Berkeley area in mid-November 2026, and available to start right away.",
-  pronouns: "she/they",        // shown in the header; change here only
+  pronouns: "they/them",       // shown in the header; change here only
   email: "CameronCarr55@gmail.com",
   phone: "",                   // left blank on purpose: this file is public
   showPhone: false,            // set true (and fill in phone) to show a number
@@ -29,17 +29,18 @@ const SETTINGS = {
 // ---------------------------------------------------------------------------
 // short (optional): a shorter name for the timeline along the bottom.
 // place (optional): what that era's map shows, read out to screen readers.
+// see: how the zoom bubbles name this era ("Zoom in to see my time at Vanderbilt").
 // sky (optional): a NASA photograph shown faintly behind the stars while that
 // era is in view (public domain; credit shown on the page).
 const ERAS = [
-  { id: "future",   label: "Goals, hopes, and dreams", short: "Hopes & dreams",
+  { id: "future",   label: "Goals, hopes, and dreams", short: "Hopes & dreams", see: "my hopes and dreams",
     subtitle: "I hope to learn more than I'll ever know",
     place: "Earth's horizon at night, a small figure standing on it under a wide sky" },
-  { id: "now",      label: "Now",        subtitle: "After graduation, 2026",
+  { id: "now",      label: "Now",        subtitle: "After graduation, 2026", see: "where I am now",
     place: "the whole Earth, with Florida lit" },
-  { id: "college",  label: "Vanderbilt", subtitle: "Law, History, and Society",
+  { id: "college",  label: "Vanderbilt", subtitle: "Law, History, and Society", see: "my time at Vanderbilt",
     place: "Tennessee, with Nashville marked" },
-  { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons",
+  { id: "personal", label: "Personal",   subtitle: "Thoughts, history, and reasons", see: "the personal side",
     place: "Florida, with Gainesville and Fort Myers marked" },
 ];
 
@@ -69,6 +70,9 @@ const UI_TEXT = {
   hintScroll: "Scroll up to go back in time, down to go forward.",
   hintTouch: "Swipe or pinch to move through time.",
   hintButtons: "Or use the + and − buttons.",
+  // Speech bubbles beside the + and − buttons, naming where each one goes.
+  zoomInBubble: "Zoom in to see {see}",
+  zoomOutBubble: "Zoom out to see {see}",
   backFromDetail: "Back to {era}",  // button at the top of a sub-zoom
   skyLabel: "Sky",                  // "Sky: <photo title> · <credit>"
   resumeLink: "Resume",             // top right in Now: opens resume.html
@@ -183,7 +187,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "Core QA for FlourishBench, PAL's flagship AI benchmark. The only intern given a contract extension.",
-    body: "Operations intern at Positive AI Labs, 2026 to present.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset, and handling confidential pre-release material.\n\nThe first to flag that the benchmark's source material was running out far faster than projected, and the first to propose fixes. A modified version of one became the team's method.\n\nDesigned a five-step AI pipeline that automated the slowest parts of the team's workflow, and builds other AI-driven triggers and automations for routine operations. Organizes and maintains datasets and internal information systems.\n\nThe role changes often: thinking on my feet, learning quickly, and wearing many hats.\n\nThe only intern to receive a contract extension.",
+    body: "Operations intern at Positive AI Labs, 2026 to October 2026.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset, and handling confidential pre-release material.\n\nThe first to flag that the benchmark's source material was running out far faster than projected, and the first to propose fixes. A modified version of one became the team's method.\n\nDesigned a five-step AI pipeline that automated the slowest parts of the team's workflow, and built other AI-driven triggers and automations for routine operations. Organized and maintained datasets and internal information systems.\n\nThe role changed often: thinking on my feet, learning quickly, and wearing many hats.\n\nThe only intern to receive a contract extension.",
     image: null,
   },
   {
@@ -193,7 +197,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "This site, ScrimStats, and Open Loops, all built with Claude Code.",
-    body: "This site: a map of a life that you move through by zooming, where zooming out moves forward in time. It was built from a written brief, and every change and the reason for it is in its changelog.\n\nScrimStats: a Windows app for reviewing my League of Legends team's scrim voice comms. It records each game's events, transcribes everyone's voice on the computer itself (in English and Mandarin), lines the two up on one clock, and tracks each player's communication habits over time: sharing information, shotcalling, talking over teammates, accountability, and flame aimed at teammates.\n\nOpen Loops: a to-do app for the things with no deadline. It opens when I sign in to my computer and hides each item behind a small word puzzle, so acknowledging it takes a moment of real attention instead of a reflex click. Every item has three honest ways out: I did it, it's still open, or I'm letting it go.",
+    body: "This site: a map of a life that you move through by zooming, where zooming out moves forward in time. It was built from a written brief, and every change and the reason for it is in its changelog.\n\nScrimStats: a Windows app for reviewing my League of Legends team's scrim voice comms. It records each game's events, transcribes everyone's voice on the computer itself (in English and Mandarin), lines the two up on one clock, and tracks each player's communication habits over time: sharing information, shotcalling, talking over teammates, accountability, and overly negative critique aimed at teammates.\n\nOpen Loops: a to-do app for the things with no deadline. It opens when I sign in to my computer and hides each item behind a small word puzzle, so acknowledging it takes a moment of real attention instead of a reflex click. Every item has three honest ways out: I did it, it's still open, or I'm letting it go.",
     links: [
       { label: "See how this site is built", url: "https://github.com/CameronCarr-LikesFish/CameronCarr-LikesFish.github.io" },
       { label: "ScrimStats on GitHub", url: "https://github.com/CameronCarr-LikesFish/ScrimStats" },
@@ -385,11 +389,11 @@ const RESUME = {
         {
           title: "Operations Intern",
           org: "Positive AI Labs",
-          dates: "2026 – present",
+          dates: "2026 – Oct 2026",
           bullets: [
-            "Core quality assurance for FlourishBench, PAL's flagship AI benchmark: review and refine complex human scenarios for realism, nuance, and internal consistency, handling confidential pre-release material.",
+            "Core quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewed and refined complex human scenarios for realism, nuance, and internal consistency, handling confidential pre-release material.",
             "First to flag that the benchmark's source material was running out far faster than projected, and first to propose fixes; a modified version of one became the team's method.",
-            "Designed a five-step AI pipeline automating the slowest parts of the team's workflow; maintain datasets and systems.",
+            "Designed a five-step AI pipeline automating the slowest parts of the team's workflow; maintained datasets and systems.",
             "The only intern to receive a contract extension.",
           ],
         },

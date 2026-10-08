@@ -2,14 +2,14 @@
 
 Live at **https://cameroncarr-likesfish.github.io/**
 
-A personal site for Cam Carr (Cameron Carr, she/they), a 2026 Vanderbilt graduate in Law, History, and Society with Honors in History. It is a zoomable map: zooming out moves forward in time, and zooming in moves back.
+A personal site for Cam Carr (Cameron Carr, they/them), a 2026 Vanderbilt graduate in Law, History, and Society with Honors in History. It is a zoomable map: zooming out moves forward in time, and zooming in moves back.
 
 | Era | The map shows |
 |---|---|
 | **Goals, hopes, and dreams** | Earth's curved horizon at night, with a small figure standing on it under a wide sky |
-| **Now** | The whole Earth, gently rocking, with Florida marked (home again). This is where the site opens, with her name, tagline, the work she's looking for, contact links, her resume, and her portfolio projects. |
-| **Vanderbilt** | The Southeast, with Tennessee outlined and Nashville marked: the professional core of her college years |
-| **Personal** | Florida, where she grew up. It sits behind a short note on authenticity, and holds the stories behind the professional items. |
+| **Now** | The whole Earth, gently rocking, with Florida marked (home again). This is where the site opens, with their name, tagline, the work they're looking for, contact links, their resume, and their portfolio projects. |
+| **Vanderbilt** | The Southeast, with Tennessee outlined and Nashville marked: the professional core of their college years |
+| **Personal** | Florida, where they grew up. It sits behind a short note on authenticity, and holds the stories behind the professional items. |
 
 ## Getting around
 
@@ -31,7 +31,7 @@ The site was built with **Claude Code** from a written brief, in short working s
   - NASA photographs were tried as backgrounds and removed as too noisy.
   - The zoom first went out to the solar system. Cam pulled it back to Earth, because going further felt arrogant.
   - "Beneath the wall" became "Personal", with a note on authenticity in front of it.
-- **The words are Cam's.** The personal stories come from interview-style conversations. Claude drafted text from her answers and trimmed it without polishing it up, and Cam approved each piece before it went live.
+- **The words are Cam's.** The personal stories come from interview-style conversations. Claude drafted text from their answers and trimmed it without polishing it up, and Cam approved each piece before it went live.
 - **An outside critique.** A separate Claude agent reviewed the design and quality as a critical outside reader. Its findings led to fixes: a rendering bug on the globe, a startup edge case, panel placement, contrast, and a clearer introduction line.
 
 Every change, and the reason for it, is recorded in [CHANGELOG.md](CHANGELOG.md).

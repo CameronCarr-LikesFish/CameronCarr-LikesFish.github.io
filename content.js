@@ -51,6 +51,9 @@ const START_ERA = "now";   // the site opens on the present day
 // ---------------------------------------------------------------------------
 const UI_TEXT = {
   // Shown once per visit, over the map, when the site first opens.
+  // The opening card: an introduction, then the quote below it. {name} is
+  // SETTINGS.displayName.
+  openingIntro: "This is {name}'s personal website. Zoom in and out to navigate between different eras of my life and career.",
   openingLine: "Through our own authenticity we may see the world's beauty.",
   // The window before the personal side.
   wallTitle: "A note on authenticity",

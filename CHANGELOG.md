@@ -19,6 +19,17 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ---
 
+## 2026-10-08 (evening)
+
+### An introduction on the opening card
+
+**Added**
+- The first-visit card now introduces the site above the quote: "This is Cam Carr's personal website. Zoom in and out to navigate between different eras of my life and career." It stays up for 7 seconds instead of 2.5 (there's more to read), and still goes away at the first click, scroll, or key.
+
+**Why:** Cam wanted visitors to know straight away what the site is and how to move around it.
+
+---
+
 ## 2026-10-08 (later)
 
 ### From Cam's career profile; portfolio projects; zoom bubbles; steadier scrolling  (`b2cc543`, `aed9b4e`)

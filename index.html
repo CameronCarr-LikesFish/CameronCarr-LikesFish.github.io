@@ -130,9 +130,13 @@
     </div>
   </dialog>
 
-  <!-- The one-line opening, shown once per visit (UI_TEXT.openingLine). -->
+  <!-- The opening card, shown once per visit: an introduction, then the
+       quote (UI_TEXT.openingIntro, UI_TEXT.openingLine). -->
   <div class="opening" role="status" aria-live="polite" hidden>
-    <p class="opening__line"></p>
+    <div class="opening__inner">
+      <p class="opening__intro"></p>
+      <p class="opening__line"></p>
+    </div>
   </div>
 
   <noscript><p class="noscript">This site needs JavaScript to run.</p></noscript>

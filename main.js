@@ -698,7 +698,7 @@
   // -------------------------------------------------------------------------
 
   const OPENING_KEY = "camcar.openingSeen";
-  const OPENING_MS = 2500;
+  const OPENING_MS = 7000;   // long enough to read the introduction and the quote
   const DISMISS_EVENTS = ["pointerdown", "keydown", "wheel", "touchstart"];
 
   // Returns true if the line is showing (the zoom hint waits for it).
@@ -710,6 +710,8 @@
     } catch (e) { /* private mode: show it anyway */ }
 
     const el = els.opening;
+    el.querySelector(".opening__intro").textContent =
+      (UI_TEXT.openingIntro || "").replace("{name}", SETTINGS.displayName);
     el.querySelector(".opening__line").textContent = UI_TEXT.openingLine;
     el.hidden = false;
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("is-shown")));

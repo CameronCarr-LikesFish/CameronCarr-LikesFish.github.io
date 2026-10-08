@@ -236,6 +236,12 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 .item:hover .item__title,
 .item.is-selected .item__title { color: var(--accent); }
 
+/* A card a link pointed to, on arrival (main.js pointOut). */
+.item.is-pointed {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(227, 169, 179, 0.45);
+}
+
 .item__parent {
   display: block;
   margin-bottom: 0.15rem;

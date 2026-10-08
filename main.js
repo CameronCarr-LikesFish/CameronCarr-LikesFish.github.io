@@ -808,9 +808,30 @@
       state.pendingWall = null;
       els.wall.close();
     }
+    // Arriving from outside on a card's own link (#positive-ai, ...): land on
+    // its era with the card pointed out, rather than open. An open card's
+    // address is easy to copy and share by accident, and a visitor hasn't
+    // asked to read it yet. Inside a visit, links open cards as usual.
+    if (instant && r.item) {
+      history.replaceState(null, "", "#" + ERAS[r.era].id);
+      closePanel();
+      moveTo(r.era, null, true);
+      pointOut(r.item.id);
+      return;
+    }
     if (r.item && !r.detail) openPanel(r.item);
     else closePanel();
     moveTo(r.era, r.detail, instant);
+  }
+
+  // A soft rose glow on one card for a few seconds, to show where a link
+  // was pointing.
+  const POINT_OUT_MS = 4500;
+  function pointOut(id) {
+    const b = els.itemButtons.get(id);
+    if (!b) return;
+    b.classList.add("is-pointed");
+    setTimeout(() => b.classList.remove("is-pointed"), POINT_OUT_MS);
   }
 
   // +1 = zoom in (back in time), -1 = zoom out (forward in time).

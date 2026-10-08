@@ -21,12 +21,15 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-08 (evening)
 
-### An introduction on the opening card
+### An introduction on the opening card; links land closed
 
 **Added**
 - The first-visit card now introduces the site above the quote: "This is Cam Carr's personal website. Zoom in and out to navigate between different eras of my life and career." It stays up for 7 seconds instead of 2.5 (there's more to read), and still goes away at the first click, scroll, or key.
 
-**Why:** Cam wanted visitors to know straight away what the site is and how to move around it.
+**Changed**
+- **Arriving on a card's own link** (e.g. `#positive-ai`) lands on that card's era with the card softly highlighted, instead of already open. An open card's address is easy to copy and share by accident. Within a visit, cards open and the back button works as before. Links to the personal side still show "A note on authenticity" first.
+
+**Why:** Cam wanted visitors to know straight away what the site is and how to move around it, and opened the site from a copied link that already had a card open.
 
 ---
 

@@ -13,6 +13,11 @@
   const FIGURE_GROWTH = 1.46;
   // Length of a one-step zoom, in ms. Multi-step jumps take a little longer.
   const STEP_MS = 700;
+  // After a scroll or swipe moves one era, further scrolling and swiping is
+  // ignored for this long (and until the gesture stops), so a long trackpad
+  // flick or an eager scroll can't skip past an era by accident. Buttons and
+  // keys aren't affected.
+  const STEP_COOLDOWN_MS = 1200;
   // false: map convention, scroll up zooms in (back in time).
   // true: scroll down zooms in.
   const WHEEL_DOWN_ZOOMS_IN = false;
@@ -98,6 +103,7 @@
     document.querySelector(".identity__full").textContent = SETTINGS.fullName;
     document.querySelector(".identity__tagline").textContent = SETTINGS.tagline || "";
     document.querySelector(".identity__seeking").textContent = SETTINGS.seeking || "";
+    document.querySelector(".identity__availability").textContent = SETTINGS.availability || "";
     document.querySelector(".resume-link").textContent = UI_TEXT.resumeLink || "Resume";
     renderContact();
   }
@@ -803,6 +809,13 @@
   // One wheel gesture = one step. A gesture ends after a short pause, which
   // keeps trackpad momentum from skipping through several eras at once.
   const wheel = { acc: 0, used: false, timer: 0 };
+  let gestureLockUntil = 0;   // see STEP_COOLDOWN_MS
+
+  // A scroll or swipe step, then the cooldown.
+  function gestureStep(dir) {
+    gestureLockUntil = performance.now() + STEP_COOLDOWN_MS;
+    step(dir);
+  }
 
   function canScroll(el, dy) {
     return dy > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 1 : el.scrollTop > 0;
@@ -831,7 +844,7 @@
     if (els.wall.open) return;
 
     endGestureSoon();
-    if (wheel.used) return;
+    if (wheel.used || performance.now() < gestureLockUntil) return;
 
     const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
     wheel.acc += e.deltaY * unit;
@@ -842,7 +855,7 @@
     else zoomIn = WHEEL_DOWN_ZOOMS_IN ? wheel.acc > 0 : wheel.acc < 0;
 
     wheel.used = true;
-    step(zoomIn ? 1 : -1);
+    gestureStep(zoomIn ? 1 : -1);
   }
 
   function onKey(e) {
@@ -898,19 +911,20 @@
       e.preventDefault(); // this pinch zooms the map, not the page
       if (touch.used || !touch.startDist) return;
       const ratio = fingerGap(e.touches) / touch.startDist;
-      if (ratio > 1.25 || ratio < 0.8) {
+      if ((ratio > 1.25 || ratio < 0.8) && performance.now() >= gestureLockUntil) {
         touch.used = true;
-        step(ratio > 1 ? 1 : -1);
+        gestureStep(ratio > 1 ? 1 : -1);
       }
     } else if (e.touches.length === 1 && touch.fingers === 1 && !touch.used) {
       const dx = e.touches[0].clientX - touch.x;
       const dy = e.touches[0].clientY - touch.y;
       if (Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx) * 1.5) {
         e.preventDefault();
+        if (performance.now() < gestureLockUntil) return;
         touch.used = true;
         // Dragging down is like scrolling up.
         const scrollUp = dy > 0;
-        step((WHEEL_DOWN_ZOOMS_IN ? !scrollUp : scrollUp) ? 1 : -1);
+        gestureStep((WHEEL_DOWN_ZOOMS_IN ? !scrollUp : scrollUp) ? 1 : -1);
       }
     }
   }

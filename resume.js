@@ -35,6 +35,7 @@
   document.querySelector(".head__aka").textContent = aka.join(" · ");
   document.querySelector(".head__tagline").textContent = SETTINGS.tagline || "";
   document.querySelector(".head__seeking").textContent = SETTINGS.seeking || "";
+  document.querySelector(".head__availability").textContent = SETTINGS.availability || "";
 
   const contact = document.querySelector(".head__contact");
   function addContact(el) {

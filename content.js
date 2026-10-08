@@ -12,6 +12,9 @@ const SETTINGS = {
   tagline: "Vanderbilt \u201926 history honors grad, pursuing questions of human flourishing in a world increasingly shaped by AI.",
   // The work she's looking for: under the tagline in Now, and on the resume.
   seeking: "Looking for frontier work that advances society in a prosocial way.",
+  // Where and when she can start: under the seeking line, and on the resume.
+  // Time-bound: update or clear after the move (mid-November 2026).
+  availability: "Moving to the Berkeley area in mid-November 2026, and available to start right away.",
   pronouns: "she/they",        // shown in the header; change here only
   email: "CameronCarr55@gmail.com",
   phone: "",                   // left blank on purpose: this file is public
@@ -106,7 +109,7 @@ const ITEMS = [
   },
   {
     id: "thesis",
-    title: "The Soul of Transhumanism",
+    title: "Honors thesis: The Soul of Transhumanism",
     short: "The thesis",            // used in "Behind: …" labels
     era: "college",
     layer: "professional",
@@ -125,7 +128,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "Co-designed a study of how students experience AI-driven academic deskilling.",
-    body: "Paid research assistant at Vanderbilt's Sociology AI Lab, August 2025 to May 2026.\n\nCo-designed a human subjects survey instrument with Prof. Davis and graduate researchers on student perceptions of AI-driven academic deskilling, and coordinated participant recruitment, data collection protocols, and workflows for an interdisciplinary team.",
+    body: "Paid research assistant at Vanderbilt's Sociology AI Lab, August 2025 to May 2026.\n\nCo-designed a human subjects survey instrument with Prof. Davis and graduate researchers on student perceptions of AI-driven academic deskilling, and coordinated participant recruitment, data collection protocols, the IRB protocol, and workflows for an interdisciplinary team.\n\nCITI certified.",
     image: null,
   },
   {
@@ -156,12 +159,23 @@ const ITEMS = [
     era: "college",
     layer: "professional",
     parent: null,
-    summary: "Led a 300+ member club. Its League of Legends team reached the NECC quarterfinals or better every year, a club first.",
-    body: "President, coach, and team captain of Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team captain sophomore through junior year. On the board from sophomore year: Vice President sophomore year, co-president junior year, and President senior year. As coach, developed player skill, strategy, and team cohesion across Vanderbilt's competitive teams.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as co-president and President. The board I led was male-dominated, and mostly chosen by the board before it, so I raised up younger, more diverse members to take things over. Its board is now far more balanced by gender and race. Also served as Event Chair.",
+    summary: "Led a club of 100+ active members. Its League of Legends team reached the NECC quarterfinals or better every year, a club first.",
+    body: "President, coach, and team captain of Vanderbilt Gaming, with 100+ active members and several hundred involved. Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming. Team captain sophomore through junior year. On the board from sophomore year: Vice President sophomore year, co-president junior year, and President senior year. As coach, developed player skill, strategy, and team cohesion across Vanderbilt's competitive teams. Teams I led consistently beat higher-ranked opponents.\n\nPlayed on a League of Legends team that reached at least the quarterfinals of the NECC (National Esports Collegiate Conference) every year.\n\nRan the organization's operations and pushed to diversify a homogeneous board and membership into a more inclusive community, first as Vice President, where the diversity work was the explicit focus, and then as co-president and President. The board I led was male-dominated, and mostly chosen by the board before it, so I raised up younger, more diverse members to take things over. Its board is now far more balanced by gender and race. Also served as Event Chair.",
     image: null,
   },
 
   // ----- Now (post-graduation, 2026) -----
+  // Four items: left column top to bottom, then right column.
+  {
+    id: "how-i-work",
+    title: "How I work",
+    era: "now",
+    layer: "professional",
+    parent: null,
+    summary: "Operations and programs: spotting where systems break, building process, and helping people grow.",
+    body: "I'm an operations and program person who learned startups by doing them, with a research background and a real commitment to AI safety. I notice where systems are breaking and fix them, and I'm good at helping people grow into their own ideas.\n\nSpotting cracks early. At Positive AI Labs I was the first to flag that the benchmark's source material was running out far faster than projected, and the first to propose fixes. A modified version of one of mine became the team's method.\n\nBuilding process. I designed a five-step AI pipeline that automated the slowest parts of our workflow.\n\nJudgment at volume. I was core QA on FlourishBench across complex human scenarios, handling confidential pre-release material.\n\nLeading people. I was president of Vanderbilt Gaming (100+ active members, several hundred involved), and teams I led consistently beat higher-ranked opponents. I created Vanderbilt Meditation and Mindfulness, and led extracurricular discussion groups for Vanderbilt's very popular Human Flourishing class.\n\nLearning fast. My role at PAL changed often and asked me to think on my feet, learn quickly, and wear many different hats.\n\nWhat I enjoy: untangling messy systems, building structure so work keeps running without me, connecting people, and mentoring early-stage people and organizations.\n\nI'm not a coder or a technical researcher. I want to be the person who makes the research and the organization run.",
+    image: null,
+  },
   {
     id: "positive-ai",
     title: "Operations intern, Positive AI Labs",
@@ -169,7 +183,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "Core QA for FlourishBench, PAL's flagship AI benchmark. The only intern given a contract extension.",
-    body: "Operations intern at Positive AI Labs, 2026 to present.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset.\n\nDesigns and deploys AI-driven triggers and automation pipelines that streamline routine and multi-step operational workflows, and organizes and maintains datasets and internal information systems.\n\nThe only intern to receive a contract extension.",
+    body: "Operations intern at Positive AI Labs, 2026 to present.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset, and handling confidential pre-release material.\n\nThe first to flag that the benchmark's source material was running out far faster than projected, and the first to propose fixes. A modified version of one became the team's method.\n\nDesigned a five-step AI pipeline that automated the slowest parts of the team's workflow, and builds other AI-driven triggers and automations for routine operations. Organizes and maintains datasets and internal information systems.\n\nThe role changes often: thinking on my feet, learning quickly, and wearing many hats.\n\nThe only intern to receive a contract extension.",
     image: null,
   },
   {
@@ -178,9 +192,12 @@ const ITEMS = [
     era: "now",
     layer: "professional",
     parent: null,
-    summary: "Starting with this site, built with Claude.",
-    body: "A growing portfolio of projects made with Claude. The first is this site: a map of a life that you move through by zooming, where zooming out moves forward in time toward the future. It was built with Claude Code from a written brief.\n\nMore projects will be added here as they're built.",
-    links: [{ label: "See how this site is built", url: "https://github.com/CameronCarr-LikesFish/CameronCarr-LikesFish.github.io" }],
+    summary: "This site, ScrimStats, and Open Loops, all built with Claude Code.",
+    body: "This site: a map of a life that you move through by zooming, where zooming out moves forward in time. It was built from a written brief, and every change and the reason for it is in its changelog.\n\nScrimStats: a Windows app for reviewing my League of Legends team's scrim voice comms. It records each game's events, transcribes everyone's voice on the computer itself (in English and Mandarin), lines the two up on one clock, and tracks each player's communication habits over time: sharing information, shotcalling, talking over teammates, accountability, and flame aimed at teammates.\n\nOpen Loops: a to-do app for the things with no deadline. It opens when I sign in to my computer and hides each item behind a small word puzzle, so acknowledging it takes a moment of real attention instead of a reflex click. Every item has three honest ways out: I did it, it's still open, or I'm letting it go.",
+    links: [
+      { label: "See how this site is built", url: "https://github.com/CameronCarr-LikesFish/CameronCarr-LikesFish.github.io" },
+      { label: "ScrimStats on GitHub", url: "https://github.com/CameronCarr-LikesFish/ScrimStats" },
+    ],
     image: null,
   },
   {
@@ -195,6 +212,16 @@ const ITEMS = [
   },
 
   // ----- Future -----
+  {
+    id: "where-next",
+    title: "Where I want to be",
+    era: "future",
+    layer: "professional",
+    parent: null,
+    summary: "Operations and program work in AI safety, starting in the Bay Area.",
+    body: "In one year: in the Bay Area, in an operations or program role inside the AI safety ecosystem, learning how these organizations run.\n\nIn two years: either owning a program or function (a fellowship, evals operations, or a team's ops) and building its processes and hiring, or finishing a master's in AI safety or a similar field.\n\nIn five years: leading operations or programs at an AI safety or human-centered AI organization, or building something of my own.\n\nThe roles that fit best: operations and program roles at AI safety organizations (fellowships, events, field-building); human-data, evals, QA, or safeguards operations at AI labs and startups; founding ops, chief of staff, or generalist roles at early-stage AI startups; and community, program, or customer success roles at AI companies.",
+    image: null,
+  },
   {
     id: "teacher-training",
     title: "Teaching meditation",
@@ -346,7 +373,7 @@ const RESUME = {
           bullets: [
             "GPA 3.7. Dean's List all four years.",
             "Chancellor's Scholarship: a full-ride scholarship, awarded 2022.",
-            "Senior honors thesis: \u201CThe Soul of Transhumanism: Rationalism and Dissent in the Early History of Transhumanism\u201D (100 pages; adviser Dr. Ole Molvig). Traces rationalism, elitism, and gendered ideology in transhumanist thought, from early 20th-century British scientific socialists to today's Silicon Valley AI culture.",
+            "Senior honors thesis: “The Soul of Transhumanism: Rationalism and Dissent in the Early History of Transhumanism” (100 pages; adviser Dr. Ole Molvig), on the values embedded in AI and transhumanist culture.",
           ],
           link: { label: "Read the thesis (PDF)", url: "files/carr-soul-of-transhumanism.pdf" },
         },
@@ -360,9 +387,9 @@ const RESUME = {
           org: "Positive AI Labs",
           dates: "2026 – present",
           bullets: [
-            "Core quality assurance for FlourishBench, PAL's flagship AI benchmark: review and refine complex human scenarios for realism, nuance, and internal consistency before they enter the dataset.",
-            "Design and deploy AI-driven triggers and automation pipelines for routine and multi-step operational workflows.",
-            "Organize and maintain datasets and internal information systems.",
+            "Core quality assurance for FlourishBench, PAL's flagship AI benchmark: review and refine complex human scenarios for realism, nuance, and internal consistency, handling confidential pre-release material.",
+            "First to flag that the benchmark's source material was running out far faster than projected, and first to propose fixes; a modified version of one became the team's method.",
+            "Designed a five-step AI pipeline automating the slowest parts of the team's workflow; maintain datasets and systems.",
             "The only intern to receive a contract extension.",
           ],
         },
@@ -372,7 +399,7 @@ const RESUME = {
           dates: "Aug 2025 – May 2026",
           bullets: [
             "Co-designed a human subjects survey instrument with Prof. Davis and graduate researchers on student perceptions of AI-driven academic deskilling.",
-            "Coordinated participant recruitment, data collection protocols, and workflows for an interdisciplinary team.",
+            "Coordinated participant recruitment, data collection protocols, the IRB protocol, and workflows for an interdisciplinary team. CITI certified.",
           ],
         },
       ],
@@ -385,10 +412,10 @@ const RESUME = {
           org: "Vanderbilt Gaming",
           dates: "2022 – 2026",
           bullets: [
-            "Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming, a 300+ member organization with a Discord community of over 400.",
+            "Expanded Vanderbilt's League of Legends club into Vanderbilt Gaming: 100+ active members, several hundred involved.",
             "Vice President sophomore year, co-president junior year, and President senior year; team captain sophomore through junior year; Event Chair. Ran the organization's operations.",
-            "Coached Vanderbilt's competitive teams on skill, strategy, and cohesion. Played on a League of Legends team that reached at least the NECC quarterfinals every year, a first for the club.",
-            "Pushed to diversify a male-dominated board and membership: recruited and mentored younger, more diverse members to take over leadership. Handed the club to its first woman president; the board is now far more balanced by gender and race.",
+            "Coached competitive teams on skill, strategy, and cohesion; teams I led consistently beat higher-ranked opponents. My League of Legends team reached at least the NECC quarterfinals every year, a club first.",
+            "Mentored younger, more diverse members to take over a male-dominated board; handed the club to its first woman president, and its board is now far more balanced by gender and race.",
           ],
         },
         {
@@ -396,8 +423,13 @@ const RESUME = {
           org: "Meditation & Mindfulness Club, Vanderbilt University",
           dates: "2024 – 2026",
           bullets: [
-            "Built a student wellness program from scratch. Facilitated sessions and supported students through mental health challenges.",
+            "Built a student wellness program from scratch; led sessions and supported students through mental health challenges.",
           ],
+        },
+        {
+          title: "Discussion Group Leader",
+          org: "Human Flourishing course, Vanderbilt University",
+          bullets: ["Led extracurricular discussion groups for one of Vanderbilt's most popular classes."],
         },
         {
           title: "Youth in Government",
@@ -424,18 +456,8 @@ const RESUME = {
       ],
     },
     {
-      heading: "Selected coursework",
-      list: [
-        "Ethics of Artificial Intelligence",
-        "Artificial Intelligence in Social Systems",
-        "Independent Research: AI in Higher Education",
-        "Human Flourishing",
-        "Formal Logic",
-        "Statistics for Social Scientists",
-        "The Historian and the Law",
-        "The Politics of Asylum",
-        "Human Behavior in Organizations",
-      ],
+      heading: "Tools",
+      list: ["Claude and Claude Code", "Google Workspace", "Dataset organization and QA"],
     },
   ],
 };

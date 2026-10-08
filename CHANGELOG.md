@@ -19,6 +19,28 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ---
 
+## 2026-10-08 (later)
+
+### From Cam's career profile; portfolio projects; steadier scrolling
+
+**Added**
+- **How I work** (Now): Cam's one-line summary, her strengths (spotting cracks early, building process, judgment at volume, leading people, learning fast), what she enjoys, and "I'm not a coder or a technical researcher. I want to be the person who makes the research and the organization run."
+- **Where I want to be** (Goals, hopes, and dreams): one, two, and five years out, and the kinds of roles that fit best.
+- **Portfolio projects** now describes three projects: this site, ScrimStats (with a link to its code), and Open Loops.
+- **Moving to the Berkeley area in mid-November 2026, available to start right away,** under the header in Now and on the resume.
+
+**Changed**
+- **Positive AI Labs:** first to flag that the benchmark's source material was running out, and a proposed fix that became the team's method; a five-step AI pipeline; confidential pre-release material.
+- **Sociology AI Lab:** the IRB protocol and CITI certification.
+- **Vanderbilt Gaming:** 100+ active members and several hundred involved; teams consistently beat higher-ranked opponents.
+- **The thesis card** reads "Honors thesis: The Soul of Transhumanism".
+- **The resume** adds the Human Flourishing discussion groups and a Tools line, and drops the coursework list (the site has its own coursework view) to stay on one page.
+- **Scrolling:** after a scroll or swipe moves one era, more scrolling is ignored for 1.2 seconds (and until the gesture stops), so a long trackpad flick can't skip an era by accident. The buttons and keys aren't affected.
+
+**Why:** Cam shared her career profile to fold into the site, and asked for a guard against accidental skipping.
+
+---
+
 ## 2026-10-08
 
 ### No more tags; simpler grades (`8d16730`)

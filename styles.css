@@ -304,6 +304,16 @@ body:not(.wall-crossed) .era[data-era="personal"] :is(.item, .era__back) { visib
 
 .identity__seeking:empty { display: none; }
 
+/* Where and when she can start, under the seeking line. */
+.identity__availability {
+  margin: -0.35rem 0 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--ink-dim);
+}
+
+.identity__availability:empty { display: none; }
+
 .identity__pronouns {
   font-family: var(--font-body);
   font-size: 0.85rem;
@@ -944,12 +954,13 @@ body.is-fading #stage { opacity: 0; }
   .identity { font-size: 1.45rem; }
   .identity__tagline { font-size: 0.72rem; margin: 0.4rem 0 0.3rem; }
   .identity__seeking { font-size: 0.72rem; margin-top: -0.15rem; }
+  .identity__availability { font-size: 0.7rem; }
   /* Below the name, the header can use the full width: the Resume button
      only shares the first line. */
   .site-header { max-width: calc(100vw - 2rem); }
   .identity { max-width: calc(100vw - 8rem); }
   /* In Now the header is taller, so the era title sits a little lower. */
-  .era[data-era="now"] .era__head { top: 21%; }
+  .era[data-era="now"] .era__head { top: 23.5%; }
   .identity__full { display: none; }   /* the name and tagline say enough on a phone */
 
   /* The timeline already shows where you are; keep the label for screen
@@ -1048,13 +1059,21 @@ body.is-fading #stage { opacity: 0; }
 
 .identity__tagline,
 .identity__seeking,
+.identity__availability,
 .resume-link,
 .contact { transition: opacity 0.35s ease, visibility 0.35s; }
 
 body:not([data-era="now"]) .identity__tagline,
 body:not([data-era="now"]) .identity__seeking,
+body:not([data-era="now"]) .identity__availability,
 body:not([data-era="now"]) .resume-link,
 body:not([data-era="now"]) .contact {
   opacity: 0;
   visibility: hidden;
+}
+
+/* Short phones: in Now, the header (name, tagline, availability) fills the
+   top, so the era title gives way; the timeline still marks Now. */
+@media (max-width: 700px) and (max-height: 700px) {
+  .era[data-era="now"] .era__head { display: none; }
 }

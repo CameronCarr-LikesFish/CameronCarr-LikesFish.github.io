@@ -104,6 +104,8 @@ a:hover { text-decoration-color: var(--link); }
 .head__tagline { margin: 0.6rem 0 0.2rem; max-width: 38rem; }
 .head__seeking { margin: 0 0 0.7rem; max-width: 38rem; font-style: italic; color: var(--ink-dim); }
 .head__seeking:empty { display: none; }
+.head__availability { margin: -0.5rem 0 0.7rem; max-width: 38rem; color: var(--ink-dim); }
+.head__availability:empty { display: none; }
 
 .head__contact {
   list-style: none;
@@ -185,7 +187,8 @@ a:hover { text-decoration-color: var(--link); }
   .head__name { font-size: 22pt; }
   .head__aka { margin-top: 0.1rem; }
   .head__tagline { margin: 0.3rem 0 0.1rem; max-width: none; }
-  .head__seeking { margin: 0 0 0.3rem; max-width: none; }
+  .head__seeking { margin: 0; max-width: none; }
+  .head__availability { margin: 0 0 0.3rem; max-width: none; }
   .head__contact { font-size: 8.5pt; gap: 0.1rem 0.9rem; }   /* one line */
   .section { margin-top: 0.7rem; }
   .section__heading { margin-bottom: 0.25rem; }
@@ -198,6 +201,7 @@ a:hover { text-decoration-color: var(--link); }
   .entry__bullets { margin-top: 0.15rem; }
   .entry__bullets li + li { margin-top: 0.05rem; }
   .entry, .section__heading { break-inside: avoid; }
+  .section__heading { break-after: avoid; }
   a { color: inherit; text-decoration: none; }
   .entry__link { display: none; }   /* a link on paper goes nowhere */
 }

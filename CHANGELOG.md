@@ -21,7 +21,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-08 (later)
 
-### From Cam's career profile; portfolio projects; zoom bubbles; steadier scrolling
+### From Cam's career profile; portfolio projects; zoom bubbles; steadier scrolling  (`b2cc543`, `aed9b4e`)
 
 **Added**
 - **Speech bubbles beside the + and − buttons** saying where each one goes from here, e.g. "Zoom in to see my time at Vanderbilt" and "Zoom out to see my hopes and dreams". They change with the era, and clicking one zooms. They're hidden in short windows, where they'd cover the cards. On screens up to 1200px wide, the + and − buttons sit just above the timeline so the bubbles can't run into it, and the first-visit scroll hint shows only on wider screens, where it has room.

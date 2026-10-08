@@ -21,7 +21,7 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ## 2026-10-08
 
-### No more tags; simpler grades
+### No more tags; simpler grades (`8d16730`)
 
 **Removed**
 - **Tags,** everywhere: the "Filter by tag" button, the tag list in each item's panel, and the tags on items. A view listing everything with one tag, from the future back to the past, was built and tried first. With only a few items per tag it showed too little, so the tags went instead.

@@ -14,7 +14,7 @@ const SETTINGS = {
   seeking: "Looking for frontier work that advances society in a prosocial way.",
   // Where and when they can start: under the seeking line, and on the resume.
   // Time-bound: update or clear after the move (mid-November 2026).
-  availability: "Moving to the Berkeley area in mid-November 2026, and available to start right away.",
+  availability: "Moving to the Berkeley area in mid-November 2026, and available to start at the end of December.",
   pronouns: "they/them",       // shown in the header; change here only
   email: "CameronCarr55@gmail.com",
   phone: "",                   // left blank on purpose: this file is public

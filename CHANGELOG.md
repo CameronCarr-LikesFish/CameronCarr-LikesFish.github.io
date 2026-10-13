@@ -19,6 +19,20 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ---
 
+## 2026-10-13
+
+### Now's cards clear the header; back at Positive AI Labs
+
+**Fixed**
+- **"How I work" ran into the header** on shorter laptop screens (for example a 1366×768 laptop, about 657px of window) and around 900px wide, where the header wraps. In Now, a row of cards that would sit under the header moves down just far enough to clear it, both columns together so they stay level. Checked at 13 screen sizes against the header, the timeline, the figure, the zoom buttons and their bubbles.
+
+**Changed**
+- **Positive AI Labs:** Cam was rehired through the end of 2026. The item and the resume are back in the present tense ("2026 – present").
+
+**Why:** Cam saw the overlap on the live site, and shared the news about PAL.
+
+---
+
 ## 2026-10-08 (evening)
 
 ### An introduction on the opening card; links land closed (`c6b4c1f`, `0d8ea4c`)

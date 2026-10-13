@@ -272,6 +272,40 @@
     });
   }
 
+  // In Now the header (name, tagline, availability, contact links) is tall,
+  // and on short or narrow screens it reaches below the left column's first
+  // card. Push the cards it covers down just enough to clear it, keeping a
+  // gap between them. Re-run on resize and once the fonts have loaded.
+  const HEADER_GAP = 16;    // px between the header and the card below it
+  const CARD_GAP = 12;      // px between two cards in a column
+
+  function fitNowCards() {
+    const d = eraDepth.get("now");
+    if (d == null) return;
+    const header = document.querySelector(".site-header").getBoundingClientRect();
+    const W = innerWidth, H = innerHeight;
+    if (!W || !H) return;
+    const cards = itemsForDepth(d)
+      .map((it) => ({ b: els.itemButtons.get(it.id), slot: els.itemSlots.get(it.id) }))
+      .filter((c) => c.b && c.slot);
+    // Rows by slot height, top first. A row moves down as a whole, so the
+    // two columns stay level; each row also clears the one above it.
+    const rows = [...new Set(cards.map((c) => c.slot[1]))].sort((a, z) => a - z)
+      .map((y) => cards.filter((c) => c.slot[1] === y));
+    let floor = -Infinity;      // the lowest edge the next row must clear
+    rows.forEach((row) => {
+      const tallest = Math.max(...row.map((c) => c.b.offsetHeight));
+      let need = floor;
+      row.forEach((c) => {
+        const w = c.b.offsetWidth, left = (c.slot[0] / 100) * W - w / 2;
+        if (left < header.right && left + w > header.left) need = Math.max(need, header.bottom + HEADER_GAP);
+      });
+      const centre = Math.max((row[0].slot[1] / 100) * H, need + tallest / 2);
+      row.forEach((c) => { c.b.style.top = ((centre / H) * 100).toFixed(2) + "%"; });
+      floor = centre + tallest / 2 + CARD_GAP;
+    });
+  }
+
   // The nav is a timeline: the past on the left, the future on the right.
   function renderNav() {
     els.nav.style.setProperty("--nav-count", ERAS.length);
@@ -980,6 +1014,7 @@
     window.addEventListener("hashchange", () => route(false));
     window.addEventListener("resize", () => {
       figureRest = null;
+      fitNowCards();
       positionPanel();
       applyCamera();
     });
@@ -1009,6 +1044,8 @@
     console.error("Starfield failed to start:", err);  // the site still works without it
   }
   setActive(state.level, null);
+  fitNowCards();
+  document.fonts?.ready.then(fitNowCards);
   applyCamera();
   route(true);
   if (!showOpening()) setTimeout(showHint, 700);

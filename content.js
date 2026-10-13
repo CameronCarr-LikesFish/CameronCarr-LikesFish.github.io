@@ -190,7 +190,7 @@ const ITEMS = [
     layer: "professional",
     parent: null,
     summary: "Core QA for FlourishBench, PAL's flagship AI benchmark. The only intern given a contract extension.",
-    body: "Operations intern at Positive AI Labs, 2026 to October 2026.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset, and handling confidential pre-release material.\n\nThe first to flag that the benchmark's source material was running out far faster than projected, and the first to propose fixes. A modified version of one became the team's method.\n\nDesigned a five-step AI pipeline that automated the slowest parts of the team's workflow, and built other AI-driven triggers and automations for routine operations. Organized and maintained datasets and internal information systems.\n\nThe role changed often: thinking on my feet, learning quickly, and wearing many hats.\n\nThe only intern to receive a contract extension.",
+    body: "Operations intern at Positive AI Labs, 2026 to present, rehired through the end of 2026.\n\nCore quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewing and refining complex human scenarios for realism, nuance, and internal consistency before they enter the dataset, and handling confidential pre-release material.\n\nThe first to flag that the benchmark's source material was running out far faster than projected, and the first to propose fixes. A modified version of one became the team's method.\n\nDesigned a five-step AI pipeline that automated the slowest parts of the team's workflow, and builds other AI-driven triggers and automations for routine operations. Organizes and maintains datasets and internal information systems.\n\nThe role changes often: thinking on my feet, learning quickly, and wearing many hats.\n\nThe only intern to receive a contract extension, and rehired through the end of 2026.",
     image: null,
   },
   {
@@ -392,12 +392,12 @@ const RESUME = {
         {
           title: "Operations Intern",
           org: "Positive AI Labs",
-          dates: "2026 – Oct 2026",
+          dates: "2026 – present",
           bullets: [
-            "Core quality assurance for FlourishBench, PAL's flagship AI benchmark: reviewed and refined complex human scenarios for realism, nuance, and internal consistency, handling confidential pre-release material.",
+            "Core quality assurance for FlourishBench, PAL's flagship AI benchmark: review and refine complex human scenarios for realism, nuance, and internal consistency, handling confidential pre-release material.",
             "First to flag that the benchmark's source material was running out far faster than projected, and first to propose fixes; a modified version of one became the team's method.",
-            "Designed a five-step AI pipeline automating the slowest parts of the team's workflow; maintained datasets and systems.",
-            "The only intern to receive a contract extension.",
+            "Designed a five-step AI pipeline automating the slowest parts of the team's workflow; maintain datasets and systems.",
+            "The only intern to receive a contract extension; rehired through the end of 2026.",
           ],
         },
         {

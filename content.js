@@ -369,6 +369,10 @@ const RESUME = {
   site: "cameroncarr-likesfish.github.io",
   backLabel: "Back to the map",
   printLabel: "Print or save as PDF",
+  // A ready-made PDF of this page, regenerated whenever the resume changes
+  // (see PROGRESS.md for the command).
+  downloadLabel: "Download PDF",
+  pdf: "files/cam-carr-resume.pdf",
   sections: [
     {
       heading: "Education",

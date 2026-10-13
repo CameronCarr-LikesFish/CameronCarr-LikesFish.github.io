@@ -76,6 +76,8 @@ a:hover { text-decoration-color: var(--link); }
 }
 
 .bar__btn:hover { border-color: var(--accent); }
+
+.bar__actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .bar__btn--primary { border-color: var(--accent); color: var(--accent); }
 
 /* ----- The sheet ----- */

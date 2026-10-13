@@ -19,6 +19,15 @@ A record of every change to [Cam Carr's site](https://cameroncarr-likesfish.gith
 
 ---
 
+## 2026-10-13 (later)
+
+### Download the resume as a PDF
+
+**Added**
+- **A "Download PDF" button** on the resume page: a ready-made, one-page PDF of exactly what's on the page, so recruiters can save it in one click without the print window. It's regenerated whenever the resume changes.
+
+---
+
 ## 2026-10-13
 
 ### Now's cards clear the header; back at Positive AI Labs (`e3ac012`, `8761b6d`)

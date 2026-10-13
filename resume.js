@@ -23,6 +23,14 @@
 
   // ----- Top bar -----
   document.querySelector('[data-label="back"]').textContent = "← " + RESUME.backLabel;
+  const download = document.querySelector('[data-label="download"]');
+  if (RESUME.pdf) {
+    download.textContent = RESUME.downloadLabel;
+    download.href = RESUME.pdf;
+    download.setAttribute("download", "Cam Carr resume.pdf");
+  } else {
+    download.remove();
+  }
   const print = document.querySelector('[data-label="print"]');
   print.textContent = RESUME.printLabel;
   print.addEventListener("click", () => window.print());
